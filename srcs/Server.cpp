@@ -31,10 +31,10 @@ void	sigchld_handler(int s)
 {
 	(void)s; // WHY???????????????????????????????????
 	// waitpid() might overwrite errno, so we save it and restore it:
-	int saved_errno = errno;
+	//int saved_errno = errno;
 
 	while (waitpid(-1, NULL, WNOHANG) > 0);
-	errno = saved_errno;
+	//errno = saved_errno;
 }
 
 // METHODS
@@ -57,11 +57,12 @@ void	Server::setup(void) {
 		std::cerr << "error: getaddrinfo: " << gai_strerror(err_val) << std::endl;
 		exit(-1); // CHANGE THISS!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	}
-
+	std::cout << servinfo->ai_canonname << std::endl;
 	// If everything worked, servinfo is a linked list with sockaddr we can use
 	for (p = servinfo; p != NULL; p = p->ai_next)
 	{
 		int count = 0;
+		std::cout << "check" << std::endl;
 		try {
 			listenSocket.createSocket(p->ai_family, p->ai_socktype, p->ai_protocol);
 		} catch (std::exception& e) {
@@ -72,6 +73,7 @@ void	Server::setup(void) {
 			listenSocket.bindSocket(p->ai_addr, p->ai_addrlen);
 		} catch (std::exception& e) {
 			std::cerr << "struct addrinfo #"<< count << ": " << e.what() << std::endl;
+			std::cout << p->ai_next << std::endl;
 			continue ;
 		}
 		break ;

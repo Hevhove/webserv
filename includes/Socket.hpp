@@ -5,6 +5,7 @@
 # include <netdb.h>
 # include <iostream>
 # include <arpa/inet.h>
+# include <exception>
 
 # define BACKLOG 10
 # define BUFF_SIZE 1000

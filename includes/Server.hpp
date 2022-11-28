@@ -6,6 +6,8 @@
 # include <stdio.h>
 # include <cstring>
 # include <unistd.h>
+# include <sys/wait.h>
+# include <stdlib.h>
 
 # define PORT "4242"
 
