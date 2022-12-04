@@ -6,8 +6,9 @@
 # include <stdio.h>
 # include <cstring>
 # include <unistd.h>
+# include <time.h>
 
-# define PORT "4242"
+# define PORT "3490"
 
 class Server {
 	private:

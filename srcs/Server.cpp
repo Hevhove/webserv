@@ -59,9 +59,10 @@ void	Server::setup(void) {
 	}
 
 	// If everything worked, servinfo is a linked list with sockaddr we can use
+	int count = -1;
 	for (p = servinfo; p != NULL; p = p->ai_next)
 	{
-		int count = 0;
+		count++;
 		try {
 			listenSocket.createSocket(p->ai_family, p->ai_socktype, p->ai_protocol);
 		} catch (std::exception& e) {
@@ -90,7 +91,7 @@ void	Server::setup(void) {
 		perror("sigaction");
 		exit(1);
 	}
-	printf("server: waiting for connections...\n");
+	std::cout << "server: waiting for connections..." << std::endl;
 	while (1)
 	{
 		try {
@@ -103,6 +104,9 @@ void	Server::setup(void) {
 		// https://stackoverflow.com/questions/2862071/how-large-should-my-recv-buffer-be-when-calling-recv-in-the-socket-library
 		memset(recv_buff, 0, BUFF_SIZE);
 		recv(currSocket.getSocketFD(), recv_buff, BUFF_SIZE, 0);
+		time_t timetoday;
+		time(&timetoday);
+		std::cout << "TIMESTAMP: " << std::asctime(localtime(&timetoday)) << std::endl;
 		std::cout << "Received: " << recv_buff << std::endl;
 		// Server response should be here:
 		// server.sendResponse();
