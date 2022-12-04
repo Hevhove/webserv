@@ -7,6 +7,8 @@
 # include <cstring>
 # include <unistd.h>
 # include <time.h>
+# include <sys/wait.h>
+# include <stdlib.h>
 
 # define PORT "3490"
 

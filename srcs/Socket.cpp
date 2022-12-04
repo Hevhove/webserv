@@ -43,7 +43,6 @@ void	Socket::createSocket(int ai_family, int ai_socktype, int ai_protocol) {
 void	Socket::bindSocket(struct sockaddr* ai_addr, socklen_t ai_addrlen) {
 	if (bind(sockfd, ai_addr, ai_addrlen) < 0)
 		throw Socket::SocketBindException();
-
 }
 
 void	Socket::listenOnSocket(void) {
