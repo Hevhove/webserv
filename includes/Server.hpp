@@ -26,8 +26,9 @@ class Server {
 		// Methods : Private
 		void				addConnection(int newfd);
 		void				dropConnection(int i);
-		void	handleConnection(void);
-		void	handleRequest(int i);
+		void			handleConnection(void);
+		void			handleRequest(int i);
+		void*			get_in_addr(struct sockaddr *sa);
 
 	public:
 		// Constructors

@@ -51,7 +51,7 @@ void	Server::run(void) {
 			if (pfds[i].revents & POLLIN)
 			{
 				if (pfds[i].fd == listenSocket.getSocketFD())
-					handleConnection(); // write something here
+					handleConnection();
 				else
 					handleRequest(i);
 			}
@@ -59,6 +59,7 @@ void	Server::run(void) {
 	}
 }
 
+// PRIVATE METHODS
 void	Server::handleRequest(int i) {
 	int	nbytes;
 	int sender_fd;
@@ -112,7 +113,7 @@ void	Server::dropConnection(int i) {
 	fd_count--;
 }
 
-void *get_in_addr(struct sockaddr *sa)
+void* Server::get_in_addr(struct sockaddr *sa)
 {
     return &(((struct sockaddr_in*)sa)->sin_addr);
 }
@@ -137,7 +138,7 @@ void	Server::handleConnection(void) {
 	std::cout << " on socket " << newfd << std::endl;
 }
 
-// Exceptions
+// EXCEPTIONS
 const char * Server::PollException::what() const throw ()
 {
     return ("Failed to operate poll function");
