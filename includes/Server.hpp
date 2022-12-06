@@ -3,7 +3,6 @@
 
 # include "Socket.hpp"
 # include "utils.hpp"
-# include <signal.h>
 # include <stdio.h>
 # include <cstring>
 # include <time.h>
@@ -20,15 +19,15 @@ class Server {
 		Socket				currSocket;
 		struct addrinfo		hints;
 		struct addrinfo*	servinfo;
-		struct sigaction	sa;
 		int					fd_count;
 		int					fd_size;
 		struct pollfd		*pfds;
 
-
-		// Methods : TODO: review private vs public methods
+		// Methods : Private
 		void				addConnection(int newfd);
 		void				dropConnection(int i);
+		void	handleConnection(void);
+		void	handleRequest(int i);
 
 	public:
 		// Constructors
@@ -37,10 +36,8 @@ class Server {
 		Server(const Server& src);
 		Server& operator=(const Server& rhs);
 
-		// Methods
+		// Methods : Public
 		void	run(void);
-		void	handleConnection(void);
-		void	handleRequest(int i);
 
 		// Exceptions
 		class PollException : public std::exception {

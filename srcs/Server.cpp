@@ -22,7 +22,6 @@ Server::Server(const Server& src) {
 	this->currSocket = src.currSocket;
 	this->hints = src.hints;
 	this->servinfo = src.servinfo;
-	this->sa = src.sa;
 }
 
 Server&	Server::operator=(const Server& rhs) {
@@ -30,19 +29,7 @@ Server&	Server::operator=(const Server& rhs) {
 	this->currSocket = rhs.currSocket;
 	this->hints = rhs.hints;
 	this->servinfo = rhs.servinfo;
-	this->sa = rhs.sa;
 	return (*this);
-}
-
-// HELPER FUNCTIONS
-void	sigchld_handler(int s)
-{
-	(void)s; // WHY???????????????????????????????????
-	// waitpid() might overwrite errno, so we save it and restore it:
-	//int saved_errno = errno;
-
-	while (waitpid(-1, NULL, WNOHANG) > 0);
-	//errno = saved_errno;
 }
 
 // PUBLIC METHODS
