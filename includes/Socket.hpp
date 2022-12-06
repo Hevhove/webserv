@@ -6,7 +6,9 @@
 # include <iostream>
 # include <arpa/inet.h>
 # include <exception>
+# include <unistd.h>
 
+# define PORT "3490"
 # define BACKLOG 10
 # define BUFF_SIZE 1000
 
@@ -29,11 +31,15 @@ class Socket {
 		void	listenOnSocket(void);
 		void	acceptConnection(int listenSock);
 		void	printConnection(void);
+		void	initListenSocket(void);
 
 		// Getters
 		int		getSocketFD(void);
 
 		// Exceptions
+		class SocketInitException : public std::exception {
+			const char * what () const throw();
+		};
 		class SocketFailureException : public std::exception {
 			const char * what () const throw();
 		};

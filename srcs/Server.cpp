@@ -2,11 +2,19 @@
 
 // CONSTRUCTORS
 Server::Server() {
-	;// TODO
+	this->fd_count = 0;
+	this->fd_size = MAXEVENTS;
+	pfds = new pollfd[fd_size];
+
+	listenSocket.initListenSocket();
+	pfds[0].fd = listenSocket.getSocketFD();
+	pfds[0].events = POLLIN;
+	fd_count++;
 }
 
 Server::~Server() {
-	;// TODO
+	delete[] pfds;
+	std::cout << "server: Shutting down" << std::endl;
 }
 
 Server::Server(const Server& src) {
@@ -37,82 +45,118 @@ void	sigchld_handler(int s)
 	//errno = saved_errno;
 }
 
-// METHODS
+// PUBLIC METHODS
 void	Server::run(void) {
-	setup();
-}
+	int poll_count;
 
-void	Server::setup(void) {
-	int				err_val;
-	struct addrinfo *p;
-	char	recv_buff[BUFF_SIZE]; // 1 kiloByte
-
-	// Fill the hints struct with information for possible connections
-	memset(&hints, 0, sizeof(hints));
-	hints.ai_family = AF_INET;			// Accept IPv4 connections
-	hints.ai_socktype = SOCK_STREAM;	// Accept over TCP (not UDP)
-	hints.ai_flags = AI_PASSIVE;		// Assign the address of my local host to the socket structures.
-	if ((err_val = getaddrinfo(NULL, PORT, &hints, &servinfo)) != 0)
-	{
-		std::cerr << "error: getaddrinfo: " << gai_strerror(err_val) << std::endl;
-		exit(-1); // CHANGE THISS!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	}
-	std::cout << servinfo->ai_canonname << std::endl;
-	// If everything worked, servinfo is a linked list with sockaddr we can use
-	int count = -1;
-	for (p = servinfo; p != NULL; p = p->ai_next)
-	{
-		count++;
-		try {
-			listenSocket.createSocket(p->ai_family, p->ai_socktype, p->ai_protocol);
-		} catch (std::exception& e) {
-			std::cerr << "struct addrinfo #"<< count << ": " << e.what() << std::endl;
-			continue ;
-		}
-		try {
-			listenSocket.bindSocket(p->ai_addr, p->ai_addrlen);
-		} catch (std::exception& e) {
-			std::cerr << "struct addrinfo #"<< count << ": " << e.what() << std::endl;
-			std::cout << p->ai_next << std::endl;
-			continue ;
-		}
-		break ;
-	}
-	// When the loop is complete, we should have a socket bound to our address, we can free now
-	freeaddrinfo(servinfo);
-	if (p == NULL)
-		throw Socket::SocketBindException();
-	listenSocket.listenOnSocket();
-
-	sa.sa_handler = sigchld_handler;
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = SA_RESTART;
-	if (sigaction(SIGCHLD, &sa, NULL) < 0)
-	{
-		perror("sigaction");
-		exit(1);
-	}
-	std::cout << "server: waiting for connections..." << std::endl;
+	std::cout << "Launching server..." << std::endl;
 	while (1)
 	{
-		try {
-			currSocket.acceptConnection(listenSocket.getSocketFD());
-		} catch (std::exception& e){
-			continue ; // If connection accept fails, just try again later
+		if ((poll_count = poll(pfds, fd_count, -1)) < 0)
+		{
+			std::cout << "heh" << std::endl;
+			throw PollException();
 		}
-		currSocket.printConnection();
-		// Not sure how large to make the recv buffer... Explanation from link below
-		// https://stackoverflow.com/questions/2862071/how-large-should-my-recv-buffer-be-when-calling-recv-in-the-socket-library
-		memset(recv_buff, 0, BUFF_SIZE);
-		recv(currSocket.getSocketFD(), recv_buff, BUFF_SIZE, 0);
-		time_t timetoday;
-		time(&timetoday);
-		std::cout << "TIMESTAMP: " << std::asctime(localtime(&timetoday)) << std::endl;
-		std::cout << "Received: " << recv_buff << std::endl;
-		// Server response should be here:
-		// server.sendResponse();
-		// Fork and send HTTP/1.1 200 OK\r\n ... etc
-		close(currSocket.getSocketFD());
+		// Run through the existing connections looking for data to read
+		for (int i = 0; i < fd_count; i++)
+		{
+			// Check if descriptor has data available
+			if (pfds[i].revents & POLLIN)
+			{
+				if (pfds[i].fd == listenSocket.getSocketFD())
+					handleConnection(); // write something here
+				else
+					handleRequest(i);
+			}
+		}
 	}
-	std::cout << "Hurray we made it!" << std::endl;
+}
+
+void	Server::handleRequest(int i) {
+	int	nbytes;
+	int sender_fd;
+	char buf[1024];    // Buffer for client data
+
+	sender_fd = pfds[i].fd;
+	memset(buf, 0, 1024);
+	nbytes = recv(sender_fd, buf, sizeof(buf), 0);
+	if (nbytes <= 0)
+	{
+		if (nbytes == 0)
+			std::cout << "server: Socket " << sender_fd << " hung up" << std::endl;
+		else if (nbytes < 0)
+			std::cout << "server: recv error" << std::endl;
+		close(sender_fd);
+		dropConnection(i);
+	}
+	else
+	{
+		// we got some data hurrah!
+		// TODO: parsing -> put inside of a request class
+		// But for now, let's just print what we received
+		std::cout << "Received: " << buf << std::endl;
+	}
+}
+
+void	Server::addConnection(int newfd) {
+	// This function adds a new file descriptor to the set of pfds
+	// if we don't have room, we need to realloc
+	if (fd_count == fd_size)
+	{
+		fd_size *= 2;
+		struct pollfd *pfds_new = new pollfd[fd_size];
+		for (int i = 0; i < fd_count; i++)
+		{
+			pfds_new[i].fd = pfds[i].fd;
+			pfds_new[i].events = pfds[i].events;
+			pfds_new[i].revents = pfds[i].revents;
+		}
+		delete[] pfds;
+		pfds = pfds_new;
+	}
+	pfds[fd_count].fd = newfd;
+	pfds[fd_count].events = POLLIN;
+	fd_count++;
+}
+
+void	Server::dropConnection(int i) {
+	// copy the last over this one.
+	pfds[i] = pfds[fd_count - 1];
+	fd_count--;
+}
+
+void *get_in_addr(struct sockaddr *sa)
+{
+    return &(((struct sockaddr_in*)sa)->sin_addr);
+}
+
+void	Server::handleConnection(void) {
+	socklen_t				addrlen;
+	int						newfd;
+	struct sockaddr_storage	remote_addr;
+	char					remoteIP[INET_ADDRSTRLEN];
+
+	addrlen = sizeof(remote_addr);
+	newfd = accept(listenSocket.getSocketFD(), (struct sockaddr *)&remote_addr, &addrlen);
+	try {
+		if (newfd < 0)
+			throw AcceptConnectionFailure();
+	} catch (std::exception& e){
+		return ;
+	}
+	// add connection to list of existing connections
+	addConnection(newfd);
+	std::cout << "server: new connection from " << inet_ntop(remote_addr.ss_family, get_in_addr((struct sockaddr*)&remote_addr), remoteIP, INET_ADDRSTRLEN);
+	std::cout << " on socket " << newfd << std::endl;
+}
+
+// Exceptions
+const char * Server::PollException::what() const throw ()
+{
+    return ("Failed to operate poll function");
+}
+
+const char * Server::AcceptConnectionFailure::what() const throw ()
+{
+    return ("Could not accept new connection");
 }

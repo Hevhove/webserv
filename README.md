@@ -16,6 +16,7 @@
 - [HTTP status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)
 - [HTTP header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers)
 - [HTTP Basics](https://www3.ntu.edu.sg/home/ehchua/programming/webprogramming/http_basics.html)
+- [HTTP Message Parsing](https://www.ietf.org/archive/id/draft-ietf-httpbis-p1-messaging-11.html#introduction)
 
 ###
 
