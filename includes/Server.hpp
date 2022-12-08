@@ -4,8 +4,6 @@
 # include "Socket.hpp"
 # include "utils.hpp"
 
-# define MAXEVENTS 10
-
 class Server {
 	private:
 		// Vars

@@ -5,6 +5,7 @@
 # define PORT "3490"
 # define BACKLOG 10
 # define BUFF_SIZE 1000
+# define MAXEVENTS 10
 
 // Libraries
 // Networking
