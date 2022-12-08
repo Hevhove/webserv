@@ -1,10 +1,35 @@
 #ifndef UTILS_HPP
 # define UTILS_HPP
 
-# include "webserv.hpp"
-# include "Server.hpp"
+// Macros
+# define PORT "3490"
+# define BACKLOG 10
+# define BUFF_SIZE 1000
 
-// Function prototypes
-size_t	ftRealloc(void** buffer, size_t new_size, size_t old_size);
+// Libraries
+// Networking
+# include <poll.h>
+# include <sys/types.h>
+# include <sys/socket.h>
+# include <netinet/in.h>
+# include <sys/wait.h>
+# include <netdb.h>
+# include <arpa/inet.h>
+
+// Error management
+# include <errno.h>
+# include <exception>
+
+// IO
+# include <unistd.h>
+# include <stdlib.h>
+# include <iostream>
+# include <stdio.h>
+// Strings
+# include <string>
+# include <cstring>
+# include <string.h>
+// Time
+# include <time.h>
 
 #endif
