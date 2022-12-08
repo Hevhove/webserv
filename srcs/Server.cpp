@@ -130,6 +130,7 @@ void	Server::handleConnection(void) {
 		if (newfd < 0)
 			throw AcceptConnectionFailure();
 	} catch (std::exception& e){
+		std::cerr << e.what() << std::endl;
 		return ;
 	}
 	// add connection to list of existing connections
