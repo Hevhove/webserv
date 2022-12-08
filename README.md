@@ -8,6 +8,7 @@
 - [What is a web server](https://developer.mozilla.org/en-US/docs/Learn/Common_questions/What_is_a_web_server)
 - [NGINIX explained in 100 sec](https://www.youtube.com/watch?v=JKxlsvZXG7c)
 - [Beej Guide to Network Programming](https://beej.us/guide/bgnet/html/split-wide/index.html)
+- [Poll Server Overview](https://www.softprayog.in/programming/io-multiplexing-select-poll-epoll-in-linux)
 
 ### HTTP protocol
 - [RFC](https://www.rfc-editor.org/rfc/rfc9112.html)

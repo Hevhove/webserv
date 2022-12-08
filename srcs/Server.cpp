@@ -58,6 +58,7 @@ void	Server::setup(void) {
 		exit(-1); // CHANGE THISS!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	}
 	// If everything worked, servinfo is a linked list with sockaddr we can use
+	int count = -1;
 	for (p = servinfo; p != NULL; p = p->ai_next)
 	{
 		int count = 0;
@@ -103,6 +104,9 @@ void	Server::setup(void) {
 		// https://stackoverflow.com/questions/2862071/how-large-should-my-recv-buffer-be-when-calling-recv-in-the-socket-library
 		memset(recv_buff, 0, BUFF_SIZE);
 		recv(currSocket.getSocketFD(), recv_buff, BUFF_SIZE, 0);
+		time_t timetoday;
+		time(&timetoday);
+		std::cout << "TIMESTAMP: " << std::asctime(localtime(&timetoday)) << std::endl;
 		std::cout << "Received: " << recv_buff << std::endl;
 		// Server response should be here:
 		// server.sendResponse();

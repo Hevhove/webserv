@@ -6,6 +6,7 @@
 # include <stdio.h>
 # include <cstring>
 # include <unistd.h>
+# include <time.h>
 # include <sys/wait.h>
 # include <stdlib.h>
 
