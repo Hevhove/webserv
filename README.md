@@ -16,6 +16,9 @@
 - [HTTP header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers)
 - [HTTP Basics](https://www3.ntu.edu.sg/home/ehchua/programming/webprogramming/http_basics.html)
 
+## CGI
+[Youtube Tutorial](https://www.youtube.com/watch?v=IU88XroupIQ&list=PLDhd2asKgB6Wo2uxQS3C9PBG_wjNGQLnP)
+
 ###
 
 - [TCP/IP socket](https://www.ibm.com/docs/en/zvse/6.2?topic=SSB27H_6.2.0/fa2ti_what_is_socket_connection.htm)

@@ -9,7 +9,7 @@
 # include <sys/wait.h>
 # include <stdlib.h>
 
-# define PORT "4242"
+# define PORT "3490"
 
 class Server {
 	private:

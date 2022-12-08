@@ -45,7 +45,7 @@ void	Server::run(void) {
 void	Server::setup(void) {
 	int				err_val;
 	struct addrinfo *p;
-	char	recv_buff[BUFF_SIZE]; // 1 kiloByte
+	char			recv_buff[BUFF_SIZE]; // 1 kiloByte
 
 	// Fill the hints struct with information for possible connections
 	memset(&hints, 0, sizeof(hints));
@@ -57,12 +57,10 @@ void	Server::setup(void) {
 		std::cerr << "error: getaddrinfo: " << gai_strerror(err_val) << std::endl;
 		exit(-1); // CHANGE THISS!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	}
-	std::cout << servinfo->ai_canonname << std::endl;
 	// If everything worked, servinfo is a linked list with sockaddr we can use
 	for (p = servinfo; p != NULL; p = p->ai_next)
 	{
 		int count = 0;
-		std::cout << "check" << std::endl;
 		try {
 			listenSocket.createSocket(p->ai_family, p->ai_socktype, p->ai_protocol);
 		} catch (std::exception& e) {
@@ -92,7 +90,7 @@ void	Server::setup(void) {
 		perror("sigaction");
 		exit(1);
 	}
-	printf("server: waiting for connections...\n");
+	std::cout << "server: waiting for connections..." << std::endl;
 	while (1)
 	{
 		try {
@@ -109,7 +107,8 @@ void	Server::setup(void) {
 		// Server response should be here:
 		// server.sendResponse();
 		// Fork and send HTTP/1.1 200 OK\r\n ... etc
-		close(currSocket.getSocketFD());
+		int check = close(currSocket.getSocketFD());
+		std::cout << check << std::endl;
 	}
 	std::cout << "Hurray we made it!" << std::endl;
 }
