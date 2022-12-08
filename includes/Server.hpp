@@ -47,7 +47,6 @@ class Server {
 		class AcceptConnectionFailure : public std::exception {
 			const char * what () const throw();
 		};
-
 };
 
 #endif
