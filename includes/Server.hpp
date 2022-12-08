@@ -2,15 +2,7 @@
 # define CLASS_SERVER_HPP
 
 # include "Socket.hpp"
-# include <signal.h>
-# include <stdio.h>
-# include <cstring>
-# include <unistd.h>
-# include <time.h>
-# include <sys/wait.h>
-# include <stdlib.h>
-
-# define PORT "3490"
+# include "utils.hpp"
 
 class Server {
 	private:
@@ -19,10 +11,16 @@ class Server {
 		Socket				currSocket;
 		struct addrinfo		hints;
 		struct addrinfo*	servinfo;
-		struct sigaction	sa;
+		int					fd_count;
+		int					fd_size;
+		struct pollfd		*pfds;
 
-		// Methods
-		void				setup(void);
+		// Methods : Private
+		void				addConnection(int newfd);
+		void				dropConnection(int i);
+		void			handleConnection(void);
+		void			handleRequest(int i);
+		void*			get_in_addr(struct sockaddr *sa);
 
 	public:
 		// Constructors
@@ -31,8 +29,16 @@ class Server {
 		Server(const Server& src);
 		Server& operator=(const Server& rhs);
 
-		// Methods
+		// Methods : Public
 		void	run(void);
+
+		// Exceptions
+		class PollException : public std::exception {
+			const char * what () const throw();
+		};
+		class AcceptConnectionFailure : public std::exception {
+			const char * what () const throw();
+		};
 };
 
 #endif

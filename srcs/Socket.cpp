@@ -38,16 +38,19 @@ void	Socket::createSocket(int ai_family, int ai_socktype, int ai_protocol) {
 		throw Socket::SocketFailureException();
 	if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) < 0)
 		throw Socket::SocketSetOptException();
+	std::cout << "listenSocket set up successfully" << std::endl;
 }
 
 void	Socket::bindSocket(struct sockaddr* ai_addr, socklen_t ai_addrlen) {
 	if (bind(sockfd, ai_addr, ai_addrlen) < 0)
 		throw Socket::SocketBindException();
+	std::cout << "bindSocket worked successfully" << std::endl;
 }
 
 void	Socket::listenOnSocket(void) {
 	if (listen(sockfd, BACKLOG) < 0)
 		throw Socket::SocketListenException();
+	std::cout << "Now listening on socket #" << sockfd << " for incoming connections" << std::endl;
 }
 
 void	Socket::acceptConnection(int listenSock) {
@@ -62,7 +65,40 @@ void	Socket::printConnection(void) {
 	std::cout << "server received connection from: " << s << std::endl;
 }
 
+void	Socket::initListenSocket(void) {
+	struct addrinfo	hints;
+	struct addrinfo	*ai;
+	struct addrinfo *p;
 
+	// Get a socket for us and bind it
+	memset(&hints, 0, sizeof(hints)); // change to ft_memset later?
+	hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = AI_PASSIVE;
+	if (getaddrinfo(NULL, PORT, &hints, &ai) != 0)
+		throw SocketInitException();
+	for (p = ai; p != NULL; p = p->ai_next)
+	{
+		try {
+			createSocket(p->ai_family, p->ai_socktype, p->ai_protocol);
+		} catch (std::exception& e) {
+			std::cerr << e.what() << std::endl;
+			continue ;
+		}
+		try {
+			bindSocket(p->ai_addr, p->ai_addrlen);
+		} catch (std::exception& e) {
+			close(sockfd);
+			std::cerr << e.what() << std::endl;
+			continue ;
+		}
+		break ;
+	}
+	freeaddrinfo(ai);
+	if (p == NULL)
+		throw Socket::SocketBindException();
+	listenOnSocket();
+}
 
 // Getters
 int		Socket::getSocketFD(void) {
@@ -71,6 +107,11 @@ int		Socket::getSocketFD(void) {
 
 
 // Exceptions
+const char * Socket::SocketInitException::what() const throw ()
+{
+    return ("Socket failed to initialize");
+}
+
 const char * Socket::SocketFailureException::what() const throw ()
 {
     return ("Socket failed to launch");

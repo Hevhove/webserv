@@ -1,14 +1,7 @@
 #ifndef CLASS_SOCKET_HPP
 # define CLASS_SOCKET_HPP
 
-# include <sys/socket.h>
-# include <netdb.h>
-# include <iostream>
-# include <arpa/inet.h>
-# include <exception>
-
-# define BACKLOG 10
-# define BUFF_SIZE 1000
+# include "utils.hpp"
 
 class Socket {
 	private:
@@ -29,11 +22,15 @@ class Socket {
 		void	listenOnSocket(void);
 		void	acceptConnection(int listenSock);
 		void	printConnection(void);
+		void	initListenSocket(void);
 
 		// Getters
 		int		getSocketFD(void);
 
 		// Exceptions
+		class SocketInitException : public std::exception {
+			const char * what () const throw();
+		};
 		class SocketFailureException : public std::exception {
 			const char * what () const throw();
 		};

@@ -16,6 +16,8 @@
 - [HTTP status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)
 - [HTTP header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers)
 - [HTTP Basics](https://www3.ntu.edu.sg/home/ehchua/programming/webprogramming/http_basics.html)
+- [HTTP Message Parsing](https://www.ietf.org/archive/id/draft-ietf-httpbis-p1-messaging-11.html#introduction)
+- [HTTP RFC Summary](http://www.cs.cmu.edu/~srini/15-441/F11/responses)
 
 ## CGI
 [Youtube Tutorial](https://www.youtube.com/watch?v=IU88XroupIQ&list=PLDhd2asKgB6Wo2uxQS3C9PBG_wjNGQLnP)
