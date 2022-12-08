@@ -19,6 +19,8 @@
 - [HTTP Message Parsing](https://www.ietf.org/archive/id/draft-ietf-httpbis-p1-messaging-11.html#introduction)
 - [HTTP RFC Summary](http://www.cs.cmu.edu/~srini/15-441/F11/responses)
 
-###
-
+### TCP
 - [TCP/IP socket](https://www.ibm.com/docs/en/zvse/6.2?topic=SSB27H_6.2.0/fa2ti_what_is_socket_connection.htm)
+
+### URI
+- [Difference URI vs URL](https://www.hostinger.com/tutorials/uri-vs-url)

@@ -10,9 +10,25 @@ Example:
   Accept: *//*
 */
 
-class Request {
-	private:
+#ifndef CLASS_REQUEST_HPP
+# define CLASS_REQUEST_HPP
 
-	public:
+# include "AMessage.hpp"
+# include "URI.hpp"
+
+class Request : public AMessage {
+    private:
+        std::string     _unparsed_path;
+        URI             _uri; // the parsed path with scheme:[//authority]path[?query][#fragment]
+        
+
+    public:
+        // Constructors
+        Request();
+		virtual ~Request();
+		Request(const Request& src);
+		Request& operator=(const Request& rhs);
 
 };
+
+#endif
