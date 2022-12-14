@@ -34,5 +34,8 @@ webserv
 *.out
 *.app
 
+# Neovim headers include path + LSP
+compile_commands.json
+
 # VSCode
 .vscode
