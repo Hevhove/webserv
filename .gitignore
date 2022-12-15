@@ -36,6 +36,7 @@ webserv
 
 # Neovim headers include path + LSP
 compile_commands.json
+.cache
 
 # VSCode
 .vscode
