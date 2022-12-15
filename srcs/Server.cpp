@@ -63,10 +63,10 @@ void	Server::run(void) {
 void	Server::handleRequest(int i) {
 	int	nbytes;
 	int sender_fd;
-	char buf[1024];    // Buffer for client data
+	char buf[BUFF_SIZE];    // Buffer for client data
 
 	sender_fd = pfds[i].fd;
-	memset(buf, 0, 1024);
+	memset(buf, 0, BUFF_SIZE);
 	nbytes = recv(sender_fd, buf, sizeof(buf), 0);
 	if (nbytes <= 0)
 	{
@@ -130,6 +130,7 @@ void	Server::handleConnection(void) {
 		if (newfd < 0)
 			throw AcceptConnectionFailure();
 	} catch (std::exception& e){
+		std::cerr << e.what() << std::endl;
 		return ;
 	}
 	// add connection to list of existing connections

@@ -1,16 +1,7 @@
 #ifndef CLASS_SOCKET_HPP
 # define CLASS_SOCKET_HPP
 
-# include <sys/socket.h>
-# include <netdb.h>
-# include <iostream>
-# include <arpa/inet.h>
-# include <exception>
-# include <unistd.h>
-
-# define PORT "3490"
-# define BACKLOG 10
-# define BUFF_SIZE 1000
+# include "utils.hpp"
 
 class Socket {
 	private:

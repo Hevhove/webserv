@@ -82,12 +82,14 @@ void	Socket::initListenSocket(void) {
 		try {
 			createSocket(p->ai_family, p->ai_socktype, p->ai_protocol);
 		} catch (std::exception& e) {
+			std::cerr << e.what() << std::endl;
 			continue ;
 		}
 		try {
 			bindSocket(p->ai_addr, p->ai_addrlen);
 		} catch (std::exception& e) {
 			close(sockfd);
+			std::cerr << e.what() << std::endl;
 			continue ;
 		}
 		break ;

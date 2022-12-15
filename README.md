@@ -11,6 +11,7 @@
 - [Poll Server Overview](https://www.softprayog.in/programming/io-multiplexing-select-poll-epoll-in-linux)
 
 ### HTTP protocol
+
 - [RFC](https://www.rfc-editor.org/rfc/rfc9112.html)
 - [Overview](https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview)
 - [HTTP status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)
@@ -20,7 +21,13 @@
 - [HTTP RFC Summary](http://www.cs.cmu.edu/~srini/15-441/F11/responses)
 
 ### TCP
+
 - [TCP/IP socket](https://www.ibm.com/docs/en/zvse/6.2?topic=SSB27H_6.2.0/fa2ti_what_is_socket_connection.htm)
 
+## CGI
+
+- [Youtube Tutorial](https://www.youtube.com/watch?v=IU88XroupIQ&list=PLDhd2asKgB6Wo2uxQS3C9PBG_wjNGQLnP)
+
 ### URI
+
 - [Difference URI vs URL](https://www.hostinger.com/tutorials/uri-vs-url)

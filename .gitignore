@@ -1,3 +1,6 @@
+# executable
+webserv
+
 # Prerequisites
 *.d
 
@@ -31,9 +34,9 @@
 *.out
 *.app
 
-# Neovim Makefile Path
-.cache
+# Neovim headers include path + LSP
 compile_commands.json
+.cache
 
 # VSCode
 .vscode
