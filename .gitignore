@@ -31,5 +31,9 @@
 *.out
 *.app
 
+# Neovim Makefile Path
+.cache
+compile_commands.json
+
 # VSCode
 .vscode
