@@ -8,11 +8,11 @@
 # define CLASS_AMESSAGE_HPP
 # include <iostream>
 
-typedef enum HTTPMethod {
+typedef enum RequestMethod {
     GET = 0,
     POST,
     DELETE
-};
+} RequestMethod;
 
 class AMessage {
     protected:
@@ -30,6 +30,9 @@ class AMessage {
 		virtual ~AMessage();
 		AMessage(const AMessage& src);
 		AMessage& operator=(const AMessage& rhs);
+        
+        // Methods
+        void    parse_msg();
 };
 
 #endif

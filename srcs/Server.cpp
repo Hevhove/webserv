@@ -2,33 +2,33 @@
 
 // CONSTRUCTORS
 Server::Server() {
-	this->fd_count = 0;
-	this->fd_size = MAXEVENTS;
-	pfds = new pollfd[fd_size];
+	this->_fd_count = 0;
+	this->_fd_size = MAXEVENTS;
+	_pfds = new pollfd[_fd_size];
 
-	listenSocket.initListenSocket();
-	pfds[0].fd = listenSocket.getSocketFD();
-	pfds[0].events = POLLIN;
-	fd_count++;
+	_listenSocket.initListenSocket();
+	_pfds[0].fd = _listenSocket.getSocketFD();
+	_pfds[0].events = POLLIN;
+	_fd_count++;
 }
 
 Server::~Server() {
-	delete[] pfds;
+	delete[] _pfds;
 	std::cout << "server: Shutting down" << std::endl;
 }
 
 Server::Server(const Server& src) {
-	this->listenSocket = src.listenSocket;
-	this->currSocket = src.currSocket;
-	this->hints = src.hints;
-	this->servinfo = src.servinfo;
+	this->_listenSocket = src._listenSocket;
+	this->_currSocket = src._currSocket;
+	this->_hints = src._hints;
+	this->_servinfo = src._servinfo;
 }
 
 Server&	Server::operator=(const Server& rhs) {
-	this->listenSocket = rhs.listenSocket;
-	this->currSocket = rhs.currSocket;
-	this->hints = rhs.hints;
-	this->servinfo = rhs.servinfo;
+	this->_listenSocket = rhs._listenSocket;
+	this->_currSocket = rhs._currSocket;
+	this->_hints = rhs._hints;
+	this->_servinfo = rhs._servinfo;
 	return (*this);
 }
 
@@ -39,18 +39,18 @@ void	Server::run(void) {
 	std::cout << "Launching server..." << std::endl;
 	while (1)
 	{
-		if ((poll_count = poll(pfds, fd_count, -1)) < 0)
+		if ((poll_count = poll(_pfds, _fd_count, -1)) < 0)
 		{
 			std::cout << "heh" << std::endl;
 			throw PollException();
 		}
 		// Run through the existing connections looking for data to read
-		for (int i = 0; i < fd_count; i++)
+		for (int i = 0; i < _fd_count; i++)
 		{
 			// Check if descriptor has data available
-			if (pfds[i].revents & POLLIN)
+			if (_pfds[i].revents & POLLIN)
 			{
-				if (pfds[i].fd == listenSocket.getSocketFD())
+				if (_pfds[i].fd == _listenSocket.getSocketFD())
 					handleConnection();
 				else
 					handleRequest(i);
@@ -65,7 +65,7 @@ void	Server::handleRequest(int i) {
 	int sender_fd;
 	char buf[BUFF_SIZE];    // Buffer for client data
 
-	sender_fd = pfds[i].fd;
+	sender_fd = _pfds[i].fd;
 	memset(buf, 0, BUFF_SIZE);
 	nbytes = recv(sender_fd, buf, sizeof(buf), 0);
 	if (nbytes <= 0)
@@ -89,32 +89,31 @@ void	Server::handleRequest(int i) {
 void	Server::addConnection(int newfd) {
 	// This function adds a new file descriptor to the set of pfds
 	// if we don't have room, we need to realloc
-	if (fd_count == fd_size)
+	if (_fd_count == _fd_size)
 	{
-		fd_size *= 2;
-		struct pollfd *pfds_new = new pollfd[fd_size];
-		for (int i = 0; i < fd_count; i++)
+		_fd_size *= 2;
+		struct pollfd *pfds_new = new pollfd[_fd_size];
+		for (int i = 0; i < _fd_count; i++)
 		{
-			pfds_new[i].fd = pfds[i].fd;
-			pfds_new[i].events = pfds[i].events;
-			pfds_new[i].revents = pfds[i].revents;
+			pfds_new[i].fd = _pfds[i].fd;
+			pfds_new[i].events = _pfds[i].events;
+			pfds_new[i].revents = _pfds[i].revents;
 		}
-		delete[] pfds;
-		pfds = pfds_new;
+		delete[] _pfds;
+		_pfds = pfds_new;
 	}
-	pfds[fd_count].fd = newfd;
-	pfds[fd_count].events = POLLIN;
-	fd_count++;
+	_pfds[_fd_count].fd = newfd;
+	_pfds[_fd_count].events = POLLIN;
+	_fd_count++;
 }
 
 void	Server::dropConnection(int i) {
 	// copy the last over this one.
-	pfds[i] = pfds[fd_count - 1];
-	fd_count--;
+	_pfds[i] = _pfds[_fd_count - 1];
+	_fd_count--;
 }
 
-void* Server::get_in_addr(struct sockaddr *sa)
-{
+void* Server::get_in_addr(struct sockaddr *sa) {
     return &(((struct sockaddr_in*)sa)->sin_addr);
 }
 
@@ -125,7 +124,7 @@ void	Server::handleConnection(void) {
 	char					remoteIP[INET_ADDRSTRLEN];
 
 	addrlen = sizeof(remote_addr);
-	newfd = accept(listenSocket.getSocketFD(), (struct sockaddr *)&remote_addr, &addrlen);
+	newfd = accept(_listenSocket.getSocketFD(), (struct sockaddr *)&remote_addr, &addrlen);
 	try {
 		if (newfd < 0)
 			throw AcceptConnectionFailure();

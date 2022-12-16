@@ -17,6 +17,10 @@
 # include <netdb.h>
 # include <arpa/inet.h>
 
+// Containers
+# include <vector>
+# include <map>
+
 // Error management
 # include <errno.h>
 # include <exception>
@@ -26,10 +30,12 @@
 # include <stdlib.h>
 # include <iostream>
 # include <stdio.h>
+
 // Strings
 # include <string>
 # include <cstring>
 # include <string.h>
+
 // Time
 # include <time.h>
 
