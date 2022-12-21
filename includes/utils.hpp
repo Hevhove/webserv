@@ -26,6 +26,8 @@
 # include <stdlib.h>
 # include <iostream>
 # include <stdio.h>
+# include <fstream>
+
 // Strings
 # include <string>
 # include <cstring>
