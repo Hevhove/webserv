@@ -13,22 +13,33 @@ Example:
 #ifndef CLASS_REQUEST_HPP
 # define CLASS_REQUEST_HPP
 
-# include "AMessage.hpp"
 # include "URI.hpp"
 
-class Request : public AMessage {
+typedef enum RequestMethod {
+    GET = 0,
+    POST,
+    DELETE
+} RequestMethod;
+
+class Request {
     private:
+        std::string			_unparsed_request;		// Request text that hasn't been analyzed
+	    std::string			_raw_start_line; 		// The complete request line such as: `GET / HTTP/1.1`
+	    std::string			_raw_headers;           // Raw headers (general headers, response/request headers, entity headers)
+	    std::string			_raw_body;              // HTTP Message Body
+
         std::string     _unparsed_path;
         URI             _uri; // the parsed path with scheme:[//authority]path[?query][#fragment]
         
-
     public:
         // Constructors
         Request();
 		virtual ~Request();
 		Request(const Request& src);
 		Request& operator=(const Request& rhs);
-
+        
+        // Member functions
+        void    parse_request()
 };
 
 #endif

@@ -6,7 +6,7 @@ Server::Server() {
 	this->_fd_size = MAXEVENTS;
 	_pfds = new pollfd[_fd_size];
 
-	_listenSocket.initListenSocket();
+	_listenSocket.initListenSocket(PORT); // Remove atoi function?
 	_pfds[0].fd = _listenSocket.getSocketFD();
 	_pfds[0].events = POLLIN;
 	_fd_count++;
@@ -40,10 +40,7 @@ void	Server::run(void) {
 	while (1)
 	{
 		if ((poll_count = poll(_pfds, _fd_count, -1)) < 0)
-		{
-			std::cout << "heh" << std::endl;
 			throw PollException();
-		}
 		// Run through the existing connections looking for data to read
 		for (int i = 0; i < _fd_count; i++)
 		{
@@ -62,19 +59,17 @@ void	Server::run(void) {
 // PRIVATE METHODS
 void	Server::handleRequest(int i) {
 	int	nbytes;
-	int sender_fd;
 	char buf[BUFF_SIZE];    // Buffer for client data
 
-	sender_fd = _pfds[i].fd;
 	memset(buf, 0, BUFF_SIZE);
-	nbytes = recv(sender_fd, buf, sizeof(buf), 0);
+    // put the recv in a loop below so we can recv POST calls
+	nbytes = recv(_pfds[i].fd, buf, sizeof(buf), 0);
 	if (nbytes <= 0)
 	{
 		if (nbytes == 0)
-			std::cout << "server: Socket " << sender_fd << " hung up" << std::endl;
+			std::cout << "server: Socket " << _connections[_pfds[i].fd]->getSocketFD() << " hung up" << std::endl;
 		else if (nbytes < 0)
 			std::cout << "server: recv error" << std::endl;
-		close(sender_fd);
 		dropConnection(i);
 	}
 	else
@@ -83,11 +78,20 @@ void	Server::handleRequest(int i) {
 		// TODO: parsing -> put inside of a request class
 		// But for now, let's just print what we received
 		std::cout << "Received: " << buf << std::endl;
+        // display all the connections currently connected to the server
+        std::map<int, Connection*>::iterator it;
+
+        // printing for debugging 
+        std::cout << "List of current connections: " << std::endl;
+        for (it = _connections.begin(); it != _connections.end(); it++)
+        {
+            std::cout << it->first << ':' << it->second->getSocketFD() << std::endl;
+        }
 	}
 }
 
-void	Server::addConnection(int newfd) {
-	// This function adds a new file descriptor to the set of pfds
+void	Server::addConnection(int newfd, Connection* new_conn) {
+    // This function adds a new file descriptor to the set of pfds
 	// if we don't have room, we need to realloc
 	if (_fd_count == _fd_size)
 	{
@@ -105,37 +109,43 @@ void	Server::addConnection(int newfd) {
 	_pfds[_fd_count].fd = newfd;
 	_pfds[_fd_count].events = POLLIN;
 	_fd_count++;
-}
-
-void	Server::dropConnection(int i) {
-	// copy the last over this one.
-	_pfds[i] = _pfds[_fd_count - 1];
-	_fd_count--;
-}
-
-void* Server::get_in_addr(struct sockaddr *sa) {
-    return &(((struct sockaddr_in*)sa)->sin_addr);
+    // Add a connection to the list of connections to the server
+    std::cout << "adding a connection on socket with fd " << newfd << std::endl;
+    _connections.insert(std::make_pair(newfd, new_conn));
 }
 
 void	Server::handleConnection(void) {
 	socklen_t				addrlen;
-	int						newfd;
 	struct sockaddr_storage	remote_addr;
 	char					remoteIP[INET_ADDRSTRLEN];
+    Connection*             new_connection = new Connection;
 
+    // Accept the new connection by setting the socket of new_connection
 	addrlen = sizeof(remote_addr);
-	newfd = accept(_listenSocket.getSocketFD(), (struct sockaddr *)&remote_addr, &addrlen);
-	try {
-		if (newfd < 0)
-			throw AcceptConnectionFailure();
-	} catch (std::exception& e){
-		std::cerr << e.what() << std::endl;
-		return ;
-	}
-	// add connection to list of existing connections
-	addConnection(newfd);
+    try {
+	    new_connection->setSocketFD(accept(_listenSocket.getSocketFD(), (struct sockaddr *)&remote_addr, &addrlen));
+    } catch (std::exception e) {
+        std::cerr << e.what() << std::endl;
+    }
+
+	// add connection to list of existing connections in pfds
+    addConnection(new_connection->getSocketFD(), new_connection);
 	std::cout << "server: new connection from " << inet_ntop(remote_addr.ss_family, get_in_addr((struct sockaddr*)&remote_addr), remoteIP, INET_ADDRSTRLEN);
-	std::cout << " on socket " << newfd << std::endl;
+	std::cout << " on socket " << new_connection->getSocketFD() << std::endl;
+}
+
+void	Server::dropConnection(int i) {
+	// Remove from the pfds list by copying the file descriptor of the last one over it. 
+	close(_pfds[i].fd);
+    _pfds[i] = _pfds[_fd_count - 1];
+	_fd_count--;
+
+    // Erase the connection established on the socket that hung up 
+    _connections.erase(_pfds[i].fd);
+}
+
+void* Server::get_in_addr(struct sockaddr *sa) {
+    return &(((struct sockaddr_in*)sa)->sin_addr);
 }
 
 // EXCEPTIONS

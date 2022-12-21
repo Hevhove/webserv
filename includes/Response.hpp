@@ -1,5 +1,5 @@
 /*
-A request message from a client to a server includes, within the first line of that message,
+A Response message from a client to a server includes, within the first line of that message,
 the method to be applied to the resource, the identifier of the resource, and the protocol version in use. 
 
 Example:
@@ -16,22 +16,20 @@ Example:
     Hello World!
 */
 
-#ifndef CLASS_REQUEST_HPP
-# define CLASS_REQUEST_HPP
+#ifndef CLASS_RESPONSE_HPP
+# define CLASS_RESPONSE_HPP
 
-# include "AMessage.hpp"
 # include "URI.hpp"
 
-class Request : public AMessage {
+class Response {
     private:
-        URI _uri; // scheme:[//authority]path[?query][#fragment]
-
+        //
     public:
         // Constructors
-        Request();
-		virtual ~Request();
-		Request(const Request& src);
-		Request& operator=(const Request& rhs);
+        Response();
+		virtual ~Response();
+		Response(const Response& src);
+		Response& operator=(const Response& rhs);
 
 };
 

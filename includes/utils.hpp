@@ -2,7 +2,7 @@
 # define UTILS_HPP
 
 // Macros
-# define PORT "3490"
+# define PORT "3490" // to be changed later with config file
 # define BACKLOG 10
 # define BUFF_SIZE 1000
 # define MAXEVENTS 10

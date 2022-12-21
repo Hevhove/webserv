@@ -1,6 +1,6 @@
 #ifndef CLASS_SERVER_HPP
 # define CLASS_SERVER_HPP
-
+ 
 # include "Socket.hpp"
 # include "Connection.hpp"
 # include "utils.hpp"
@@ -8,17 +8,17 @@
 class Server {
 	private:
 		// Vars
-		Socket				_listenSocket;
-		Socket				_currSocket;
-		struct addrinfo		_hints;
-		struct addrinfo*	_servinfo;
-		int					_fd_count;
-		int					_fd_size;
-		struct pollfd		*_pfds;
-        std::map<int, Connection>  _connections;    
+		Socket				        _listenSocket;
+		Socket				        _currSocket;
+		struct addrinfo		        _hints;
+		struct addrinfo*	        _servinfo;
+		int					        _fd_count;
+		int					        _fd_size;
+		struct pollfd   	    	*_pfds;
+        std::map<int, Connection*>  _connections;    
 
 		// Methods : Private
-		void				addConnection(int newfd);
+		void				addConnection(int newfd, Connection* new_conn);
 		void				dropConnection(int i);
 		void			handleConnection(void);
 		void			handleRequest(int i);
