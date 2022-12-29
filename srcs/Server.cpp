@@ -6,9 +6,9 @@ Server::Server() {
 	this->_fd_size = MAXEVENTS;
 	_pfds = new pollfd[_fd_size];
 
-	_listenSocket.initListenSocket(PORT); // Remove atoi function?
+	_listenSocket.initListenSocket(PORT);
 	_pfds[0].fd = _listenSocket.getSocketFD();
-	_pfds[0].events = POLLIN;
+	_pfds[0].events = POLLIN | POLLOUT;
 	_fd_count++;
 }
 
@@ -44,7 +44,7 @@ void	Server::run(void) {
 		// Run through the existing connections looking for data to read
 		for (int i = 0; i < _fd_count; i++)
 		{
-			// Check if descriptor has data available
+			// Check if descriptor has data available for reading
 			if (_pfds[i].revents & POLLIN)
 			{
 				if (_pfds[i].fd == _listenSocket.getSocketFD())
@@ -52,6 +52,8 @@ void	Server::run(void) {
 				else
 					handleExistingConnection(i);
 			}
+            // Else if a descriptor has data available for writing
+            // if (_pfds[i].revents & POLLOUT)
 		}
 	}
 }
