@@ -48,22 +48,21 @@ void	Server::run(void) {
 			if (_pfds[i].revents & POLLIN)
 			{
 				if (_pfds[i].fd == _listenSocket.getSocketFD())
-					handleConnection();
+					handleNewConnection();
 				else
-					handleRequest(i);
+					handleExistingConnection(i);
 			}
 		}
 	}
 }
 
 // PRIVATE METHODS
-void	Server::handleRequest(int i) {
-	int	nbytes;
-	char buf[BUFF_SIZE];    // Buffer for client data
+void	Server::handleExistingConnection(int i) {
+	int	    nbytes;
+	char    buf[BUFF_SIZE];    // Buffer for client data
 
 	memset(buf, 0, BUFF_SIZE);
-    // put the recv in a loop below so we can recv POST calls
-	nbytes = recv(_pfds[i].fd, buf, sizeof(buf), 0);
+    nbytes = recv(_pfds[i].fd, buf, sizeof(buf), 0);
 	if (nbytes <= 0)
 	{
 		if (nbytes == 0)
@@ -76,17 +75,23 @@ void	Server::handleRequest(int i) {
 	{
 		// we got some data hurrah!
 		// TODO: parsing -> put inside of a request class
+        // If the Request has content length (POST request ONLY. GET/DELETE dont have this.) then keep calling recv until what we receied
 		// But for now, let's just print what we received
-		std::cout << "Received: " << buf << std::endl;
+        // while ((nbytes = recv(_pfds[i].fd, buf, sizeof(buf), 0)) > 0)
+        // {
+        _connections[_pfds[i].fd]->handleRequest(buf);
+        memset(buf, 0, BUFF_SIZE);
+        // }
+        // std::cout << "DONE receiving request!" << std::endl;
+        // _connections[_pfds[i].fd]->print_full_request();
+        // _connections[_pfds[i].fd]->parse_request();
         // display all the connections currently connected to the server
-        std::map<int, Connection*>::iterator it;
-
-        // printing for debugging 
-        std::cout << "List of current connections: " << std::endl;
-        for (it = _connections.begin(); it != _connections.end(); it++)
-        {
-            std::cout << it->first << ':' << it->second->getSocketFD() << std::endl;
-        }
+        // std::map<int, Connection*>::iterator it;
+        // std::cout << "List of current connections: " << std::endl;
+        // for (it = _connections.begin(); it != _connections.end(); it++)
+        // {
+        //     std::cout << it->first << ':' << it->second->getSocketFD() << std::endl;
+        // }
 	}
 }
 
@@ -114,13 +119,12 @@ void	Server::addConnection(int newfd, Connection* new_conn) {
     _connections.insert(std::make_pair(newfd, new_conn));
 }
 
-void	Server::handleConnection(void) {
+void	Server::handleNewConnection(void) {
 	socklen_t				addrlen;
 	struct sockaddr_storage	remote_addr;
 	char					remoteIP[INET_ADDRSTRLEN];
     Connection*             new_connection = new Connection;
 
-    // Accept the new connection by setting the socket of new_connection
 	addrlen = sizeof(remote_addr);
     try {
 	    new_connection->setSocketFD(accept(_listenSocket.getSocketFD(), (struct sockaddr *)&remote_addr, &addrlen));
@@ -140,7 +144,7 @@ void	Server::dropConnection(int i) {
     _pfds[i] = _pfds[_fd_count - 1];
 	_fd_count--;
 
-    // Erase the connection established on the socket that hung up 
+    // Remove from the map _connections.erase(i);
     _connections.erase(_pfds[i].fd);
 }
 

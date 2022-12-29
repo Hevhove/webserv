@@ -20,9 +20,9 @@ class Server {
 		// Methods : Private
 		void				addConnection(int newfd, Connection* new_conn);
 		void				dropConnection(int i);
-		void			handleConnection(void);
-		void			handleRequest(int i);
-		void*			get_in_addr(struct sockaddr *sa);
+		void			    handleNewConnection(void);
+		void			    handleExistingConnection(int i);
+		void*			    get_in_addr(struct sockaddr *sa);
 
 	public:
 		// Constructors

@@ -35,8 +35,13 @@
 # include <string>
 # include <cstring>
 # include <string.h>
+# include <sstream>
 
 // Time
 # include <time.h>
+
+// Functions
+std::vector<std::string>    ft_split(const std::string &str, char delim);
+bool                        is_non_whitespace(int ch); 
 
 #endif

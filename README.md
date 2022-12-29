@@ -31,3 +31,8 @@
 ### URI
 
 - [Difference URI vs URL](https://www.hostinger.com/tutorials/uri-vs-url)
+
+#### Other notes
+
+The Content-Length is optional in an HTTP request. For a GET or DELETE the length must be zero. For POST, if Content-Length is specified and it does not match the length of the message-line, the message is either truncated, or padded with nulls to the specified length.
+The Content-Length is always returned in the HTTP response even when there is no content, in which case the value is zero.

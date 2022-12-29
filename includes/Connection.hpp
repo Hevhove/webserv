@@ -8,8 +8,12 @@
 
 class Connection : public Socket {
 	private:
-        Request     request;
-        Response    response;
+        Request     _request;
+        Response    _response;
+
+        // Private Member functions
+        void        parse_header();
+        void        parse_body();
 
 	public:
 		// Constructors
@@ -18,10 +22,8 @@ class Connection : public Socket {
 		Connection(const Connection& src);
 		Connection& operator=(const Connection& rhs);
 
-		// Methods
-
-		// Getters
-
+		// Member functions
+        void    handleRequest(char buf[BUFF_SIZE]);
 };
 
 #endif
