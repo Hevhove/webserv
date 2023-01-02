@@ -28,6 +28,13 @@ void Connection::handleRequest(char buf[BUFF_SIZE]) {
     } catch (std::exception e) {
         std::cout << "Error parsing request on socket " << this->getSocketFD() << ": " << e.what() << std::endl;
     }
+    // testing:
+    std::cout << "request was parsed: " << std::endl;
+    _request.printRequest();
+
+    // Now we need to generate a response to the HTTP request!
+    _response.constructResponse();
+    _response.sendResponse();
 }
 
 // Private Member Functions

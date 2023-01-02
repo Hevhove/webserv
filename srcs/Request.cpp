@@ -110,9 +110,8 @@ void    Request::parseRequestHeaders(void) {
 
 void    Request::parseRequestBody(void) {
     _raw_body += _unparsed_request;
-    std::cout << "Content-length header is " << _headers["Content-Length"] << std::endl;
-    if (_headers["Content-length"] == )
 }
+
 void    Request::parseURI(std::string uri) {
     // find the path until the query, or the end of the string
     _uri.setPath(uri.substr(0, uri.find('?')));
@@ -122,6 +121,11 @@ void    Request::parseURI(std::string uri) {
         _uri.setQuery(uri.substr(uri.find('?') + 1, (uri.find('#'))));
     std::cout << "parsed path is " <<_uri.getPath() << std::endl;
     std::cout << "parsed query is " <<_uri.getQuery() << std::endl;
+}
+
+void    Request::printRequest(void)
+{
+    std::cout << _raw_start_line << _raw_headers << _raw_body << std::endl;
 }
 
 // Exceptions

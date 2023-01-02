@@ -75,18 +75,8 @@ void	Server::handleExistingConnection(int i) {
 	}
 	else
 	{
-		// we got some data hurrah!
-		// TODO: parsing -> put inside of a request class
-        // If the Request has content length (POST request ONLY. GET/DELETE dont have this.) then keep calling recv until what we receied
-		// But for now, let's just print what we received
-        // while ((nbytes = recv(_pfds[i].fd, buf, sizeof(buf), 0)) > 0)
-        // {
         _connections[_pfds[i].fd]->handleRequest(buf);
         memset(buf, 0, BUFF_SIZE);
-        // }
-        // std::cout << "DONE receiving request!" << std::endl;
-        // _connections[_pfds[i].fd]->print_full_request();
-        // _connections[_pfds[i].fd]->parse_request();
         // display all the connections currently connected to the server
         // std::map<int, Connection*>::iterator it;
         // std::cout << "List of current connections: " << std::endl;

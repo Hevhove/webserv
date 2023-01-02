@@ -51,7 +51,8 @@ class Request {
         
         // Public member functions
         void                parseRequest(char buf[BUFF_SIZE]);
-    
+        void                printRequest(void);
+   
         // Exceptions
        	class ParsingFailure : public std::exception {
 			const char * what () const throw();
