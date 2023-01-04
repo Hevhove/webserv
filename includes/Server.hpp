@@ -9,13 +9,13 @@ class Server {
 	private:
 		// Vars
 		Socket				        _listenSocket;
-		Socket				        _currSocket;
+        Socket				        _currSocket; // TODO : check if delete needed
 		struct addrinfo		        _hints;
 		struct addrinfo*	        _servinfo;
 		int					        _fd_count;
 		int					        _fd_size;
 		struct pollfd   	    	*_pfds;
-        std::map<int, Connection*>  _connections;    
+        std::map<int, Connection*>  _connections; 
 
 		// Methods : Private
 		void				addConnection(int newfd, Connection* new_conn);
