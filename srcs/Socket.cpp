@@ -10,13 +10,13 @@ Socket::~Socket() {
 }
 
 Socket::Socket(const Socket& src) {
-	this->sockfd = src.sockfd;
-	this->sin_size = src.sin_size;
+	this->_sockfd = src._sockfd;
+	this->_sin_size = src._sin_size;
 }
 
 Socket& Socket::operator=(const Socket& rhs) {
-	this->sockfd = rhs.sockfd;
-	this->sin_size = rhs.sin_size;
+	this->_sockfd = rhs._sockfd;
+	this->_sin_size = rhs._sin_size;
 	return (*this);
 }
 
@@ -34,38 +34,38 @@ static void	*get_in_addr(struct sockaddr *sa)
 void	Socket::createSocket(int ai_family, int ai_socktype, int ai_protocol) {
 	int yes = 1;
 
-	if ((sockfd = socket(ai_family, ai_socktype, ai_protocol)) < 0)
+	if ((_sockfd = socket(ai_family, ai_socktype, ai_protocol)) < 0)
 		throw Socket::SocketFailureException();
-	if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) < 0)
+	if (setsockopt(_sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) < 0)
 		throw Socket::SocketSetOptException();
 	std::cout << "listenSocket set up successfully" << std::endl;
 }
 
 void	Socket::bindSocket(struct sockaddr* ai_addr, socklen_t ai_addrlen) {
-	if (bind(sockfd, ai_addr, ai_addrlen) < 0)
+	if (bind(_sockfd, ai_addr, ai_addrlen) < 0)
 		throw Socket::SocketBindException();
 	std::cout << "bindSocket worked successfully" << std::endl;
 }
 
 void	Socket::listenOnSocket(void) {
-	if (listen(sockfd, BACKLOG) < 0)
+	if (listen(_sockfd, BACKLOG) < 0)
 		throw Socket::SocketListenException();
-	std::cout << "Now listening on socket #" << sockfd << " for incoming connections" << std::endl;
+	std::cout << "Now listening on socket #" << _sockfd << " for incoming connections" << std::endl;
 }
 
 void	Socket::acceptConnection(int listenSock) {
-	if ((sockfd = accept(listenSock, (struct sockaddr*)&addr, &sin_size)) < 0)
+	if ((_sockfd = accept(listenSock, (struct sockaddr*)&_addr, &_sin_size)) < 0)
 		throw Socket::SocketAcceptException();
 }
 
 void	Socket::printConnection(void) {
 	char s[INET6_ADDRSTRLEN];
 
-	inet_ntop(addr.ss_family, get_in_addr((struct sockaddr *)&addr), s, sizeof(s));
+	inet_ntop(_addr.ss_family, get_in_addr((struct sockaddr *)&_addr), s, sizeof(s));
 	std::cout << "server received connection from: " << s << std::endl;
 }
 
-void	Socket::initListenSocket(void) {
+void	Socket::initListenSocket(const char* port) {
 	struct addrinfo	hints;
 	struct addrinfo	*ai;
 	struct addrinfo *p;
@@ -75,7 +75,7 @@ void	Socket::initListenSocket(void) {
 	hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE;
-	if (getaddrinfo(NULL, PORT, &hints, &ai) != 0)
+	if (getaddrinfo(NULL, port, &hints, &ai) != 0)
 		throw SocketInitException();
 	for (p = ai; p != NULL; p = p->ai_next)
 	{
@@ -88,7 +88,7 @@ void	Socket::initListenSocket(void) {
 		try {
 			bindSocket(p->ai_addr, p->ai_addrlen);
 		} catch (std::exception& e) {
-			close(sockfd);
+			close(_sockfd);
 			std::cerr << e.what() << std::endl;
 			continue ;
 		}
@@ -100,11 +100,27 @@ void	Socket::initListenSocket(void) {
 	listenOnSocket();
 }
 
-// Getters
-int		Socket::getSocketFD(void) {
-	return (this->sockfd);
+void    Socket::closeSocket(void) {
+    int ret;
+
+    ret = close(this->getSocketFD());
+    if (ret < 0)
+        throw SocketCloseException();
+    else
+        std::cout << "socket " << this->getSocketFD() << "closed successfully" << std::endl;
 }
 
+// Getters
+int		Socket::getSocketFD(void) {
+	return (this->_sockfd);
+}
+
+// Setters
+void    Socket::setSocketFD(int fd) {
+    if (fd < 0)
+        throw SocketAcceptException();
+    this->_sockfd = fd;
+}
 
 // Exceptions
 const char * Socket::SocketInitException::what() const throw ()
@@ -135,4 +151,9 @@ const char * Socket::SocketListenException::what() const throw ()
 const char * Socket::SocketAcceptException::what() const throw ()
 {
     return ("Could not create new socket to accept connection");
+}
+
+const char * Socket::SocketCloseException::what() const throw ()
+{
+    return ("Socket failed to close properly");
 }

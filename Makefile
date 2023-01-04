@@ -1,7 +1,7 @@
 # VARIABLE DEFINITIONS
 NAME			= webserv
 SRCS_DIR		= srcs
-SRCS			:= $(shell find $(SRCS_DIR) -name *.cpp)
+SRCS			= $(wildcard srcs/*.cpp)
 OBJS_DIR		= objs
 OBJS			:= $(SRCS:$(SRCS_DIR)/%.cpp=$(OBJS_DIR)/%.o)
 CFLAGS			= -Wall -Wextra -Werror -std=c++98 -g #-fsanitize=address

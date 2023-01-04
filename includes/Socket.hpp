@@ -5,10 +5,11 @@
 
 class Socket {
 	private:
-		int						sockfd;
-		socklen_t				sin_size;
-		struct sockaddr_storage	addr;
-
+		int						_sockfd;
+		socklen_t				_sin_size;
+		struct sockaddr_storage	_addr;
+        int                     _port;
+        
 	public:
 		// Constructors
 		Socket();
@@ -22,10 +23,15 @@ class Socket {
 		void	listenOnSocket(void);
 		void	acceptConnection(int listenSock);
 		void	printConnection(void);
-		void	initListenSocket(void);
+		void	initListenSocket(const char* port);
+        void    closeSocket(void);
 
 		// Getters
 		int		getSocketFD(void);
+        int     getPort(void);
+
+        // Setters
+        void    setSocketFD(int fd);
 
 		// Exceptions
 		class SocketInitException : public std::exception {
@@ -44,6 +50,9 @@ class Socket {
 			const char * what () const throw();
 		};
 		class SocketAcceptException : public std::exception {
+			const char * what () const throw();
+		};
+        class SocketCloseException : public std::exception {
 			const char * what () const throw();
 		};
 };

@@ -9,6 +9,7 @@
 // Classes
 # include "Server.hpp"
 # include "Socket.hpp"
+# include "Connection.hpp"
 
 // Structs
 
