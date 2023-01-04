@@ -34,6 +34,9 @@ webserv
 *.out
 *.app
 
+# Mac .DS_Store
+*.DS_Store
+
 # Neovim headers include path + LSP
 compile_commands.json
 .cache
