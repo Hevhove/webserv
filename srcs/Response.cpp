@@ -48,17 +48,18 @@ void    Response::setRawHeaders() {
     _raw_headers = ss.str(); 
 }
 
-void    Response::setTimeHeader(void) {
+void    Response::setDateHeader(void) {
     time_t now = time(nullptr); 
     struct tm* timeinfo = gmtime(&now);
     char buffer[128];
 
     strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S %Z", timeinfo);
     std::string time_str(buffer);
-    std::cout << "Current time: " << time_str << std::endl;
-    _headers.insert(std::make_pair("Current time", time_str));
+    std::cout << "Date: " << time_str << std::endl;
+    _headers.insert(std::make_pair("Date", time_str));
 
 }
+
 void    Response::setContentLengthHeader() {
     std::ifstream file(_resource);
     std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
@@ -73,10 +74,24 @@ void    Response::setConnectionHeader(void) {
     _headers.insert(std::make_pair("Connection", "close"));
 }
 
+void    Response::setContentTypeHeader(void) {
+    if (hasFileExtension(_resource, ".html"))
+        _headers.insert(std::make_pair("Content-Type", "text/html"));
+    else if (hasFileExtension(_resource, ".css"))
+        _headers.insert(std::make_pair("Content-Type", "text/css"));
+    else if (hasFileExtension(_resource, ".ico"))
+        _headers.insert(std::make_pair("Content-Type", "image/x-icon"));
+    else if (hasFileExtension(_resource, ".jpeg"))
+        _headers.insert(std::make_pair("Content-Type", "image/jpeg"));
+    else if (hasFileExtension(_resource, ".png"))
+        _headers.insert(std::make_pair("Content-Type", "image/png"));
+}
+
 void    Response::setHeaders() {
-    setTimeHeader();
+    setDateHeader();
     setContentLengthHeader();
     setConnectionHeader();
+    setContentTypeHeader();
     // add more headers if desired below...
 }
 

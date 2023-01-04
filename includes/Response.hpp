@@ -67,9 +67,10 @@ class Response {
 
         void    setHeaders();
         void    setRawHeaders(void); 
-        void    setTimeHeader(void); 
+        void    setDateHeader(void); 
         void    setContentLengthHeader(); 
         void    setConnectionHeader(void);
+        void    setContentTypeHeader(void); 
         void    setRawBody();
         void    setResource(std::string path);
 

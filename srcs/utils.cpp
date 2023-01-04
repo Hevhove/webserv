@@ -22,3 +22,8 @@ bool ft_is_resource_available(std::string resource) {
 
     return (file.good());
 }
+
+bool hasFileExtension(const std::string& s, const std::string& ext) {
+  if (s.length() < ext.length()) return false;
+  return s.rfind(ext) == (s.length() - ext.length());
+}
