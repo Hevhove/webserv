@@ -59,8 +59,8 @@ void    Response::setTimeHeader(void) {
     _headers.insert(std::make_pair("Current time", time_str));
 
 }
-void    Response::setContentLengthHeader(Request& req) {
-    std::ifstream file("public/www" + req.getURI().getPath() + "/index.html");
+void    Response::setContentLengthHeader() {
+    std::ifstream file(_resource);
     std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     std::stringstream ss;
     
@@ -73,46 +73,48 @@ void    Response::setConnectionHeader(void) {
     _headers.insert(std::make_pair("Connection", "close"));
 }
 
-void    Response::setHeaders(Request &req) {
+void    Response::setHeaders() {
     setTimeHeader();
-    setContentLengthHeader(req);
+    setContentLengthHeader();
     setConnectionHeader();
     // add more headers if desired below...
 }
 
-void    Response::setRawBody(std::string resource) {
-    std::ifstream   file(resource);
+void    Response::setRawBody() {
+    std::ifstream   file(_resource);
     std::string     content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
     _raw_body = content;
 }
+
+void    Response::setResource(std::string path) {
+    if (path[path.size() - 1] == '/')
+        _resource = "public/www" + path + "index.html";
+    else
+        _resource = "public/www" + path;
+    std::cout << "resource is " << _resource << std::endl;
+    if (!ft_is_resource_available(_resource))
+    {
+        // TODO send a response with resource not available!
+        std::cout << "resource not available!" << std::endl;
+        exit(-1);
+    }
+    std::cout << "resource exists!" << std::endl;
+}
+
 void    Response::constructGETResponse(Request& req) {
     std::string path = (req.getURI()).getPath();   
-    std::string resource;
     
-    resource = "public/www" + path + "index.html";
-    std::cout << "path is " << path << std::endl;
-    std::cout << "resource is " << resource << std::endl;
-    if (ft_is_resource_available(resource))
-    {
-        // ALSO: check if resource is authorized
-        std::cout << "resource exists" << std::endl;
-        // set the status line
-        _raw_status_line = _http_version + " 200 OK" + "\r\n"; 
-        
-        // set the headers
-        setHeaders(req);
-        setRawHeaders();
+    setResource(req.getURI().getPath());
+    _raw_status_line = _http_version + " 200 OK" + "\r\n"; 
+       
+    // set the headers
+    setHeaders();
+    setRawHeaders();
 
-        // include the body
-        setRawBody(resource);
-        //printResponse();
-    }
-    else
-    {
-        // TODO: send resource unavailable todo
-        std::cout << "nope" << std::endl;
-    }
+    // include the body
+    setRawBody();
+    //printResponse();
 }
 
 std::string Response::getRawResponse(void) {

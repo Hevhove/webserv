@@ -6,6 +6,7 @@
 Request::Request() {
     _unparsed_request = "";
     _raw_body = "";
+    _count = 0;
 }
 
 Request::~Request() {
@@ -56,10 +57,8 @@ std::map<std::string, std::string>  Request::getHeaders(void) {
 // Public Member Functions
 void    Request::parseRequest(char *buf)
 {
-    static int i;
-
     _unparsed_request += buf;
-    if (i++ == 0)
+    if (_count++ == 0)
     {
         parseRequestStartLine();
         parseRequestHeaders();

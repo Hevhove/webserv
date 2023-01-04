@@ -30,7 +30,8 @@ class Request {
 	    std::string			_raw_start_line; 		// The complete request line such as: `GET / HTTP/1.1`
 	    std::string			_raw_headers;           // Raw headers (general headers, response/request headers, entity headers)
 	    std::string			_raw_body;              // HTTP Message Body
-        
+        int                 _count; 
+
         // HTTP
         RequestMethod                       _request_method; 
         URI                                 _uri; // the parsed path with scheme:[//authority]path[?query][#fragment]

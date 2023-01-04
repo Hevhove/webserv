@@ -24,6 +24,7 @@ void Connection::handleRequest(char buf[BUFF_SIZE]) {
     // If we are in the beginning of receiving the request, the header
     // should be included with details on type of request, else reject
     try {
+        //std::cout << "buff test" << buf << std::endl;
         _request.parseRequest(buf);
     } catch (Request::ParsingFailure e) {
         std::cout << "To be implemented: bad request 400 resp " << this->getSocketFD() << ": " << e.what() << std::endl;

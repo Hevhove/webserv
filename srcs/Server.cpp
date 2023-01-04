@@ -165,12 +165,11 @@ void	Server::handleNewConnection(void) {
 
 void	Server::dropConnection(int i) {
 	// Remove from the pfds list by copying the file descriptor of the last one over it. 
-    _connections[_pfds[i].fd].closeSocket();
-	close(_pfds[i].fd);
+    _connections[_pfds[i].fd]->closeSocket();
     _pfds[i] = _pfds[_fd_count - 1];
 	_fd_count--;
 
-    // Remove from the map _connections.erase(i);
+    // Remove from the map _connections.erase(i), careful for memory leak!
     std::map<int, Connection*>::iterator it = _connections.find(_pfds[i].fd);
     if (it != _connections.end())
     {

@@ -58,17 +58,20 @@ class Response {
         std::string                         _status_string;
         std::map<std::string, std::string>  _headers;
 
+        std::string                         _resource;
+    
         // Private methods
         void    constructGETResponse(Request& req);
         void    constructPOSTResponse(Request& req);
         void    constructDELETEResponse(Request& req);
 
-        void    setHeaders(Request& req);
+        void    setHeaders();
         void    setRawHeaders(void); 
         void    setTimeHeader(void); 
-        void    setContentLengthHeader(Request& req); 
+        void    setContentLengthHeader(); 
         void    setConnectionHeader(void);
-        void    setRawBody(std::string resource);
+        void    setRawBody();
+        void    setResource(std::string path);
 
     public:
         // Constructors
