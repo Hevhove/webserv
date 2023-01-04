@@ -88,7 +88,7 @@ void	Socket::initListenSocket(const char* port) {
 		try {
 			bindSocket(p->ai_addr, p->ai_addrlen);
 		} catch (std::exception& e) {
-			close(_sockfd);
+            close(_sockfd); // TODO: add close protection
 			std::cerr << e.what() << std::endl;
 			continue ;
 		}
