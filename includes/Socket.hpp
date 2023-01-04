@@ -24,6 +24,7 @@ class Socket {
 		void	acceptConnection(int listenSock);
 		void	printConnection(void);
 		void	initListenSocket(const char* port);
+        void    closeSocket(void);
 
 		// Getters
 		int		getSocketFD(void);
@@ -49,6 +50,9 @@ class Socket {
 			const char * what () const throw();
 		};
 		class SocketAcceptException : public std::exception {
+			const char * what () const throw();
+		};
+        class SocketCloseException : public std::exception {
 			const char * what () const throw();
 		};
 };

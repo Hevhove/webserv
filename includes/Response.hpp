@@ -19,6 +19,7 @@ Example:
 #ifndef CLASS_RESPONSE_HPP
 # define CLASS_RESPONSE_HPP
 
+# include "Request.hpp"
 # include "URI.hpp"
 # include "utils.hpp"
 #include <string>
@@ -51,19 +52,35 @@ class Response {
         std::string                         _raw_headers;
         std::string                         _raw_body;
 
-        // 
+        // contents 
         std::string                         _http_version;
-        StatusCode                          _status_code;
+        // StatusCode                          _status_code;
         std::string                         _status_string;
         std::map<std::string, std::string>  _headers;
-        
+
+        // Private methods
+        void    constructGETResponse(Request& req);
+        void    constructPOSTResponse(Request& req);
+        void    constructDELETEResponse(Request& req);
+
+        void    setHeaders(Request& req);
+        void    setRawHeaders(void); 
+        void    setTimeHeader(void); 
+        void    setContentLengthHeader(Request& req); 
+        void    setConnectionHeader(void);
+        void    setRawBody(std::string resource);
+
     public:
         // Constructors
         Response();
 		virtual ~Response();
 		Response(const Response& src);
 		Response& operator=(const Response& rhs);
-
+        
+        // Public methods
+        void        constructResponse(Request& req, RequestMethod req_method);
+        std::string getRawResponse(void);
+        void        printResponse(void);
 };
 
 #endif

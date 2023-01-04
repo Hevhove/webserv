@@ -100,6 +100,16 @@ void	Socket::initListenSocket(const char* port) {
 	listenOnSocket();
 }
 
+void    Socket::closeSocket(void) {
+    int ret;
+
+    ret = close(this->getSocketFD());
+    if (ret < 0)
+        throw SocketCloseException();
+    else
+        std::cout << "socket " << this->getSocketFD() << "closed successfully" << std::endl;
+}
+
 // Getters
 int		Socket::getSocketFD(void) {
 	return (this->_sockfd);
@@ -141,4 +151,9 @@ const char * Socket::SocketListenException::what() const throw ()
 const char * Socket::SocketAcceptException::what() const throw ()
 {
     return ("Could not create new socket to accept connection");
+}
+
+const char * Socket::SocketCloseException::what() const throw ()
+{
+    return ("Socket failed to close properly");
 }

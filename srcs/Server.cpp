@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include <sys/poll.h>
 
 // CONSTRUCTORS
 Server::Server() {
@@ -39,26 +40,58 @@ void	Server::run(void) {
 	std::cout << "Launching server..." << std::endl;
 	while (1)
 	{
-		if ((poll_count = poll(_pfds, _fd_count, -1)) < 0)
+		if ((poll_count = poll(_pfds, _fd_count, 2000)) < 0)
 			throw PollException();
 		// Run through the existing connections looking for data to read
+        std::cout << "POLL RETURN IS " << poll_count << std::endl;
 		for (int i = 0; i < _fd_count; i++)
 		{
-			// Check if descriptor has data available for reading
+            std::cout << "i is " << i << std::endl;
+            std::cout << "Events on pfds[" << i << "].revents: " << _pfds[i].revents << std::endl;
+            // Check if descriptor has data available for reading
 			if (_pfds[i].revents & POLLIN)
 			{
 				if (_pfds[i].fd == _listenSocket.getSocketFD())
+                {
 					handleNewConnection();
+                    break ;
+                }
 				else
 					handleExistingConnection(i);
-			}
-            // Else if a descriptor has data available for writing
-            // if (_pfds[i].revents & POLLOUT)
+            }
+            else if (_pfds[i].revents & POLLOUT)
+            {
+                respondToExistingConnection(i);
+                // right now just drop the connection, or we could reset the req/res to keep using the same
+                dropConnection(i);
+            }
 		}
 	}
 }
 
 // PRIVATE METHODS
+void    Server::respondToExistingConnection(int i) {
+    std::string     response;
+
+    response = _connections[_pfds[i].fd]->getRawResponse();
+    std::cout << "current raw response!!! : " << std::endl;
+    std::cout << response << std::endl;
+    int bytes_sent = send(_pfds[i].fd, response.c_str(), response.size(), 0);
+
+    if (bytes_sent < 0)
+        std::cout << "some error sending" << std::endl;
+    // while (bytes_sent < response.size())
+    // {
+    //     int n = send(_pfds[i].fd, response.c_str() + bytes_sent, response.size() - bytes_sent, 0);
+    //     if (n < 0)
+    //     {
+    //         // TODO: throw some kind of error!
+    //         break ;
+    //     }
+    //     bytes_sent += n;
+    // }
+}
+
 void	Server::handleExistingConnection(int i) {
 	int	    nbytes;
 	char    buf[BUFF_SIZE];    // Buffer for client data
@@ -104,7 +137,7 @@ void	Server::addConnection(int newfd, Connection* new_conn) {
 		_pfds = pfds_new;
 	}
 	_pfds[_fd_count].fd = newfd;
-	_pfds[_fd_count].events = POLLIN;
+	_pfds[_fd_count].events = POLLIN | POLLOUT;
 	_fd_count++;
     // Add a connection to the list of connections to the server
     std::cout << "adding a connection on socket with fd " << newfd << std::endl;
@@ -132,12 +165,19 @@ void	Server::handleNewConnection(void) {
 
 void	Server::dropConnection(int i) {
 	// Remove from the pfds list by copying the file descriptor of the last one over it. 
+    _connections[_pfds[i].fd].closeSocket();
 	close(_pfds[i].fd);
     _pfds[i] = _pfds[_fd_count - 1];
 	_fd_count--;
 
     // Remove from the map _connections.erase(i);
-    _connections.erase(_pfds[i].fd);
+    std::map<int, Connection*>::iterator it = _connections.find(_pfds[i].fd);
+    if (it != _connections.end())
+    {
+        delete it->second;
+        _connections.erase(it);
+    }
+    std::cout << "connection on dropped" << std::endl;
 }
 
 void* Server::get_in_addr(struct sockaddr *sa) {

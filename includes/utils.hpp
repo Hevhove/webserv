@@ -4,7 +4,7 @@
 // Macros
 # define PORT "3490" // to be changed later with config file
 # define BACKLOG 10
-# define BUFF_SIZE 1000
+# define BUFF_SIZE 2000
 # define MAXEVENTS 10
 
 // Libraries
@@ -30,6 +30,7 @@
 # include <stdlib.h>
 # include <iostream>
 # include <stdio.h>
+# include <fstream>
 
 // Strings
 # include <string>
@@ -38,10 +39,12 @@
 # include <sstream>
 
 // Time
+# include <ctime>
 # include <time.h>
 
 // Functions
 std::vector<std::string>    ft_split(const std::string &str, char delim);
-bool                        is_non_whitespace(int ch); 
+bool                        ft_is_non_whitespace(int ch); 
+bool                        ft_is_resource_available(std::string resource);
 
 #endif

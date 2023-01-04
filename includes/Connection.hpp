@@ -5,6 +5,7 @@
 # include "Response.hpp"
 # include "utils.hpp"
 # include "Socket.hpp"
+#include <string>
 
 class Connection : public Socket {
 	private:
@@ -23,7 +24,10 @@ class Connection : public Socket {
 		Connection& operator=(const Connection& rhs);
 
 		// Member functions
-        void    handleRequest(char buf[BUFF_SIZE]);
+        void            handleRequest(char buf[BUFF_SIZE]);
+        std::string     getRawResponse(void);
+
+        
 };
 
 #endif

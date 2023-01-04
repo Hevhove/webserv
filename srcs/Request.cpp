@@ -21,6 +21,38 @@ Request& Request::operator=(const Request& rhs) {
 	return (*this);
 }
 
+// Getters
+std::string     Request::getUnparsedRequest(void) {
+    return _unparsed_request;
+}
+
+std::string     Request::getRawStartline(void) {
+    return (_raw_start_line);
+}
+        
+std::string     Request::getRawHeaders(void) {
+    return (_raw_headers);
+}
+
+
+std::string     Request::getRawBody(void) {
+    return (_raw_body);
+}
+
+
+RequestMethod   Request::getRequestMethod(void) {
+    return (_request_method);
+}
+
+URI&             Request::getURI(void) {
+     return (_uri);
+}
+
+
+std::map<std::string, std::string>  Request::getHeaders(void) {
+    return (_headers);
+}
+
 // Public Member Functions
 void    Request::parseRequest(char *buf)
 {
@@ -87,13 +119,13 @@ void    Request::parseRequestHeaders(void) {
 
         // get the key before the colon, trim leading and trailing whitespace
         std::getline(ls, key, ':');
-        key.erase(key.begin(), std::find_if(key.begin(), key.end(), is_non_whitespace));
-        key.erase(std::find_if(key.rbegin(), key.rend(), is_non_whitespace).base(), key.end());
+        key.erase(key.begin(), std::find_if(key.begin(), key.end(), ft_is_non_whitespace));
+        key.erase(std::find_if(key.rbegin(), key.rend(), ft_is_non_whitespace).base(), key.end());
 
         // get the value after the colon until the newline, trim leading and trailing whitespace  
         std::getline(ls, value);
-        value.erase(value.begin(), std::find_if(value.begin(), value.end(), is_non_whitespace));
-        value.erase(std::find_if(value.rbegin(), value.rend(), is_non_whitespace).base(), value.end());
+        value.erase(value.begin(), std::find_if(value.begin(), value.end(), ft_is_non_whitespace));
+        value.erase(std::find_if(value.rbegin(), value.rend(), ft_is_non_whitespace).base(), value.end());
        
         // insert the key and value into the map
         _headers.insert(std::make_pair(key, value));
@@ -125,7 +157,7 @@ void    Request::parseURI(std::string uri) {
 
 void    Request::printRequest(void)
 {
-    std::cout << _raw_start_line << _raw_headers << _raw_body << std::endl;
+    std::cout << _raw_start_line << std::endl << _raw_headers << std::endl << _raw_body << std::endl;
 }
 
 // Exceptions

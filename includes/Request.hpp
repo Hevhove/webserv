@@ -15,6 +15,7 @@ Example:
 
 # include "URI.hpp"
 # include "utils.hpp"
+#include <string>
 
 typedef enum RequestMethod {
     GET = 0,
@@ -29,7 +30,6 @@ class Request {
 	    std::string			_raw_start_line; 		// The complete request line such as: `GET / HTTP/1.1`
 	    std::string			_raw_headers;           // Raw headers (general headers, response/request headers, entity headers)
 	    std::string			_raw_body;              // HTTP Message Body
-        std::string         _unparsed_path;
         
         // HTTP
         RequestMethod                       _request_method; 
@@ -48,6 +48,15 @@ class Request {
 		virtual ~Request();
 		Request(const Request& src);
 		Request&            operator=(const Request& rhs);
+
+        // Getters
+        std::string     getUnparsedRequest(void);
+        std::string     getRawStartline(void);
+        std::string     getRawHeaders(void);
+        std::string     getRawBody(void);
+        RequestMethod   getRequestMethod(void);
+        URI&            getURI(void);
+        std::map<std::string, std::string>  getHeaders(void);
         
         // Public member functions
         void                parseRequest(char buf[BUFF_SIZE]);
@@ -55,9 +64,11 @@ class Request {
    
         // Exceptions
        	class ParsingFailure : public std::exception {
-			const char * what () const throw();
+        public: 
+            const char * what () const throw();
 		};
         class HTTPVersionMismatch : public std::exception {
+        public:
 			const char * what () const throw();
 		};
 };

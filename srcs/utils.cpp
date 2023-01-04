@@ -13,7 +13,12 @@ std::vector<std::string> ft_split(const std::string &str, char delim)
     return result;
 }
 
-bool is_non_whitespace(int ch) {
+bool ft_is_non_whitespace(int ch) {
     return !std::isspace(ch);
 }
 
+bool ft_is_resource_available(std::string resource) {
+    std::ifstream file(resource);
+
+    return (file.good());
+}
