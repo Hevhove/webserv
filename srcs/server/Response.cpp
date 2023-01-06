@@ -66,7 +66,7 @@ void    Response::setConnectionHeader(void) {
 }
 
 void    Response::setContentTypeHeader(void) {
-    if (hasFileExtension(_resource, ".html") || _status_code == BAD_REQUEST)
+    if (hasFileExtension(_resource, ".html") || _status_code == BAD_REQUEST || _status_code == INTERNAL_SERVER_ERROR)
         _headers.insert(std::make_pair("Content-Type", "text/html"));
     else if (hasFileExtension(_resource, ".css"))
         _headers.insert(std::make_pair("Content-Type", "text/css"));

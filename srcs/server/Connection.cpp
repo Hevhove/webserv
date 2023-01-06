@@ -1,5 +1,4 @@
 #include "Connection.hpp"
-#include "utils.hpp"
 
 // Constructors
 Connection::Connection() {
@@ -22,23 +21,24 @@ Connection& Connection::operator=(const Connection& rhs) {
 
 // Public Member Functions
 void Connection::handleRequest(char buf[BUFF_SIZE]) {
-    // If we are in the beginning of receiving the request, the header
-    // should be included with details on type of request, else reject
+    // First, we parse the current request and check for parsing errors
+    // If there is an error, send back an error response
     try {
-        //std::cout << "buff test" << buf << std::endl;
         _request.parseRequest(buf);
     } catch (Request::BadRequestException& e) {
         std::cout << "To be implemented: bad request 400 resp " << this->getSocketFD() << ": " << e.what() << std::endl;
         _response = new BadRequestResponse();
         return ;
-    } catch (Request::HttpVersionNotSupportedException& f) {
-        std::cout << "To be implemented: bad request 505 resp " << this->getSocketFD() << ": " << f.what() << std::endl;
-        // _response = new HttpVersionResponse(); 
-    } catch (std::exception& g) {
+    } catch (Request::HttpVersionNotSupportedException& e) {
+        std::cout << "To be implemented: bad request 505 resp " << this->getSocketFD() << ": " << e.what() << std::endl;
+        _response = new HttpVersionResponse(); 
+        return ;
+    } catch (std::exception& e) {
         std::cout << "other type of parsing errors" << std::endl;
+        _response = new InternalServerResponse();
     }
-    // itesting:
-    std::cout << "request was parsed3: " << std::endl;
+    // testing:
+    std::cout << "request was parsed: " << std::endl;
     _request.printRequest();
 
     try {

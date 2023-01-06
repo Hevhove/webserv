@@ -6,6 +6,8 @@
 # include "GetResponse.hpp"
 # include "PostResponse.hpp"
 # include "BadRequestResponse.hpp"
+# include "HttpVersionResponse.hpp"
+# include "InternalServerResponse.hpp"
 # include "utils.hpp"
 # include "Socket.hpp"
 

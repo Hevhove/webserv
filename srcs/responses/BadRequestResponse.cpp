@@ -31,5 +31,5 @@ void    BadRequestResponse::constructResponse(Request& req) {
     this->_raw_status_line = "HTTP/1.1 400 Bad Request\r\n"; 
     setHeaders();
     setRawHeaders();
-    this->_raw_body = "<html><body>Resource created</body></html>\r\n";
+    this->_raw_body = "<html><body>Bad Request</body></html>\r\n";
 }
