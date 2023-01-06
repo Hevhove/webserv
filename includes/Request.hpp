@@ -64,11 +64,11 @@ class Request {
         void                printRequest(void);
    
         // Exceptions
-       	class ParsingFailure : public std::exception {
+       	class BadRequestException : public std::exception {
         public: 
             const char * what () const throw();
 		};
-        class HTTPVersionMismatch : public std::exception {
+        class HttpVersionNotSupportedException : public std::exception {
         public:
 			const char * what () const throw();
 		};

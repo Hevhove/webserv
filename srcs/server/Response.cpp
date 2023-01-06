@@ -22,15 +22,6 @@ Response& Response::operator=(const Response& rhs) {
 }
 
 // Public methods
-void    Response::constructResponse(Request& req, RequestMethod req_method) {
-    if (req_method == GET)
-        constructGETResponse(req);
-    else if (req_method == POST)
-        constructPOSTResponse(req);
-    else if (req_method == DELETE)
-        constructDELETEResponse(req);
-}
-
 void    Response::printResponse(void) {
     std::cout << "PRINTING RESPONSE: " << std::endl;
     std::cout << _raw_status_line << _raw_headers << _raw_body << std::endl;
@@ -75,7 +66,7 @@ void    Response::setConnectionHeader(void) {
 }
 
 void    Response::setContentTypeHeader(void) {
-    if (hasFileExtension(_resource, ".html"))
+    if (hasFileExtension(_resource, ".html") || _status_code == BAD_REQUEST)
         _headers.insert(std::make_pair("Content-Type", "text/html"));
     else if (hasFileExtension(_resource, ".css"))
         _headers.insert(std::make_pair("Content-Type", "text/css"));
@@ -85,21 +76,8 @@ void    Response::setContentTypeHeader(void) {
         _headers.insert(std::make_pair("Content-Type", "image/jpeg"));
     else if (hasFileExtension(_resource, ".png"))
         _headers.insert(std::make_pair("Content-Type", "image/png"));
-}
-
-void    Response::setHeaders() {
-    setDateHeader();
-    setContentLengthHeader();
-    setConnectionHeader();
-    setContentTypeHeader();
-    // add more headers if desired below...
-}
-
-void    Response::setRawBody() {
-    std::ifstream   file(_resource);
-    std::string     content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-
-    _raw_body = content;
+    else if (hasFileExtension(_resource, ".json"))
+        _headers.insert(std::make_pair("Content-Type", "application/json"));
 }
 
 void    Response::setResource(std::string path) {
@@ -117,21 +95,6 @@ void    Response::setResource(std::string path) {
     std::cout << "resource exists!" << std::endl;
 }
 
-void    Response::constructGETResponse(Request& req) {
-    std::string path = (req.getURI()).getPath();   
-    
-    setResource(req.getURI().getPath());
-    _raw_status_line = _http_version + " 200 OK" + "\r\n"; 
-       
-    // set the headers
-    setHeaders();
-    setRawHeaders();
-
-    // include the body
-    setRawBody();
-    //printResponse();
-}
-
 std::string Response::getRawResponse(void) {
     std::string response;
 
@@ -139,10 +102,7 @@ std::string Response::getRawResponse(void) {
     return (response);
 }
 
-void    Response::constructPOSTResponse(Request& req) {
-    (void)req; 
-}
-
-void    Response::constructDELETEResponse(Request& req) {
-    (void)req; 
+// Setters
+void    Response::setStatusCode(StatusCode sc) {
+    _status_code = sc;
 }

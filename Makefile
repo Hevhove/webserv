@@ -1,12 +1,19 @@
 # VARIABLE DEFINITIONS
 NAME			= webserv
+
 SRCS_DIR		= srcs
-SRCS			= $(wildcard srcs/*.cpp)
+SRCS			:= $(shell find $(SRCS_DIR) -name *.cpp)
+
 OBJS_DIR		= objs
 OBJS			:= $(SRCS:$(SRCS_DIR)/%.cpp=$(OBJS_DIR)/%.o)
-CFLAGS			= -Wall -Wextra -Werror -std=c++98 -g #-fsanitize=address
+
+OBJS_SUB_DIR	:= $(shell find $(SRCS_DIR) -mindepth 1 -type d)
+OBJS_SUB_DIR	:= $(OBJS_SUB_DIR:$(SRCS_DIR)/%=$(OBJS_DIR)/%)
+
+CFLAGS			= -Wall -Wextra -Werror -std=c++98 -fsanitize=address #-g
 INCLUDES		= -Iincludes
 UNAME			:= $(shell uname)
+
 RM				= rm -rf
 
 # OPERATING SYSTEM CHECK
@@ -21,15 +28,16 @@ endif
 
 # RULES
 $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.cpp compile_msg
-					@mkdir -p $(OBJS_DIR)
-					$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	@mkdir -p $(OBJS_DIR)
+	@mkdir -p $(OBJS_SUB_DIR)
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
-$(NAME):	$(OBJS)
+$(NAME): $(OBJS)
 	@printf "[$(C_YELLOW)======LINKING======$(C_END)]\n"
 	$(CC) $(CFLAGS) $(INCLUDES) $(OBJS) -o $(NAME)
 	@printf "[$(C_GREEN)======SUCCESS======$(C_END)] \n"
 
-all:	$(NAME)
+all: $(NAME)
 
 compile_msg:
 	@printf "[$(C_YELLOW)=====COMPILING=====$(C_END)]\n"

@@ -3,14 +3,16 @@
 
 # include "Request.hpp"
 # include "Response.hpp"
+# include "GetResponse.hpp"
+# include "PostResponse.hpp"
+# include "BadRequestResponse.hpp"
 # include "utils.hpp"
 # include "Socket.hpp"
-#include <string>
 
 class Connection : public Socket {
 	private:
-        Request     _request;
-        Response    _response;
+        Request         _request;
+        Response*       _response;
 
         // Private Member functions
         void        parse_header();
@@ -27,7 +29,6 @@ class Connection : public Socket {
         void            handleRequest(char buf[BUFF_SIZE]);
         std::string     getRawResponse(void);
 
-        
 };
 
 #endif

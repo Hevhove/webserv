@@ -79,7 +79,7 @@ void    Request::parseRequestStartLine(void) {
    
     startline_split = ft_split(_raw_start_line, ' ');
     if (startline_split.size() != 3)
-        throw ParsingFailure();
+        throw BadRequestException();
 
     // Parse the RequestMethod
     if (startline_split[0] == "GET")
@@ -89,14 +89,14 @@ void    Request::parseRequestStartLine(void) {
     else if (startline_split[0] == "DELETE")
         _request_method = DELETE;
     else
-        throw ParsingFailure(); // do we need to empty buffers etc here? 
+        throw BadRequestException(); // do we need to empty buffers etc here? 
     
     // Parse the URI 
     parseURI(startline_split[1]); 
 
     // Parse HTTP version 
     if (startline_split[2] != "HTTP/1.1")
-        throw HTTPVersionMismatch();
+        throw HttpVersionNotSupportedException();
 
     // Testing
     if (_request_method == GET)
@@ -146,7 +146,6 @@ void    Request::parseRequestBody(void) {
 void    Request::parseURI(std::string uri) {
     // find the path until the query, or the end of the string
     _uri.setPath(uri.substr(0, uri.find('?')));
-    
     // if there is a query, set it
     if (uri.find('?') != std::string::npos)
         _uri.setQuery(uri.substr(uri.find('?') + 1, (uri.find('#'))));
@@ -160,10 +159,10 @@ void    Request::printRequest(void)
 }
 
 // Exceptions
-const char * Request::ParsingFailure::what() const throw () {
-    return ("Request could not be parsed");
+const char * Request::BadRequestException::what() const throw () {
+    return ("Bad request");
 }
 
-const char * Request::HTTPVersionMismatch::what() const throw () {
+const char * Request::HttpVersionNotSupportedException::what() const throw () {
     return ("This server only accepts HTTP/1.1 requests");
 }
