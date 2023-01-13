@@ -7,6 +7,7 @@ Request::Request() {
     _unparsed_request = "";
     _raw_body = "";
     _count = 0;
+    _request_method = NOT_SET;
 }
 
 Request::~Request() {

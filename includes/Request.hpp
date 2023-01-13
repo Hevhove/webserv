@@ -20,7 +20,8 @@ Example:
 typedef enum RequestMethod {
     GET = 0,
     POST,
-    DELETE
+    DELETE,
+    NOT_SET
 } RequestMethod;
 
 class Request {

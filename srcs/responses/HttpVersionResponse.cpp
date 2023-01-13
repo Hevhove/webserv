@@ -32,4 +32,5 @@ void    HttpVersionResponse::constructResponse(Request& req) {
     setHeaders();
     setRawHeaders();
     this->_raw_body = "<html><body>HTTP Version Not Supported</body></html>\r\n";
+    setRawResponse();
 }

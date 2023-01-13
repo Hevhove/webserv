@@ -6,7 +6,6 @@ Server::Server() {
 	this->_fd_count = 0;
 	this->_fd_size = MAXEVENTS;
 	_pfds = new pollfd[_fd_size];
-
 	_listenSocket.initListenSocket(PORT);
 	_pfds[0].fd = _listenSocket.getSocketFD();
 	_pfds[0].events = POLLIN | POLLOUT;
@@ -15,7 +14,12 @@ Server::Server() {
 
 Server::~Server() {
 	delete[] _pfds;
-	std::cout << "server: Shutting down" << std::endl;
+    std::map<int, Connection*>::iterator it;
+    for (it = _connections.begin(); it != _connections.end(); ++it)
+    {
+        delete it->second;
+    }
+    std::cout << "server: Shutting down" << std::endl;
 }
 
 Server::Server(const Server& src) {
@@ -40,7 +44,7 @@ void	Server::run(void) {
 	std::cout << "Launching server..." << std::endl;
 	while (1)
 	{
-		if ((poll_count = poll(_pfds, _fd_count, 2000)) < 0)
+		if ((poll_count = poll(_pfds, _fd_count, -1)) < 0)
 			throw PollException();
 		// Run through the existing connections looking for data to read
         std::cout << "POLL RETURN IS " << poll_count << std::endl;
@@ -49,7 +53,7 @@ void	Server::run(void) {
             std::cout << "i is " << i << std::endl;
             std::cout << "Events on pfds[" << i << "].revents: " << _pfds[i].revents << std::endl;
             // Check if descriptor has data available for reading
-			if (_pfds[i].revents & POLLIN)
+            if (_pfds[i].revents & POLLIN)
 			{
 				if (_pfds[i].fd == _listenSocket.getSocketFD())
                 {
@@ -57,7 +61,9 @@ void	Server::run(void) {
                     break ;
                 }
 				else
+                {
 					handleExistingConnection(i);
+                }
             }
             else if (_pfds[i].revents & POLLOUT)
             {
@@ -73,7 +79,19 @@ void	Server::run(void) {
 void    Server::respondToExistingConnection(int i) {
     std::string     response;
 
+    std::map<int, Connection*>::iterator it;
+
+for (it = _connections.begin(); it != _connections.end(); it++)
+{
+    std::cout << it->first    // string (key)
+              << ':'
+              << it->second   // string's value 
+              << std::endl;
+}
+
     response = _connections[_pfds[i].fd]->getRawResponse();
+    if (response.length() == 0)
+        return ;
     std::cout << "current raw response!!! : " << std::endl;
     std::cout << response << std::endl;
     int bytes_sent = send(_pfds[i].fd, response.c_str(), response.size(), 0);
@@ -164,19 +182,26 @@ void	Server::handleNewConnection(void) {
 }
 
 void	Server::dropConnection(int i) {
-	// Remove from the pfds list by copying the file descriptor of the last one over it. 
-    _connections[_pfds[i].fd]->closeSocket();
-    _pfds[i] = _pfds[_fd_count - 1];
-	_fd_count--;
 
+    // Close the socket
+    _connections[_pfds[i].fd]->closeSocket();
     // Remove from the map _connections.erase(i), careful for memory leak!
+    // std::cout << "_pfds[i].fd is " << _pfds[i].fd << std::endl;
     std::map<int, Connection*>::iterator it = _connections.find(_pfds[i].fd);
     if (it != _connections.end())
     {
         delete it->second;
         _connections.erase(it);
     }
-    std::cout << "connection on dropped" << std::endl;
+    //
+	// Remove from the pfds list by copying the file descriptor of the last one over it. 
+    // then reduce the number of file descriptors
+    if (i != _fd_count - 1)
+    {
+        _pfds[i] = _pfds[_fd_count - 1];
+    }
+	_fd_count--;
+    std::cout << "connection dropped  " << std::endl;
 }
 
 void* Server::get_in_addr(struct sockaddr *sa) {

@@ -1,5 +1,6 @@
 #include "Response.hpp"
 #include "Request.hpp"
+#include "utils.hpp"
 #include <fstream>
 #include <string>
 
@@ -83,6 +84,10 @@ void    Response::setContentTypeHeader(void) {
 void    Response::setResource(std::string path) {
     if (path[path.size() - 1] == '/')
         _resource = "public/www" + path + "index.html";
+    else if (hasFileExtension(path, ".php"))
+    {
+        _resource = path.substr(1, std::string::npos);
+    }
     else
         _resource = "public/www" + path;
     std::cout << "resource is " << _resource << std::endl;
@@ -95,11 +100,12 @@ void    Response::setResource(std::string path) {
     std::cout << "resource exists!" << std::endl;
 }
 
-std::string Response::getRawResponse(void) {
-    std::string response;
+void    Response::setRawResponse(void) {
+    _raw_response = _raw_status_line + _raw_headers + _raw_body;
+}
 
-    response = _raw_status_line + _raw_headers + _raw_body;
-    return (response);
+std::string Response::getRawResponse(void) {
+    return (_raw_response);
 }
 
 // Setters

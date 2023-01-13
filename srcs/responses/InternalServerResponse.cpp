@@ -32,4 +32,5 @@ void    InternalServerResponse::constructResponse(Request& req) {
     setHeaders();
     setRawHeaders();
     this->_raw_body = "<html><body>Internal Server Error</body></html>\r\n";
+    setRawResponse();
 }

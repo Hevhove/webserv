@@ -32,4 +32,5 @@ void    BadRequestResponse::constructResponse(Request& req) {
     setHeaders();
     setRawHeaders();
     this->_raw_body = "<html><body>Bad Request</body></html>\r\n";
+    setRawResponse();
 }

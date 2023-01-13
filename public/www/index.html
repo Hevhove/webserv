@@ -1,33 +1,41 @@
-<!DOCTYPE html>
 <html>
-  <head>
-    <title>Electric Guitar</title>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="icon" href="/favicon.ico" />
-  </head>
-  <body>
-    <header>
-      <h1>Electric Guitar</h1>
-    </header>
-    <div class="container">
-      <div class="text-section">
-        <p>
-          The electric guitar is a type of guitar that uses a pickup to convert
-          the vibration of its strings into electrical signals. It is played
-          through an amplifier, which increases the volume of the sound and
-          allows it to be heard over a loud band or orchestra.
-        </p>
-        <p>
-          Electric guitars are popular among all types of musicians, from rock
-          and blues to jazz and pop. They are known for their versatility and
-          ability to produce a wide range of tones and sounds.
-        </p>
-      </div>
-      <div class="upload-section">
-        <input type="file" id="fileInput" accept="image/*" />
-        <label for="fileInput">Upload Your Own Picture</label>
-        <img id="uploadedImage" src="" alt="Uploaded image" />
-      </div>
-    </div>
-  </body>
+    <head>
+        <link rel="stylesheet" href="style.css" />
+        <link rel="icon" href="/favicon.ico" />
+        <title>42surf</title>
+    </head>
+    <body>
+        <h1>42surf</h1>
+        <h2>don't only surf the web! go surf some waves &#x1f30a; &#x1f60e;</h2>
+        <table>
+            <tr>
+                <th>id</th>
+                <th>description</th>
+                <th>asking price</th>
+                <th>phone number</th>
+            </tr>
+            <?php include dirname(dirname(dirname(__file__))) . "/cgi-bin/load-table.php"; ?>
+        </table>
+        <br></br>
+        <form action="/cgi-bin/add-entry.php" method="post">
+            <label for="description">description:</label>
+            <input type="text" name="description" id="description" required><br>
+
+            <label for="price">asking price:</label>
+            <input type="text" name="price" id="price" required><br>
+
+            <label for="phone">phone number:</label>
+            <input type="text" name="phone" id="phone" required><br>
+
+            <input type="submit" value="add entry" />
+            <br></br>
+        </form>
+
+        <form action="/cgi-bin/delete-entry.php" method="delete">
+            <label for="id">id:</label>
+            <input type="text" name="id" id="id" required><br>
+
+            <input type="submit" value="delete entry" />
+        </form>
+    </body>
 </html>

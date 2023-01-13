@@ -50,6 +50,7 @@ class Response {
         std::string                         _raw_status_line;
         std::string                         _raw_headers;
         std::string                         _raw_body;
+        std::string                         _raw_response;
 
         // contents 
         std::string                         _http_version;
@@ -65,7 +66,8 @@ class Response {
         void    setContentLengthHeader(); 
         void    setConnectionHeader(void);
         void    setContentTypeHeader(void); 
-
+        
+        void    setRawResponse(void);
         void    setResource(std::string path);
 
     public:

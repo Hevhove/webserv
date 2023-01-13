@@ -42,6 +42,7 @@ class PostResponse : public Response {
 
         // Public methods
         void        constructResponse(Request& req);
+        void        executePostResponse(Request& req);
         void        printResponse(void);
         void        setStatusCode(StatusCode sc);
 };

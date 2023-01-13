@@ -31,6 +31,7 @@
 # include <iostream>
 # include <stdio.h>
 # include <fstream>
+# include <fcntl.h>
 
 // Strings
 # include <string>
