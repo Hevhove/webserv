@@ -53,11 +53,9 @@ void    Response::setDateHeader(void) {
 }
 
 void    Response::setContentLengthHeader() {
-    std::ifstream file(_resource);
-    std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     std::stringstream ss;
     
-    ss << content.length();
+    ss << _raw_body.length();
     std::string content_length = ss.str();
     _headers.insert(std::make_pair("Content-Length", ss.str()));
 }

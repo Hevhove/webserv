@@ -1,4 +1,5 @@
 #include "PostResponse.hpp"
+#include <fstream>
 #include <string>
 
 // Constructors
@@ -27,13 +28,26 @@ PostResponse& PostResponse::operator=(const PostResponse& rhs) {
 //
 
 void    PostResponse::executePostResponse(Request& req) {
-
+    std::ofstream   tmpFile;
+    const char*     file_path = "tmp/entry.txt";
+    std::string     command;
+    // int             ret;
+    
+    // debugging check
     std::cout << "raw POST body is " << req.getRawBody() << std::endl;
-    std::ofstream tmpFile;
-    tmpFile.open("tmp.txt");
+    
+    // write the body of the POST request to a tmp file
+    tmpFile.open(file_path);
     tmpFile << req.getRawBody();
     tmpFile.close();
-    std::system("php cgi-bin/add-entry.php tmp.txt");
+    
+    // execute the php script with the contents of the file
+    command = "php " + _resource + " " + file_path; 
+    std::system(command.c_str());
+
+    // delete the tmp file
+    remove(file_path);
+    // TODO: check return value ret and throw error if fail...
     exit(-1);
 }
 

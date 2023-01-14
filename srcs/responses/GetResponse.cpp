@@ -109,12 +109,13 @@ void    GetResponse::setRawBody() {
     {
         _raw_body = content;
     }
-    std::cout << "raw body after processing is : " << _raw_body << std::endl;
+    setContentLengthHeader();
+    // std::cout << "raw body after processing is : " << _raw_body << std::endl;
 }
 
 void    GetResponse::setHeaders() {
     setDateHeader();
-    setContentLengthHeader();
+    //setContentLengthHeader();
     setConnectionHeader();
     setContentTypeHeader();
     // add more headers if desired below...

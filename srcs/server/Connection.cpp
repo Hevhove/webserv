@@ -59,8 +59,8 @@ std::string    Connection::getRawResponse(void) {
         // else if (_request.getRequestMethod() == DELETE)
         //     _response = new DeleteResponse();
         _response->constructResponse(_request);
-    } catch (std::exception& h) {
-
+    } catch (std::exception& e) {
+        // TODO
     }
 
     response = _response->getRawResponse();

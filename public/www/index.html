@@ -6,7 +6,7 @@
     </head>
     <body>
         <h1>42surf</h1>
-        <h2>don't only surf the web! go surf some waves &#x1f30a; &#x1f60e;</h2>
+        <h2>don't only surf the web! go surf some waves;</h2>
         <table>
             <tr>
                 <th>id</th>
@@ -17,25 +17,32 @@
             <?php include dirname(dirname(dirname(__file__))) . "/cgi-bin/load-table.php"; ?>
         </table>
         <br></br>
-        <form action="/cgi-bin/add-entry.php" method="post">
-            <label for="description">description:</label>
-            <input type="text" name="description" id="description" required><br>
+        <div class="form-container">
+            <div class="form-left">
+                <h3>Add your board!</h3>
+                <form action="/cgi-bin/add-entry.php" method="post">
+                    <label for="description">description:</label>
+                    <input type="text" name="description" id="description" required>
 
-            <label for="price">asking price:</label>
-            <input type="text" name="price" id="price" required><br>
+                    <label for="price">asking price:</label>
+                    <input type="text" name="price" id="price" required>
 
-            <label for="phone">phone number:</label>
-            <input type="text" name="phone" id="phone" required><br>
+                    <label for="phone">phone number:</label>
+                    <input type="text" name="phone" id="phone" required>
 
-            <input type="submit" value="add entry" />
-            <br></br>
-        </form>
+                    <input type="submit" value="add entry" />
+                </form>
+            </div>
 
-        <form action="/cgi-bin/delete-entry.php" method="delete">
-            <label for="id">id:</label>
-            <input type="text" name="id" id="id" required><br>
+            <div class="form-right">
+                <h3>Remove a submission</h3>
+                <form action="/cgi-bin/delete-entry.php" method="delete">
+                    <label for="id">id:</label>
+                    <input type="text" name="id" id="id" required>
 
-            <input type="submit" value="delete entry" />
-        </form>
+                    <input type="submit" value="delete entry" />
+                </form>
+            </div>
+        </div>
     </body>
 </html>
