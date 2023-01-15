@@ -36,7 +36,8 @@
 
             <div class="form-right">
                 <h3>Remove a submission</h3>
-                <form action="/cgi-bin/delete-entry.php" method="delete">
+                <form action="/cgi-bin/delete-entry.php" method="post">
+                    <input type="hidden" name="_method" value="DELETE">
                     <label for="id">id:</label>
                     <input type="text" name="id" id="id" required>
 
