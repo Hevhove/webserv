@@ -172,7 +172,7 @@ void	Server::handleNewConnection(void) {
 	addrlen = sizeof(remote_addr);
     try {
 	    new_connection->setSocketFD(accept(_listenSocket.getSocketFD(), (struct sockaddr *)&remote_addr, &addrlen));
-    } catch (std::exception e) {
+    } catch (std::exception& e) {
         std::cerr << e.what() << std::endl;
     }
 

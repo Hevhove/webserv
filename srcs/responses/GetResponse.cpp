@@ -35,7 +35,7 @@ std::pair<size_t, size_t> findPhpBlock(const std::string& html, size_t pos = 0) 
 }
 
 std::string processPhpInHtml(const std::string& resource) {
-    std::ifstream               htmlFile(resource);
+    std::ifstream               htmlFile(resource.c_str());
     std::string                 html((std::istreambuf_iterator<char>(htmlFile)), std::istreambuf_iterator<char>());
     std::pair<size_t, size_t>   phpBlock;
 
@@ -94,7 +94,7 @@ std::string processPhp(std::string res) {
 
 // Public methods
 void    GetResponse::setRawBody() {
-    std::ifstream   file(_resource);
+    std::ifstream   file(_resource.c_str());
     std::string     content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     //
     // _raw_body = content;

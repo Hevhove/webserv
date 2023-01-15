@@ -41,7 +41,7 @@ void    Response::setRawHeaders() {
 }
 
 void    Response::setDateHeader(void) {
-    time_t now = time(nullptr); 
+    time_t now = time(NULL); 
     struct tm* timeinfo = gmtime(&now);
     char buffer[128];
 
