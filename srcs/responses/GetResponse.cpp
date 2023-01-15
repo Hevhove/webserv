@@ -13,7 +13,7 @@ GetResponse::~GetResponse() {
 
 }
 
-GetResponse::GetResponse(const GetResponse& src) {
+GetResponse::GetResponse(const GetResponse& src) : Response(src) {
     (void)src;
 }
 

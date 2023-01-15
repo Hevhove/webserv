@@ -9,7 +9,7 @@ BadRequestResponse::~BadRequestResponse() {
 
 }
 
-BadRequestResponse::BadRequestResponse(const BadRequestResponse& src) {
+BadRequestResponse::BadRequestResponse(const BadRequestResponse& src) : Response(src) {
     (void)src;
 }
 

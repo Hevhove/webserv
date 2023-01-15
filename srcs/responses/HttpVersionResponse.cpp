@@ -9,7 +9,7 @@ HttpVersionResponse::~HttpVersionResponse() {
 
 }
 
-HttpVersionResponse::HttpVersionResponse(const HttpVersionResponse& src) {
+HttpVersionResponse::HttpVersionResponse(const HttpVersionResponse& src)  : Response(src) {
     (void)src;
 }
 

@@ -18,7 +18,7 @@ RM				= rm -rf
 
 # OPERATING SYSTEM CHECK
 ifeq ($(UNAME), Darwin)
-	CC = clang++
+	CC = c++
 else ifeq ($(UNAME), FreeBSD)
 	CC = clang++
 else

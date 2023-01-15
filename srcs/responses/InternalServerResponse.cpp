@@ -9,7 +9,7 @@ InternalServerResponse::~InternalServerResponse() {
 
 }
 
-InternalServerResponse::InternalServerResponse(const InternalServerResponse& src) {
+InternalServerResponse::InternalServerResponse(const InternalServerResponse& src) : Response(src) {
     (void)src;
 }
 

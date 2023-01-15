@@ -11,7 +11,7 @@ PostResponse::~PostResponse() {
 
 }
 
-PostResponse::PostResponse(const PostResponse& src) {
+PostResponse::PostResponse(const PostResponse& src) : Response(src) {
     (void)src;
 }
 
@@ -52,7 +52,7 @@ void    PostResponse::executePostResponse(Request& req) {
 // }
 
 void    PostResponse::setLocationHeader(void) {
-    _headers.insert(std::make_pair("Location", "/index.html?t=" + std::to_string(time(0))));
+    _headers.insert(std::make_pair("Location", "/index.html"));
 }
 
 void    PostResponse::setHeaders(void) {

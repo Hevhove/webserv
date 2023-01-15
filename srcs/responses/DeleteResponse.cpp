@@ -1,6 +1,4 @@
 #include "DeleteResponse.hpp"
-#include <fstream>
-#include <string>
 
 // Constructors
 DeleteResponse::DeleteResponse() {
@@ -11,7 +9,7 @@ DeleteResponse::~DeleteResponse() {
 
 }
 
-DeleteResponse::DeleteResponse(const DeleteResponse& src) {
+DeleteResponse::DeleteResponse(const DeleteResponse& src) : Response(src) {
     (void)src;
 }
 
@@ -53,7 +51,7 @@ void    DeleteResponse::executeDeleteResponse(Request& req) {
 // }
 
 void    DeleteResponse::setLocationHeader(void) {
-    _headers.insert(std::make_pair("Location", "/index.html?t=" + std::to_string(time(0))));
+    _headers.insert(std::make_pair("Location", "/index.html"));
 }
 
 void    DeleteResponse::setHeaders(void) {
