@@ -32,6 +32,7 @@ class PostResponse : public Response {
         // Private methods
         void    setHeaders();
         void    setRawBody();
+        void    setLocationHeader(void);
 
     public:
         // Constructors

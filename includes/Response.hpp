@@ -22,13 +22,16 @@ Example:
 # include "Request.hpp"
 # include "URI.hpp"
 # include "utils.hpp"
-#include <string>
+# include <string>
 
 typedef enum StatusCode {
     // 2xx (successful)
     OK = 200, // successful GET request
     CREATED = 201, // successful POST request
     NO_CONTENT = 204, // successful DELETE request
+
+    // 3xx (redirections)
+    FOUND = 302, // used after successful POST, reload main table
 
     // 4xx (client error)
     BAD_REQUEST = 400,
@@ -66,6 +69,7 @@ class Response {
         void    setContentLengthHeader(); 
         void    setConnectionHeader(void);
         void    setContentTypeHeader(void); 
+        void    setCacheControl(const char* type);
         
         void    setRawResponse(void);
         void    setResource(std::string path);

@@ -79,6 +79,10 @@ void    Response::setContentTypeHeader(void) {
         _headers.insert(std::make_pair("Content-Type", "application/json"));
 }
 
+void    Response::setCacheControl(const char* type) {
+    _headers.insert(std::make_pair("Cache-Control", type));
+}
+
 void    Response::setResource(std::string path) {
     if (path[path.size() - 1] == '/')
         _resource = "public/www" + path + "index.html";

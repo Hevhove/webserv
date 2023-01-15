@@ -21,12 +21,6 @@ PostResponse& PostResponse::operator=(const PostResponse& rhs) {
 }
 
 // Public methods
-// std::string parseQuery(Request& req) {
-//     std::string query;
-//
-// }
-//
-
 void    PostResponse::executePostResponse(Request& req) {
     std::ofstream   tmpFile;
     const char*     file_path = "tmp/entry.txt";
@@ -48,22 +42,26 @@ void    PostResponse::executePostResponse(Request& req) {
     // delete the tmp file
     remove(file_path);
     // TODO: check return value ret and throw error if fail...
-    exit(-1);
 }
 
+// void    PostResponse::setRawBody() {
+//     std::ifstream   file(_resource);
+//     std::string     content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+//
+//     _raw_body = content;
+// }
 
-void    PostResponse::setRawBody() {
-    std::ifstream   file(_resource);
-    std::string     content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-
-    _raw_body = content;
+void    PostResponse::setLocationHeader(void) {
+    _headers.insert(std::make_pair("Location", "/index.html?t=" + std::to_string(time(0))));
 }
 
-void    PostResponse::setHeaders() {
+void    PostResponse::setHeaders(void) {
     setDateHeader();
-    setContentLengthHeader();
+    // setContentLengthHeader();
     setConnectionHeader();
-    setContentTypeHeader();
+    // setContentTypeHeader();
+    setLocationHeader();
+    setCacheControl("no-cache");
     // add more headers if desired below...
     // add here...
 }
@@ -72,8 +70,8 @@ void    PostResponse::constructResponse(Request& req) {
     std::string path = (req.getURI()).getPath();   
     
     setResource(req.getURI().getPath());
-    _raw_status_line = _http_version + " 200 OK" + "\r\n"; 
-    
+    _raw_status_line = _http_version + " 302 Found" + "\r\n"; 
+
     // execute the php...
     executePostResponse(req);
 
@@ -82,7 +80,9 @@ void    PostResponse::constructResponse(Request& req) {
     setRawHeaders();
 
     // include the body
-    setRawBody();
+    //setRawBody();
     setRawResponse();
+    std::cout << "post response is: " << std::endl;
+    std::cout << _raw_status_line << _raw_headers << _raw_body << std::endl;
     //printResponse();
 }
