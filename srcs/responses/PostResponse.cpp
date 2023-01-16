@@ -28,7 +28,7 @@ void    PostResponse::executePostResponse(Request& req) {
     // int             ret;
     
     // debugging check
-    std::cout << "raw POST body is " << req.getRawBody() << std::endl;
+    // std::cout << "raw POST body is " << req.getRawBody() << std::endl;
     
     // write the body of the POST request to a tmp file
     tmpFile.open(file_path);
@@ -44,15 +44,15 @@ void    PostResponse::executePostResponse(Request& req) {
     // TODO: check return value ret and throw error if fail...
 }
 
-// void    PostResponse::setRawBody() {
-//     std::ifstream   file(_resource);
-//     std::string     content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-//
-//     _raw_body = content;
-// }
+void    PostResponse::setRawBody() {
+    // std::ifstream   file(_resource);
+    // std::string     content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    //
+    // _raw_body = content;
+}
 
 void    PostResponse::setLocationHeader(void) {
-    _headers.insert(std::make_pair("Location", "/index.html"));
+    _headers.insert(std::make_pair("Location", "/"));
 }
 
 void    PostResponse::setHeaders(void) {
@@ -62,6 +62,7 @@ void    PostResponse::setHeaders(void) {
     // setContentTypeHeader();
     setLocationHeader();
     setCacheControl("no-cache");
+    setRetryAfter(2);
     // add more headers if desired below...
     // add here...
 }
@@ -80,9 +81,9 @@ void    PostResponse::constructResponse(Request& req) {
     setRawHeaders();
 
     // include the body
-    //setRawBody();
+    // setRawBody();
     setRawResponse();
-    std::cout << "post response is: " << std::endl;
-    std::cout << _raw_status_line << _raw_headers << _raw_body << std::endl;
+    // std::cout << "post response is: " << std::endl;
+    // std::cout << _raw_status_line << _raw_headers << _raw_body << std::endl;
     //printResponse();
 }

@@ -83,6 +83,14 @@ void    Response::setCacheControl(const char* type) {
     _headers.insert(std::make_pair("Cache-Control", type));
 }
 
+void    Response::setRetryAfter(int sec) {
+   std::stringstream ss;
+    
+    ss << sec;
+    std::string seconds = ss.str();
+    _headers.insert(std::make_pair("Retry-After", seconds));
+}
+
 void    Response::setResource(std::string path) {
     if (path[path.size() - 1] == '/')
         _resource = "public/www" + path + "index.html";
@@ -95,7 +103,7 @@ void    Response::setResource(std::string path) {
     std::cout << "resource is " << _resource << std::endl;
     if (!ft_is_resource_available(_resource))
     {
-        // TODO send a response with resource not available!
+        // TODO send a response with resource not available! --> SET UP ERROR PAGES!
         std::cout << "resource not available!" << std::endl;
         exit(-1);
     }

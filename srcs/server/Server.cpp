@@ -53,7 +53,6 @@ void	Server::run(void) {
 		for (int i = 0; i < _fd_count; i++)
 		{
             std::cout << "Events on pfds[" << i << "].revents: " << _pfds[i].revents << std::endl;
-            std::cout << "event flags are: " << _pfds[i].events << std::endl;
             // Check if descriptor has data available for reading
             if (_pfds[i].revents & POLLIN)
 			{
@@ -71,6 +70,8 @@ void	Server::run(void) {
             {
                 respondToExistingConnection(i);
                 // right now just drop the connection, or we could reset the req/res to keep using the same
+                // or only drop when the entire file has been received?
+                // if (_connections[_pfds[i]]->getHeaders())
                 dropConnection(i);
             }
 		}
@@ -81,34 +82,22 @@ void	Server::run(void) {
 void    Server::respondToExistingConnection(int i) {
     std::string     response;
 
-    std::map<int, Connection*>::iterator it;
-    for (it = _connections.begin(); it != _connections.end(); it++)
-        {
-            std::cout << it->first    // string (key)
-                << ':'
-                << it->second   // string's value 
-                << std::endl;
-        }
+    // std::map<int, Connection*>::iterator it;
+    // for (it = _connections.begin(); it != _connections.end(); it++)
+    //     {
+    //         std::cout << it->first    // string (key)
+    //             << ':'
+    //             << it->second   // string's value 
+    //             << std::endl;
+    //     }
 
     response = _connections[_pfds[i].fd]->getRawResponse();
-    if (response.length() == 0)
-        return ;
-    std::cout << "current raw response!!! : " << std::endl;
-    std::cout << response.c_str() << std::endl;
+    // std::cout << "current raw response!!! : " << std::endl;
+    // std::cout << response.c_str() << std::endl;
     int bytes_sent = send(_pfds[i].fd, response.c_str(), response.size(), 0);
-    std::cout << "bytes sent is " << bytes_sent << std::endl;
+    // std::cout << "bytes sent is " << bytes_sent << std::endl;
     if (bytes_sent < 0)
         std::cout << "some error sending" << std::endl;
-    // while (bytes_sent < response.size())
-    // {
-    //     int n = send(_pfds[i].fd, response.c_str() + bytes_sent, response.size() - bytes_sent, 0);
-    //     if (n < 0)
-    //     {
-    //         // TODO: throw some kind of error!
-    //         break ;
-    //     }
-    //     bytes_sent += n;
-    // }
 }
 
 void	Server::handleExistingConnection(int i) {

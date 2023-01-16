@@ -66,7 +66,7 @@ void    Request::parseRequest(char *buf)
     }
     // If the method is a POST request, keep adding content to the body until content-length is received
     // The way of processing the body depends on the "Content-type" header...
-    if (_request_method == POST)
+    if (_request_method == POST || _request_method == DELETE)
         parseRequestBody();
 }
 
@@ -152,6 +152,8 @@ void    Request::parseURI(std::string uri) {
         _uri.setQuery(uri.substr(uri.find('?') + 1, (uri.find('#'))));
     std::cout << "parsed path is " <<_uri.getPath() << std::endl;
     std::cout << "parsed query is " <<_uri.getQuery() << std::endl;
+    // check if it exists? if not, send 404...
+    //
 }
 
 void    Request::printRequest(void)

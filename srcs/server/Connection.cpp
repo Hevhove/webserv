@@ -47,6 +47,9 @@ std::string    Connection::getRawResponse(void) {
     try {
         if (_request.getRequestMethod() == NOT_SET)
         {
+            // here: if request wasn't set, we need to prompt the client to try again, so that we are ready!
+            response += "HTTP/1.1 503 Service Unavailable\r\n";
+            response += "Retry-After: 0.5\r\n\r\n";
             std::cout << "returning response of: " << response << std::endl;
             return response;
         }
@@ -65,6 +68,10 @@ std::string    Connection::getRawResponse(void) {
 
     response = _response->getRawResponse();
     return (response);
+}
+
+Request&        Connection::getRequest(void) {
+    return (_request);
 }
 
 // Private Member Functions 

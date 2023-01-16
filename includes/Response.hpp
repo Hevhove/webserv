@@ -70,7 +70,8 @@ class Response {
         void    setConnectionHeader(void);
         void    setContentTypeHeader(void); 
         void    setCacheControl(const char* type);
-        
+        void    setRetryAfter(int sec);
+
         void    setRawResponse(void);
         void    setResource(std::string path);
 

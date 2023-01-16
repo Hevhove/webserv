@@ -81,7 +81,7 @@ void    DeleteResponse::constructResponse(Request& req) {
     // include the body
     //setRawBody();
     setRawResponse();
-    std::cout << "post response is: " << std::endl;
+    std::cout << "delete response is: " << std::endl;
     std::cout << _raw_status_line << _raw_headers << _raw_body << std::endl;
     //printResponse();
 }

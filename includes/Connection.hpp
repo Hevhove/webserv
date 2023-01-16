@@ -30,6 +30,7 @@ class Connection : public Socket {
 		// Member functions
         void            handleRequest(char buf[BUFF_SIZE]);
         std::string     getRawResponse(void);
+        Request&        getRequest(void);
 
 };
 
