@@ -27,7 +27,7 @@ else
 endif
 
 # RULES
-$(OBJS_DIR)/%.o: $(SRCS_DIR)/%.cpp compile_msg
+$(OBJS_DIR)/%.o: $(SRCS_DIR)/%.cpp
 	@mkdir -p $(OBJS_DIR)
 	@mkdir -p $(OBJS_SUB_DIR)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
@@ -37,7 +37,7 @@ $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(INCLUDES) $(OBJS) -o $(NAME)
 	@printf "[$(C_GREEN)======SUCCESS======$(C_END)] \n"
 
-all: $(NAME)
+all: compile_msg $(NAME)
 
 compile_msg:
 	@printf "[$(C_YELLOW)=====COMPILING=====$(C_END)]\n"
