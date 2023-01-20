@@ -21,7 +21,9 @@ class Connection : public Socket {
         void        parse_body();
 
 	public:
-		// Constructors
+        std::vector<std::pair<Request*, Response*> > requestResponseList;
+		
+        // Constructors
 		Connection();
 		virtual ~Connection();
 		Connection(const Connection& src);
@@ -29,10 +31,10 @@ class Connection : public Socket {
 
 		// Member functions
         void            handleRequest(char buf[BUFF_SIZE]);
+        void            handleRequest2(char buf[BUFF_SIZE]);
         std::string     getRawResponse(void);
         Request&        getRequest(void);
 
 };
 
 #endif
-

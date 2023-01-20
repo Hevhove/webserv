@@ -63,16 +63,28 @@ void	Server::run(void) {
                 }
 				else
                 {
-					handleExistingConnection(i);
+					readFromExistingConnection(i);
+                    // std::cout << "size is " << _connections[_pfds[i].fd]->requestResponseList.size() << std::endl;
+                    // if (_connections[_pfds[i].fd]->requestResponseList.size() > 0)
+                    // {
+                    //     std::cout << "printing all requests: " << std::endl;
+                    //     for (unsigned long j = 0; j < _connections[_pfds[i].fd]->requestResponseList.size(); j++) 
+                    //         _connections[_pfds[i].fd]->requestResponseList[j].first->printRequest();
+                    // }
                 }
             }
             else if (_pfds[i].revents & POLLOUT)
             {
+                // Because of keep-alive connection, this event will trigger a lot...
+                // as long as client keeps the connection open!
+                // we should have a mechanism that checks whether we have already sent a particular response or not...
+                // Every request/response should have some "Answered" indicator? to prevent multiple sending!
+                // Loop over the Req/Res list and if a request is fully parsed, formulate answer and respond!
                 respondToExistingConnection(i);
                 // right now just drop the connection, or we could reset the req/res to keep using the same
                 // or only drop when the entire file has been received?
                 // if (_connections[_pfds[i]]->getHeaders())
-                dropConnection(i);
+                // dropConnection(i);
             }
 		}
 	}
@@ -82,15 +94,14 @@ void	Server::run(void) {
 void    Server::respondToExistingConnection(int i) {
     std::string     response;
 
-    // std::map<int, Connection*>::iterator it;
-    // for (it = _connections.begin(); it != _connections.end(); it++)
-    //     {
-    //         std::cout << it->first    // string (key)
-    //             << ':'
-    //             << it->second   // string's value 
-    //             << std::endl;
-    //     }
+    
 
+    // test code
+    // response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello, World!";
+    // int bytes_sent = send(_pfds[i].fd, response.c_str(), response.size(), 0);
+    // return ;
+
+    // real code below
     response = _connections[_pfds[i].fd]->getRawResponse();
     // std::cout << "current raw response!!! : " << std::endl;
     // std::cout << response.c_str() << std::endl;
@@ -100,9 +111,9 @@ void    Server::respondToExistingConnection(int i) {
         std::cout << "some error sending" << std::endl;
 }
 
-void	Server::handleExistingConnection(int i) {
+void	Server::readFromExistingConnection(int i) {
 	int	    nbytes;
-	char    buf[BUFF_SIZE];    // Buffer for client data
+	char    buf[BUFF_SIZE];
 
 	memset(buf, 0, BUFF_SIZE);
     nbytes = recv(_pfds[i].fd, buf, sizeof(buf), 0);
@@ -116,15 +127,8 @@ void	Server::handleExistingConnection(int i) {
 	}
 	else
 	{
-        _connections[_pfds[i].fd]->handleRequest(buf);
+        _connections[_pfds[i].fd]->handleRequest2(buf);
         memset(buf, 0, BUFF_SIZE);
-        // display all the connections currently connected to the server
-        // std::map<int, Connection*>::iterator it;
-        // std::cout << "List of current connections: " << std::endl;
-        // for (it = _connections.begin(); it != _connections.end(); it++)
-        // {
-        //     std::cout << it->first << ':' << it->second->getSocketFD() << std::endl;
-        // }
 	}
 }
 

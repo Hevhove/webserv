@@ -31,6 +31,8 @@ class Request {
 	    std::string			_raw_start_line; 		// The complete request line such as: `GET / HTTP/1.1`
 	    std::string			_raw_headers;           // Raw headers (general headers, response/request headers, entity headers)
 	    std::string			_raw_body;              // HTTP Message Body
+        bool                _has_body;
+        unsigned long       _body_length;
         int                 _count; 
 
         // HTTP
@@ -62,8 +64,11 @@ class Request {
         
         // Public member functions
         void                parseRequest(char buf[BUFF_SIZE]);
+        int                 parseRequest2(char buf[BUFF_SIZE], int bytes);
         void                printRequest(void);
-   
+        bool                headersFullyParsed(void);   
+        bool                isFullyParsed(void);
+
         // Exceptions
        	class BadRequestException : public std::exception {
         public: 

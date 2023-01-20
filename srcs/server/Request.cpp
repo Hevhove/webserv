@@ -64,10 +64,74 @@ void    Request::parseRequest(char *buf)
         parseRequestStartLine();
         parseRequestHeaders();
     }
-    // If the method is a POST request, keep adding content to the body until content-length is received
-    // The way of processing the body depends on the "Content-type" header...
-    if (_request_method == POST || _request_method == DELETE)
+    // If the method has content-length, keep adding content to the body until content-length is received
+    std::map<std::string, std::string>::iterator it = _headers.find("Content-Length");
+    if (it != _headers.end()) // if there is a content-length, we have to parse a body
+    {
         parseRequestBody();
+    }
+}
+
+bool     Request::headersFullyParsed() {
+    if (_unparsed_request.find("\r\n\r\n") != std::string::npos)
+        return (true);
+    else
+        return (false);
+}
+
+bool     Request::isFullyParsed() {
+    if (headersFullyParsed() && !_has_body)
+        return (true);
+    else if (headersFullyParsed() && _has_body && _raw_body.length() == _body_length)
+    {
+        return (true);
+    }
+    else
+        return (false);
+}
+
+int     Request::parseRequest2(char *buf, int bytes_read) {
+    //int         to_read = BUFF_SIZE - bytes_read;
+    int         start = bytes_read;
+    // are the entire headers already read in?
+    // does the request already have a content-length specified?
+    while (start < BUFF_SIZE)
+    {
+        if (!headersFullyParsed())
+        {
+            std::cout << "currently reading byte i: " << start << std::endl; 
+            _unparsed_request += buf[start];
+            if (_unparsed_request.find("\r\n\r\n") != std::string::npos) // let's say we found this at byte 200
+            {
+                // we should now have complete headers in _unparsed_request?
+                parseRequestStartLine(); // REWRITE
+                parseRequestHeaders(); // REWRITE
+                std::cout << "a request was fully parsed, with following data: " << _unparsed_request << std::endl;
+            }
+            bytes_read++;
+        }
+        else // header of current req have been fully parsed. Is there a body to parse further?
+        {
+            // check if there is a body to parse...
+            if (_has_body)
+            {
+                static int body_bytes_read;
+                _raw_body += buf[start];
+                body_bytes_read++;
+                std::cout << "current body_bytes_read is" << body_bytes_read << std::endl;
+                bytes_read++;
+                if (static_cast<unsigned long>(body_bytes_read) == _body_length) // keep reading until we have the entire body
+                {
+                    std::cout << "full body of current req was read!" << std::endl;
+                    break ;
+                }
+            }
+            else
+                break ; // if there is no body, and headers have been parsed, we are good too
+        }
+        start++;
+    }
+    return (bytes_read);
 }
 
 // Private Member functions
@@ -98,16 +162,12 @@ void    Request::parseRequestStartLine(void) {
     // Parse HTTP version 
     if (startline_split[2] != "HTTP/1.1")
         throw HttpVersionNotSupportedException();
-
-    // Testing
-    if (_request_method == GET)
-        std::cout << "request method is GET" << std::endl;
 }
 
 void    Request::parseRequestHeaders(void) {
     std::string         line;
 
-    // Select only the raw headers
+    // Select only the raw headers | NOT SURE IF THIS LINE STILL NEEDED
     _raw_headers = _unparsed_request.substr(0, _unparsed_request.find("\r\n\r\n"));
     std::stringstream   ss(_raw_headers); 
     
@@ -130,14 +190,23 @@ void    Request::parseRequestHeaders(void) {
         // insert the key and value into the map
         _headers.insert(std::make_pair(key, value));
     }
+    // check if there is a body to parse...
+    std::map<std::string, std::string>::iterator it = _headers.find("Content-Length");
+    if (it != _headers.end())
+    {
+        _has_body = true;
+        _body_length = std::stoul(it->second, NULL, 0);
+    }
+
     // for testing purposes, we display our headers:
- //    std::cout << "HEADER TEST" << std::endl;
- //    for (std::map<std::string, std::string>::const_iterator it = _headers.begin(); it != _headers.end(); ++it)
- //        std::cout << it->first << ": " << it->second << std::endl;
- // 
+    // std::cout << "HEADER TEST" << std::endl;
+    // for (std::map<std::string, std::string>::const_iterator it = _headers.begin(); it != _headers.end(); ++it)
+    //     std::cout << it->first << ": " << it->second << std::endl;
+    // std::cout << "-----------------------------" << std::endl;
+
     // if we are dealing with a post request, we need still need the data coming after the headers, so we move the string forward 
-    if (_request_method == POST) 
-        _unparsed_request = _unparsed_request.substr(_unparsed_request.find("\r\n\r\n") + 4);
+    // if (_request_method == POST) 
+    //     _unparsed_request = _unparsed_request.substr(_unparsed_request.find("\r\n\r\n") + 4);
 }
 
 void    Request::parseRequestBody(void) {

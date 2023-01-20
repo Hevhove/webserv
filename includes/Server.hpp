@@ -21,7 +21,7 @@ class Server {
 		void				addConnection(int newfd, Connection* new_conn);
 		void				dropConnection(int i);
 		void			    handleNewConnection(void);
-		void			    handleExistingConnection(int i);
+		void			    readFromExistingConnection(int i);
         void                respondToExistingConnection(int i);
 		void*			    get_in_addr(struct sockaddr *sa);
 
