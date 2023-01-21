@@ -42,19 +42,27 @@ Server&	Server::operator=(const Server& rhs) {
 // PUBLIC METHODS
 void	Server::run(void) {
 	int poll_count;
+    //static int count;
 
 	std::cout << "Launching server..." << std::endl;
 	while (1)
 	{
 		if ((poll_count = poll(_pfds, _fd_count, -1)) < 0)
 			throw PollException();
+        // usleep(500000);
 		// Run through the existing connections looking for data to read
         std::cout << "POLL RETURN IS " << poll_count << std::endl;
 		for (int i = 0; i < _fd_count; i++)
 		{
             std::cout << "Events on pfds[" << i << "].revents: " << _pfds[i].revents << std::endl;
+            // Check if file descriptor is still open
+            if (_pfds[i].revents & POLLHUP)
+            {
+                std::cout << "server: Socket " << _connections[_pfds[i].fd]->getSocketFD() << " hung up" << std::endl;
+                dropConnection(i);
+            }
             // Check if descriptor has data available for reading
-            if (_pfds[i].revents & POLLIN)
+            else if (_pfds[i].revents & POLLIN)
 			{
 				if (_pfds[i].fd == _listenSocket.getSocketFD())
                 {
@@ -64,13 +72,14 @@ void	Server::run(void) {
 				else
                 {
 					readFromExistingConnection(i);
-                    // std::cout << "size is " << _connections[_pfds[i].fd]->requestResponseList.size() << std::endl;
-                    // if (_connections[_pfds[i].fd]->requestResponseList.size() > 0)
-                    // {
-                    //     std::cout << "printing all requests: " << std::endl;
-                    //     for (unsigned long j = 0; j < _connections[_pfds[i].fd]->requestResponseList.size(); j++) 
-                    //         _connections[_pfds[i].fd]->requestResponseList[j].first->printRequest();
-                    // }
+                    std::cout << "size is " << _connections[_pfds[i].fd]->requestResponseList.size() << std::endl;
+                    if (_connections[_pfds[i].fd]->requestResponseList.size() > 0)
+                    {
+                        std::cout << "printing all requests: " << std::endl;
+                        for (unsigned long j = 0; j < _connections[_pfds[i].fd]->requestResponseList.size(); j++) 
+                            _connections[_pfds[i].fd]->requestResponseList[j].first->printRequest();
+                    }
+                    // exit(-1);
                 }
             }
             else if (_pfds[i].revents & POLLOUT)
@@ -85,6 +94,10 @@ void	Server::run(void) {
                 // or only drop when the entire file has been received?
                 // if (_connections[_pfds[i]]->getHeaders())
                 // dropConnection(i);
+                // if (count == 1)
+                //     exit(-1);
+                // count++;
+
             }
 		}
 	}
@@ -94,15 +107,17 @@ void	Server::run(void) {
 void    Server::respondToExistingConnection(int i) {
     std::string     response;
 
-    
-
+    response = _connections[_pfds[i].fd]->getRawResponse2();
+    if (response.empty())
+        return ;
+    std::cout << "response on socket: " << _pfds[i].fd << "is " << response << std::endl;
     // test code
     // response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello, World!";
     // int bytes_sent = send(_pfds[i].fd, response.c_str(), response.size(), 0);
     // return ;
 
     // real code below
-    response = _connections[_pfds[i].fd]->getRawResponse();
+    // response = _connections[_pfds[i].fd]->getRawResponse();
     // std::cout << "current raw response!!! : " << std::endl;
     // std::cout << response.c_str() << std::endl;
     int bytes_sent = send(_pfds[i].fd, response.c_str(), response.size(), 0);

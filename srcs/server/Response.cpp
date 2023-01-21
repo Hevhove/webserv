@@ -61,7 +61,7 @@ void    Response::setContentLengthHeader() {
 }
 
 void    Response::setConnectionHeader(void) {
-    _headers.insert(std::make_pair("Connection", "close"));
+    _headers.insert(std::make_pair("Connection", "keep-alive"));
 }
 
 void    Response::setContentTypeHeader(void) {

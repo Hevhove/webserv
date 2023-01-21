@@ -1,4 +1,5 @@
 #include "Connection.hpp"
+#include <string>
 
 // Constructors
 Connection::Connection() {
@@ -36,14 +37,18 @@ void    Connection::handleRequest2(char buf[BUFF_SIZE]) {
     {
         // If the previous request was full, and we have not read the entire buffer yet,
         // we need to allocate more space to put requests
+        std::cout << "size is " << requestResponseList.size() << std::endl; 
         if (requestResponseList.size() == 0
             || requestResponseList[requestResponseList.size() - 1].first->isFullyParsed()) // this means both body and header fully parsed!
         {
+            std::cout << "adding new pair to reqreslist" << std::endl;
             Request* req = new Request;
             std::pair<Request*, Response*> pair = std::make_pair(req, nullptr);
             requestResponseList.push_back(pair);
         }
+        std::cout << "LOL3" << std::endl;
         Request* last_req = requestResponseList[requestResponseList.size() - 1].first;
+        std::cout << "LOL4" << std::endl;
         // while we have not read BUFF_SIZE bytes, there is more data to read...
         bytes_checked = last_req->parseRequest2(buf, bytes_checked);
         std::cout << "current bytes checked is: " << bytes_checked << std::endl;
@@ -70,6 +75,48 @@ void Connection::handleRequest(char buf[BUFF_SIZE]) {
     // testing:
     std::cout << "request was parsed: " << std::endl;
     _request.printRequest();
+}
+
+std::string     Connection::getRawResponse2(void) {
+    std::string response;
+    // firs thing to do is loop over the req/resp list
+    for (unsigned int i = 0; i < requestResponseList.size(); i++)
+    {
+        Request* req = requestResponseList[i].first;
+        if (req->isFullyParsed())
+        {
+            try
+            {
+                if (req->getRequestMethod() == GET)
+                {
+                    requestResponseList[i].second = new GetResponse();
+                }
+                else if (req->getRequestMethod() == POST)
+                {
+                    requestResponseList[i].second = new PostResponse();
+                }
+                // if (req->getRequestMethod() == DELETE)
+                // {
+                //     requestResponseList[i].second = new DeleteResponse();
+                // }
+            } catch (std::exception& e) {
+                // TODO
+            }
+            requestResponseList[i].second->constructResponse(*req);
+            response = requestResponseList[i].second->getRawResponse();
+            // clean up now?
+            std::vector<std::pair<Request*, Response*> >::iterator it = requestResponseList.begin() + i;
+            delete it->first;
+            delete it->second;
+            requestResponseList.erase(it);
+            
+            // return the response string
+            // std::cout << "Response is " << response << std::endl;
+            return (response);
+        }
+    }
+    // TODO: double check: if no request was fully parsed, this returns empty str? What happens?
+    return response;
 }
 
 std::string    Connection::getRawResponse(void) {

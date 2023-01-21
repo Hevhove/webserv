@@ -99,7 +99,7 @@ int     Request::parseRequest2(char *buf, int bytes_read) {
     {
         if (!headersFullyParsed())
         {
-            std::cout << "currently reading byte i: " << start << std::endl; 
+            // std::cout << "currently reading byte i: " << start << std::endl; 
             _unparsed_request += buf[start];
             if (_unparsed_request.find("\r\n\r\n") != std::string::npos) // let's say we found this at byte 200
             {
@@ -140,8 +140,20 @@ void    Request::parseRequestStartLine(void) {
 
     // The first line of the request should indicate METHOD, resource and HTTP tag
     _raw_start_line = _unparsed_request.substr(0, _unparsed_request.find("\r\n"));
+    // trim possible garbage values before the startline from a previous read
+    std::string keys[] = {"GET", "POST", "DELETE"};
+    std::size_t         pos = _raw_start_line.length();
+    for (int i = 0; i < 3; i++)
+    {
+        std::size_t keyPos = _raw_start_line.find(keys[i]);
+        if (keyPos != std::string::npos && keyPos < pos)
+            pos = keyPos;
+    }
+    if (pos != _raw_start_line.length())
+        _raw_start_line = _raw_start_line.substr(pos);
     _unparsed_request = _unparsed_request.substr(_unparsed_request.find("\r\n") + 2);
-   
+  
+    std::cout << "raw_startline is " << _raw_start_line << std::endl;
     startline_split = ft_split(_raw_start_line, ' ');
     if (startline_split.size() != 3)
         throw BadRequestException();

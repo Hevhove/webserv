@@ -78,10 +78,10 @@ void    GetResponse::constructResponse(Request& req) {
        
     // set the headers
     setHeaders();
-    setRawHeaders();
 
     // include the body
     setRawBody();
+    setRawHeaders();
     setRawResponse();
     //printResponse();
 }
