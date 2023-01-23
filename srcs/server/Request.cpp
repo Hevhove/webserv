@@ -195,7 +195,7 @@ void    Request::parseRequestHeaders(void) {
     if (it != _headers.end())
     {
         _has_body = true;
-        _body_length = std::stoul(it->second, NULL, 0);
+        _body_length = std::strtoul(it->second.c_str(), NULL, 0);
     }
 
     // for testing purposes, we display our headers:
