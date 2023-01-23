@@ -20,7 +20,8 @@ Example:
 typedef enum RequestMethod {
     GET = 0,
     POST,
-    DELETE
+    DELETE,
+    NOT_SET
 } RequestMethod;
 
 class Request {
@@ -30,6 +31,9 @@ class Request {
 	    std::string			_raw_start_line; 		// The complete request line such as: `GET / HTTP/1.1`
 	    std::string			_raw_headers;           // Raw headers (general headers, response/request headers, entity headers)
 	    std::string			_raw_body;              // HTTP Message Body
+        bool                _has_body;
+        unsigned long       _body_length;
+        int                 _body_bytes_read;
         int                 _count; 
 
         // HTTP
@@ -60,15 +64,17 @@ class Request {
         std::map<std::string, std::string>  getHeaders(void);
         
         // Public member functions
-        void                parseRequest(char buf[BUFF_SIZE]);
+        int                 parseRequest(char buf[BUFF_SIZE], int bytes);
         void                printRequest(void);
-   
+        bool                headersFullyParsed(void);   
+        bool                isFullyParsed(void);
+
         // Exceptions
-       	class ParsingFailure : public std::exception {
+       	class BadRequestException : public std::exception {
         public: 
             const char * what () const throw();
 		};
-        class HTTPVersionMismatch : public std::exception {
+        class HttpVersionNotSupportedException : public std::exception {
         public:
 			const char * what () const throw();
 		};

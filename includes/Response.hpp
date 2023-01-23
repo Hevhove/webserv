@@ -22,13 +22,16 @@ Example:
 # include "Request.hpp"
 # include "URI.hpp"
 # include "utils.hpp"
-#include <string>
+# include <string>
 
 typedef enum StatusCode {
     // 2xx (successful)
-    OK = 200,
-    CREATED = 201,
-    NO_CONTENT = 204,
+    OK = 200, // successful GET request
+    CREATED = 201, // successful POST request
+    NO_CONTENT = 204, // successful DELETE request
+
+    // 3xx (redirections)
+    FOUND = 302, // used after successful POST, reload main table
 
     // 4xx (client error)
     BAD_REQUEST = 400,
@@ -41,37 +44,35 @@ typedef enum StatusCode {
 
     // 5xx (server error)
     INTERNAL_SERVER_ERROR = 500,
-    BAD_GATEWAY = 502,
     HTTP_VERSION_NOT_SUPPORTED = 505
 } StatusCode;
 
 class Response {
-    private:
+    protected:
         // to construct for sending
         std::string                         _raw_status_line;
         std::string                         _raw_headers;
         std::string                         _raw_body;
+        std::string                         _raw_response;
 
         // contents 
         std::string                         _http_version;
-        // StatusCode                          _status_code;
+        StatusCode                          _status_code;
         std::string                         _status_string;
         std::map<std::string, std::string>  _headers;
 
         std::string                         _resource;
     
-        // Private methods
-        void    constructGETResponse(Request& req);
-        void    constructPOSTResponse(Request& req);
-        void    constructDELETEResponse(Request& req);
-
-        void    setHeaders();
+        // functions to set headers 
         void    setRawHeaders(void); 
         void    setDateHeader(void); 
         void    setContentLengthHeader(); 
-        void    setConnectionHeader(void);
-        void    setContentTypeHeader(void); 
-        void    setRawBody();
+        void    setConnectionHeader(std::string type);
+        void    setContentTypeHeader(); 
+        void    setCacheControl(const char* type);
+        void    setRetryAfter(int sec);
+
+        void    setRawResponse(void);
         void    setResource(std::string path);
 
     public:
@@ -82,9 +83,13 @@ class Response {
 		Response& operator=(const Response& rhs);
         
         // Public methods
-        void        constructResponse(Request& req, RequestMethod req_method);
-        std::string getRawResponse(void);
-        void        printResponse(void);
+        virtual void    constructResponse(Request& req) = 0;
+        virtual void    setHeaders() = 0;
+
+        std::string     getRawResponse(void);
+        std::string     getRawResponse2(void);
+        void            printResponse(void);
+        void            setStatusCode(StatusCode sc);
 };
 
 #endif

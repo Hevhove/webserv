@@ -3,21 +3,25 @@
 
 # include "Request.hpp"
 # include "Response.hpp"
+# include "GetResponse.hpp"
+# include "PostResponse.hpp"
+# include "BadRequestResponse.hpp"
+# include "HttpVersionResponse.hpp"
+# include "InternalServerResponse.hpp"
 # include "utils.hpp"
 # include "Socket.hpp"
-#include <string>
 
 class Connection : public Socket {
 	private:
-        Request     _request;
-        Response    _response;
+        std::vector<std::pair<Request*, Response*> > requestResponseList;
 
         // Private Member functions
         void        parse_header();
         void        parse_body();
 
 	public:
-		// Constructors
+		
+        // Constructors
 		Connection();
 		virtual ~Connection();
 		Connection(const Connection& src);
@@ -26,9 +30,6 @@ class Connection : public Socket {
 		// Member functions
         void            handleRequest(char buf[BUFF_SIZE]);
         std::string     getRawResponse(void);
-
-        
 };
 
 #endif
-

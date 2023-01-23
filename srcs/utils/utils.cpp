@@ -18,7 +18,7 @@ bool ft_is_non_whitespace(int ch) {
 }
 
 bool ft_is_resource_available(std::string resource) {
-    std::ifstream file(resource);
+    std::ifstream file(resource.c_str());
 
     return (file.good());
 }

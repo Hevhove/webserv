@@ -24,6 +24,7 @@
 // Error management
 # include <errno.h>
 # include <exception>
+# include <cstddef>
 
 // IO
 # include <unistd.h>
@@ -31,12 +32,16 @@
 # include <iostream>
 # include <stdio.h>
 # include <fstream>
+# include <fcntl.h>
 
 // Strings
 # include <string>
 # include <cstring>
 # include <string.h>
 # include <sstream>
+
+// Algo
+# include <algorithm>
 
 // Time
 # include <ctime>

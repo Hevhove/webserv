@@ -107,7 +107,7 @@ void    Socket::closeSocket(void) {
     if (ret < 0)
         throw SocketCloseException();
     else
-        std::cout << "socket " << this->getSocketFD() << "closed successfully" << std::endl;
+        std::cout << "---SOCKET " << this->getSocketFD() << " CLOSED SUCCESSFULLY---" << std::endl;
 }
 
 // Getters

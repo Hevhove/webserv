@@ -1,5 +1,6 @@
 #include "Response.hpp"
 #include "Request.hpp"
+#include "utils.hpp"
 #include <fstream>
 #include <string>
 
@@ -22,18 +23,9 @@ Response& Response::operator=(const Response& rhs) {
 }
 
 // Public methods
-void    Response::constructResponse(Request& req, RequestMethod req_method) {
-    if (req_method == GET)
-        constructGETResponse(req);
-    else if (req_method == POST)
-        constructPOSTResponse(req);
-    else if (req_method == DELETE)
-        constructDELETEResponse(req);
-}
-
 void    Response::printResponse(void) {
     std::cout << "PRINTING RESPONSE: " << std::endl;
-    std::cout << _raw_status_line << _raw_headers << _raw_body << std::endl;
+    std::cout << _raw_status_line << std::endl << _raw_headers << std::endl << _raw_body << std::endl;
 }
 
 // Private methods 
@@ -49,33 +41,30 @@ void    Response::setRawHeaders() {
 }
 
 void    Response::setDateHeader(void) {
-    time_t now = time(nullptr); 
+    time_t now = time(NULL); 
     struct tm* timeinfo = gmtime(&now);
     char buffer[128];
 
     strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S %Z", timeinfo);
     std::string time_str(buffer);
-    std::cout << "Date: " << time_str << std::endl;
     _headers.insert(std::make_pair("Date", time_str));
 
 }
 
 void    Response::setContentLengthHeader() {
-    std::ifstream file(_resource);
-    std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     std::stringstream ss;
     
-    ss << content.length();
+    ss << _raw_body.length();
     std::string content_length = ss.str();
     _headers.insert(std::make_pair("Content-Length", ss.str()));
 }
 
-void    Response::setConnectionHeader(void) {
-    _headers.insert(std::make_pair("Connection", "close"));
+void    Response::setConnectionHeader(std::string type) {
+    _headers.insert(std::make_pair("Connection", type));
 }
 
 void    Response::setContentTypeHeader(void) {
-    if (hasFileExtension(_resource, ".html"))
+    if (hasFileExtension(_resource, ".html") || _status_code == BAD_REQUEST || _status_code == INTERNAL_SERVER_ERROR)
         _headers.insert(std::make_pair("Content-Type", "text/html"));
     else if (hasFileExtension(_resource, ".css"))
         _headers.insert(std::make_pair("Content-Type", "text/css"));
@@ -85,64 +74,49 @@ void    Response::setContentTypeHeader(void) {
         _headers.insert(std::make_pair("Content-Type", "image/jpeg"));
     else if (hasFileExtension(_resource, ".png"))
         _headers.insert(std::make_pair("Content-Type", "image/png"));
+    else if (hasFileExtension(_resource, ".json"))
+        _headers.insert(std::make_pair("Content-Type", "application/json"));
 }
 
-void    Response::setHeaders() {
-    setDateHeader();
-    setContentLengthHeader();
-    setConnectionHeader();
-    setContentTypeHeader();
-    // add more headers if desired below...
+void    Response::setCacheControl(const char* type) {
+    _headers.insert(std::make_pair("Cache-Control", type));
 }
 
-void    Response::setRawBody() {
-    std::ifstream   file(_resource);
-    std::string     content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-
-    _raw_body = content;
+void    Response::setRetryAfter(int sec) {
+   std::stringstream ss;
+    
+    ss << sec;
+    std::string seconds = ss.str();
+    _headers.insert(std::make_pair("Retry-After", seconds));
 }
 
 void    Response::setResource(std::string path) {
     if (path[path.size() - 1] == '/')
         _resource = "public/www" + path + "index.html";
+    else if (hasFileExtension(path, ".php"))
+    {
+        _resource = path.substr(1, std::string::npos);
+    }
     else
         _resource = "public/www" + path;
-    std::cout << "resource is " << _resource << std::endl;
+    // std::cout << "resource is " << _resource << std::endl;
     if (!ft_is_resource_available(_resource))
     {
-        // TODO send a response with resource not available!
+        // TODO send a response with resource not available! --> SET UP ERROR PAGES!
         std::cout << "resource not available!" << std::endl;
         exit(-1);
     }
-    std::cout << "resource exists!" << std::endl;
 }
 
-void    Response::constructGETResponse(Request& req) {
-    std::string path = (req.getURI()).getPath();   
-    
-    setResource(req.getURI().getPath());
-    _raw_status_line = _http_version + " 200 OK" + "\r\n"; 
-       
-    // set the headers
-    setHeaders();
-    setRawHeaders();
-
-    // include the body
-    setRawBody();
-    //printResponse();
+void    Response::setRawResponse(void) {
+    _raw_response = _raw_status_line + _raw_headers + _raw_body;
 }
 
 std::string Response::getRawResponse(void) {
-    std::string response;
-
-    response = _raw_status_line + _raw_headers + _raw_body;
-    return (response);
+    return (_raw_response);
 }
 
-void    Response::constructPOSTResponse(Request& req) {
-    (void)req; 
-}
-
-void    Response::constructDELETEResponse(Request& req) {
-    (void)req; 
+// Setters
+void    Response::setStatusCode(StatusCode sc) {
+    _status_code = sc;
 }
