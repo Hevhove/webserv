@@ -4,6 +4,6 @@ WORKDIR /app
 COPY . . 
 RUN apt-get update && apt-get install build-essential -y
 USER root
-RUN make
-CMD ["./server", "a"]
+RUN make re
+CMD ["./webserv", "a"]
 EXPOSE 3490
