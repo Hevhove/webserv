@@ -23,7 +23,6 @@ class Server {
 	private:
 		// Vars
 		Socket				        _listenSocket;
-        Socket				        _currSocket; // TODO : check if delete needed
 		struct addrinfo		        _hints;
 		struct addrinfo*	        _servinfo;
 		int					        _fd_count;

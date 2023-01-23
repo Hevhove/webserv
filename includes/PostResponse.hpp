@@ -1,4 +1,8 @@
 /*
+
+To make a POST-request with curl:
+curl -X POST https://reqbin.com/echo/post/form -H "Content-Type: application/x-www-form-urlencoded" -d "key1=value1&key2=value2" 
+
 A Response message from a server to client on a POST request can be :
     - 201: Created
     - 400: Bad Request
@@ -33,6 +37,7 @@ class PostResponse : public Response {
         void    setHeaders();
         void    setRawBody();
         void    setLocationHeader(void);
+        void    setRefreshHeader(double sec);
 
     public:
         // Constructors

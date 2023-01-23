@@ -57,7 +57,7 @@ void    DeleteResponse::setLocationHeader(void) {
 void    DeleteResponse::setHeaders(void) {
     setDateHeader();
     // setContentLengthHeader();
-    setConnectionHeader();
+    setConnectionHeader("close");
     // setContentTypeHeader();
     setLocationHeader();
     setCacheControl("no-cache");

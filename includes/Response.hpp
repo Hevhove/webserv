@@ -67,8 +67,8 @@ class Response {
         void    setRawHeaders(void); 
         void    setDateHeader(void); 
         void    setContentLengthHeader(); 
-        void    setConnectionHeader(void);
-        void    setContentTypeHeader(void); 
+        void    setConnectionHeader(std::string type);
+        void    setContentTypeHeader(); 
         void    setCacheControl(const char* type);
         void    setRetryAfter(int sec);
 

@@ -8,6 +8,7 @@ Request::Request() {
     _raw_body = "";
     _count = 0;
     _request_method = NOT_SET;
+    _body_bytes_read = 0;
 }
 
 Request::~Request() {
@@ -56,22 +57,6 @@ std::map<std::string, std::string>  Request::getHeaders(void) {
 }
 
 // Public Member Functions
-void    Request::parseRequest(char *buf)
-{
-    _unparsed_request += buf;
-    if (_count++ == 0)
-    {
-        parseRequestStartLine();
-        parseRequestHeaders();
-    }
-    // If the method has content-length, keep adding content to the body until content-length is received
-    std::map<std::string, std::string>::iterator it = _headers.find("Content-Length");
-    if (it != _headers.end()) // if there is a content-length, we have to parse a body
-    {
-        parseRequestBody();
-    }
-}
-
 bool     Request::headersFullyParsed() {
     if (_unparsed_request.find("\r\n\r\n") != std::string::npos)
         return (true);
@@ -90,13 +75,17 @@ bool     Request::isFullyParsed() {
         return (false);
 }
 
-int     Request::parseRequest2(char *buf, int bytes_read) {
-    //int         to_read = BUFF_SIZE - bytes_read;
+int     Request::parseRequest(char *buf, int bytes_read) {
     int         start = bytes_read;
-    // are the entire headers already read in?
-    // does the request already have a content-length specified?
+
+    /*
+    *   Read in a request byte per byte. Part of the request could be in the next/previous call to send(2)
+    *   of the main server loop. For this reason we keep adding into the unparsed request until
+    *   there is a fully parsed request, or until a Content-Length body has been received.
+    */
     while (start < BUFF_SIZE)
     {
+        // First check if all the headers of the current request are parsed!
         if (!headersFullyParsed())
         {
             // std::cout << "currently reading byte i: " << start << std::endl; 
@@ -104,30 +93,26 @@ int     Request::parseRequest2(char *buf, int bytes_read) {
             if (_unparsed_request.find("\r\n\r\n") != std::string::npos) // let's say we found this at byte 200
             {
                 // we should now have complete headers in _unparsed_request?
-                parseRequestStartLine(); // REWRITE
-                parseRequestHeaders(); // REWRITE
-                std::cout << "a request was fully parsed, with following data: " << _unparsed_request << std::endl;
+                parseRequestStartLine();
+                parseRequestHeaders();
+                printRequest();
             }
             bytes_read++;
         }
-        else // header of current req have been fully parsed. Is there a body to parse further?
+        // If there is a body to parse, execute below code
+        else 
         {
-            // check if there is a body to parse...
             if (_has_body)
             {
-                static int body_bytes_read;
                 _raw_body += buf[start];
-                body_bytes_read++;
-                std::cout << "current body_bytes_read is" << body_bytes_read << std::endl;
+                _body_bytes_read++;
+                // std::cout << "current body_bytes_read is" << _body_bytes_read << std::endl;
                 bytes_read++;
-                if (static_cast<unsigned long>(body_bytes_read) == _body_length) // keep reading until we have the entire body
+                if (static_cast<unsigned long>(_body_bytes_read) == _body_length) // keep reading until we have the entire body
                 {
-                    std::cout << "full body of current req was read!" << std::endl;
                     break ;
                 }
             }
-            else
-                break ; // if there is no body, and headers have been parsed, we are good too
         }
         start++;
     }
@@ -140,6 +125,7 @@ void    Request::parseRequestStartLine(void) {
 
     // The first line of the request should indicate METHOD, resource and HTTP tag
     _raw_start_line = _unparsed_request.substr(0, _unparsed_request.find("\r\n"));
+    
     // trim possible garbage values before the startline from a previous read
     std::string keys[] = {"GET", "POST", "DELETE"};
     std::size_t         pos = _raw_start_line.length();
@@ -151,9 +137,11 @@ void    Request::parseRequestStartLine(void) {
     }
     if (pos != _raw_start_line.length())
         _raw_start_line = _raw_start_line.substr(pos);
+
+    // Remove the startline from the request
     _unparsed_request = _unparsed_request.substr(_unparsed_request.find("\r\n") + 2);
   
-    std::cout << "raw_startline is " << _raw_start_line << std::endl;
+    // std::cout << "raw_startline is " << _raw_start_line << std::endl;
     startline_split = ft_split(_raw_start_line, ' ');
     if (startline_split.size() != 3)
         throw BadRequestException();
@@ -179,7 +167,7 @@ void    Request::parseRequestStartLine(void) {
 void    Request::parseRequestHeaders(void) {
     std::string         line;
 
-    // Select only the raw headers | NOT SURE IF THIS LINE STILL NEEDED
+    // Select only the raw headers
     _raw_headers = _unparsed_request.substr(0, _unparsed_request.find("\r\n\r\n"));
     std::stringstream   ss(_raw_headers); 
     
@@ -214,11 +202,6 @@ void    Request::parseRequestHeaders(void) {
     // std::cout << "HEADER TEST" << std::endl;
     // for (std::map<std::string, std::string>::const_iterator it = _headers.begin(); it != _headers.end(); ++it)
     //     std::cout << it->first << ": " << it->second << std::endl;
-    // std::cout << "-----------------------------" << std::endl;
-
-    // if we are dealing with a post request, we need still need the data coming after the headers, so we move the string forward 
-    // if (_request_method == POST) 
-    //     _unparsed_request = _unparsed_request.substr(_unparsed_request.find("\r\n\r\n") + 4);
 }
 
 void    Request::parseRequestBody(void) {
@@ -231,15 +214,17 @@ void    Request::parseURI(std::string uri) {
     // if there is a query, set it
     if (uri.find('?') != std::string::npos)
         _uri.setQuery(uri.substr(uri.find('?') + 1, (uri.find('#'))));
-    std::cout << "parsed path is " <<_uri.getPath() << std::endl;
-    std::cout << "parsed query is " <<_uri.getQuery() << std::endl;
-    // check if it exists? if not, send 404...
-    //
+    // std::cout << "parsed path is " <<_uri.getPath() << std::endl;
+    // std::cout << "parsed query is " <<_uri.getQuery() << std::endl;
+
+    // TODO: if path does not exist, send 404!
 }
 
 void    Request::printRequest(void)
 {
-    std::cout << _raw_start_line << std::endl << _raw_headers << std::endl << _raw_body << std::endl;
+    std::cout << std::endl << "---REQUEST PARSED---" << std::endl;
+    std::cout << _raw_start_line << std::endl << _raw_headers << std::endl;
+    std::cout << "---END OF REQUEST---" << std::endl << std::endl;
 }
 
 // Exceptions

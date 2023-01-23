@@ -1,5 +1,6 @@
 #include "PostResponse.hpp"
 #include <fstream>
+#include <sstream>
 #include <string>
 
 // Constructors
@@ -55,14 +56,23 @@ void    PostResponse::setLocationHeader(void) {
     _headers.insert(std::make_pair("Location", "/"));
 }
 
+void    PostResponse::setRefreshHeader(double sec) {
+    std::stringstream   ss;
+    std::string         str;
+
+    ss << sec;
+    str = ss.str();
+    _headers.insert(std::make_pair("Refresh", str + ";url=/"));
+}
+
 void    PostResponse::setHeaders(void) {
     setDateHeader();
     // setContentLengthHeader();
-    setConnectionHeader();
+    setConnectionHeader("close");
     // setContentTypeHeader();
     setLocationHeader();
-    setCacheControl("no-cache");
-    setRetryAfter(2);
+    // setCacheControl("no-cache");
+    // setRefreshHeader(0.3);
     // add more headers if desired below...
     // add here...
 }
@@ -83,7 +93,5 @@ void    PostResponse::constructResponse(Request& req) {
     // include the body
     // setRawBody();
     setRawResponse();
-    // std::cout << "post response is: " << std::endl;
-    // std::cout << _raw_status_line << _raw_headers << _raw_body << std::endl;
-    //printResponse();
+    // printResponse();
 }

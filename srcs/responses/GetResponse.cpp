@@ -63,7 +63,7 @@ void    GetResponse::setRawBody() {
 void    GetResponse::setHeaders() {
     setDateHeader();
     //setContentLengthHeader();
-    setConnectionHeader();
+    setConnectionHeader("keep-alive");
     setContentTypeHeader();
     setRetryAfter(2);
     // add more headers if desired below...

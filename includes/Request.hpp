@@ -33,6 +33,7 @@ class Request {
 	    std::string			_raw_body;              // HTTP Message Body
         bool                _has_body;
         unsigned long       _body_length;
+        int                 _body_bytes_read;
         int                 _count; 
 
         // HTTP
@@ -63,8 +64,7 @@ class Request {
         std::map<std::string, std::string>  getHeaders(void);
         
         // Public member functions
-        void                parseRequest(char buf[BUFF_SIZE]);
-        int                 parseRequest2(char buf[BUFF_SIZE], int bytes);
+        int                 parseRequest(char buf[BUFF_SIZE], int bytes);
         void                printRequest(void);
         bool                headersFullyParsed(void);   
         bool                isFullyParsed(void);

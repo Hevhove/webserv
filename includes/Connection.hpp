@@ -13,15 +13,13 @@
 
 class Connection : public Socket {
 	private:
-        Request         _request;
-        Response*       _response;
+        std::vector<std::pair<Request*, Response*> > requestResponseList;
 
         // Private Member functions
         void        parse_header();
         void        parse_body();
 
 	public:
-        std::vector<std::pair<Request*, Response*> > requestResponseList;
 		
         // Constructors
 		Connection();
@@ -31,11 +29,7 @@ class Connection : public Socket {
 
 		// Member functions
         void            handleRequest(char buf[BUFF_SIZE]);
-        void            handleRequest2(char buf[BUFF_SIZE]);
         std::string     getRawResponse(void);
-        std::string     getRawResponse2(void);
-        Request&        getRequest(void);
-
 };
 
 #endif

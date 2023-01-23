@@ -25,7 +25,7 @@ Response& Response::operator=(const Response& rhs) {
 // Public methods
 void    Response::printResponse(void) {
     std::cout << "PRINTING RESPONSE: " << std::endl;
-    std::cout << _raw_status_line << _raw_headers << _raw_body << std::endl;
+    std::cout << _raw_status_line << std::endl << _raw_headers << std::endl << _raw_body << std::endl;
 }
 
 // Private methods 
@@ -47,7 +47,6 @@ void    Response::setDateHeader(void) {
 
     strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S %Z", timeinfo);
     std::string time_str(buffer);
-    std::cout << "Date: " << time_str << std::endl;
     _headers.insert(std::make_pair("Date", time_str));
 
 }
@@ -60,8 +59,8 @@ void    Response::setContentLengthHeader() {
     _headers.insert(std::make_pair("Content-Length", ss.str()));
 }
 
-void    Response::setConnectionHeader(void) {
-    _headers.insert(std::make_pair("Connection", "keep-alive"));
+void    Response::setConnectionHeader(std::string type) {
+    _headers.insert(std::make_pair("Connection", type));
 }
 
 void    Response::setContentTypeHeader(void) {
@@ -100,14 +99,13 @@ void    Response::setResource(std::string path) {
     }
     else
         _resource = "public/www" + path;
-    std::cout << "resource is " << _resource << std::endl;
+    // std::cout << "resource is " << _resource << std::endl;
     if (!ft_is_resource_available(_resource))
     {
         // TODO send a response with resource not available! --> SET UP ERROR PAGES!
         std::cout << "resource not available!" << std::endl;
         exit(-1);
     }
-    std::cout << "resource exists!" << std::endl;
 }
 
 void    Response::setRawResponse(void) {
