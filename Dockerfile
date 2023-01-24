@@ -2,8 +2,9 @@ FROM ubuntu:20.04
 
 WORKDIR /app
 COPY . . 
-RUN apt-get update && apt-get install build-essential -y
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get update && apt-get install build-essential -y && apt-get install -y php php-cli php-fpm
 USER root
 RUN make
-CMD ["./server", "a"]
+CMD ["./webserv", "a"]
 EXPOSE 3490
