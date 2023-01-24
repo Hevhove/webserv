@@ -41,7 +41,7 @@ void    Connection::handleRequest(char buf[BUFF_SIZE]) {
             || requestResponseList[requestResponseList.size() - 1].first->isFullyParsed())
         {
             Request* req = new Request;
-            std::pair<Request*, Response*> pair = std::make_pair(req, nullptr);
+            std::pair<Request*, Response*> pair = std::make_pair(req, (Response*)0);
             requestResponseList.push_back(pair);
         }
         Request* last_req = requestResponseList[requestResponseList.size() - 1].first;
