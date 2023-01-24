@@ -1,1 +1,16 @@
-{"entries":[{"id":"1","description":"Longboard","price":"$200","phone":"555-1212"},{"id":"2","description":"Shortboard","price":"$150","phone":"555-1213"}]}
+{
+  "entries": [
+    {
+      "id": "1",
+      "description": "Longboard",
+      "price": "$200",
+      "phone": "555-1212"
+    },
+    {
+      "id": "2",
+      "description": "Shortboard",
+      "price": "$150",
+      "phone": "555-1213"
+    }
+  ]
+}

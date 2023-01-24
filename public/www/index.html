@@ -13,6 +13,7 @@
                 <th>description</th>
                 <th>asking price</th>
                 <th>phone number</th>
+                <th>picture</th>
             </tr>
             <?php include dirname(dirname(dirname(__file__))) . "/cgi-bin/load-table.php"; ?>
         </table>
@@ -20,7 +21,7 @@
         <div class="form-container">
             <div class="form-left">
                 <h3>Add your board!</h3>
-                <form action="/cgi-bin/add-entry.php" method="post">
+                <form action="/cgi-bin/add-entry.php" method="post" enctype="multipart/form-data">
                     <label for="description">description:</label>
                     <input type="text" name="description" id="description" required>
 
@@ -29,6 +30,9 @@
 
                     <label for="phone">phone number:</label>
                     <input type="text" name="phone" id="phone" required>
+
+                    <label for="picture">picture:</label>
+                    <input type="file" name="picture" id="picture" accept="image/*">
 
                     <input type="submit" value="add entry" />
                 </form>

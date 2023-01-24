@@ -91,6 +91,7 @@ void    Response::setRetryAfter(int sec) {
 }
 
 void    Response::setResource(std::string path) {
+    // TODO: fix pathing in this function!
     if (path[path.size() - 1] == '/')
         _resource = "public/www" + path + "index.html";
     else if (hasFileExtension(path, ".php"))
@@ -103,7 +104,7 @@ void    Response::setResource(std::string path) {
     if (!ft_is_resource_available(_resource))
     {
         // TODO send a response with resource not available! --> SET UP ERROR PAGES!
-        std::cout << "resource not available!" << std::endl;
+        std::cout << "resource not available!" << _resource << std::endl;
         exit(-1);
     }
 }
