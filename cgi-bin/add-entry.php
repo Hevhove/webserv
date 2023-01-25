@@ -24,40 +24,12 @@ $phone = $_POST['phone'];
 // Generate a new ID for the entry
 $id = count($entries) + 1;
 
-//Handle the file upload
-$target_dir = "public/www/images/";
-$target_file = $target_dir . $id . ".jpeg";
-$file_type = pathinfo($target_file, PATHINFO_EXTENSION);
-
-// Allow certain file formats
-if($file_type != "jpeg" && $file_type != "png") {
-    echo "Sorry, only JPEG and PNG files are allowed.";
-    exit;
-}
-
-// Check if file already exists
-if (file_exists($target_file)) {
-    echo "Sorry, file already exists.";
-    exit;
-}
-
-// Check file size
-if ($_FILES["picture"]["size"] > 500000) {
-    echo "Sorry, your file is too large.";
-    exit;
-}
-
-// Check if $uploadOk is set to 0 by an error
-if (move_uploaded_file($_FILES["picture"]["tmp_name"], $target_file)) {
-    echo "The file ". basename( $_FILES["picture"]["name"]). " has been uploaded.";
-} else {
-    echo "Sorry, there was an error uploading your file.";
-    exit;
-}
+// Echo the id, so the jpeg file can be named
+echo $id;
 
 // Add the new entry to the entries array
 $entries[] = array(
-  'id' => $id,
+  'id' => (string)$id,
   'description' => $description,
   'price' => $price,
   'phone' => $phone,
@@ -73,6 +45,6 @@ $dataJson = json_encode($data);
 file_put_contents($file , $dataJson);
 
 // Redirect back to the main page
-header('Location: /');
-exit;
+//header('Location: /');
+//exit;
 ?>
