@@ -24,9 +24,12 @@ $phone = $_POST['phone'];
 // Generate a new ID for the entry
 $id = count($entries) + 1;
 
+// Echo the id, so the jpeg file can be named
+echo $id;
+
 // Add the new entry to the entries array
 $entries[] = array(
-  'id' => $id,
+  'id' => (string)$id,
   'description' => $description,
   'price' => $price,
   'phone' => $phone,
@@ -42,6 +45,6 @@ $dataJson = json_encode($data);
 file_put_contents($file , $dataJson);
 
 // Redirect back to the main page
-header('Location: /');
-exit;
+//header('Location: /');
+//exit;
 ?>

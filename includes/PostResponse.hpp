@@ -51,6 +51,7 @@ class PostResponse : public Response {
         void        executePostResponse(Request& req);
         void        printResponse(void);
         void        setStatusCode(StatusCode sc);
+        void        executePostDeleteResponse(Request& req);
 };
 
 #endif

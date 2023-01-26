@@ -42,7 +42,7 @@ $dataJson = json_encode($data);
 file_put_contents($file , $dataJson);
 
 // Redirect back to the main page
-header('Location: /');
-exit;
+// header('Location: /');
+// exit;
 ?>
 
