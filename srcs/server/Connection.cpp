@@ -1,5 +1,4 @@
 #include "Connection.hpp"
-#include <string>
 
 // Constructors
 Connection::Connection() {
@@ -68,10 +67,10 @@ std::string     Connection::getRawResponse(void) {
                 {
                     requestResponseList[i].second = new PostResponse();
                 }
-                // if (req->getRequestMethod() == DELETE)
-                // {
-                //     requestResponseList[i].second = new DeleteResponse();
-                // }
+                if (req->getRequestMethod() == DELETE)
+                {
+                    requestResponseList[i].second = new DeleteResponse();
+                }
             } catch (std::exception& e) {
                 // TODO
             }

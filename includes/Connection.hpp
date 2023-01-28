@@ -5,6 +5,7 @@
 # include "Response.hpp"
 # include "GetResponse.hpp"
 # include "PostResponse.hpp"
+# include "DeleteResponse.hpp"
 # include "BadRequestResponse.hpp"
 # include "HttpVersionResponse.hpp"
 # include "InternalServerResponse.hpp"
