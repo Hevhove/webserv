@@ -50,44 +50,72 @@ void    Connection::handleRequest(char buf[BUFF_SIZE]) {
     }
 }
 
-std::string     Connection::getRawResponse(void) {
+std::string Connection::getRawResponse(void) {
     std::string response;
-
-    for (unsigned int i = 0; i < requestResponseList.size(); i++)
-    {
-        Request* req = requestResponseList[i].first;
-        if (req->isFullyParsed())
-        {
-            try
-            {
-                if (req->getRequestMethod() == GET)
-                {
-                    requestResponseList[i].second = new GetResponse();
+    for (std::vector<std::pair<Request*, Response*> >::iterator it = requestResponseList.begin(); it != requestResponseList.end(); ++it) {
+        Request* req = it->first;
+        if (req->isFullyParsed()) {
+            try {
+                if (req->getRequestMethod() == GET) {
+                    it->second = new GetResponse();
+                } else if (req->getRequestMethod() == POST) {
+                    it->second = new PostResponse();
                 }
-                else if (req->getRequestMethod() == POST)
-                {
-                    requestResponseList[i].second = new PostResponse();
-                }
-                // if (req->getRequestMethod() == DELETE)
-                // {
-                //     requestResponseList[i].second = new DeleteResponse();
+                // if (req->getRequestMethod() == DELETE) {
+                // it->second = new DeleteResponse();
                 // }
             } catch (std::exception& e) {
                 // TODO
             }
-            requestResponseList[i].second->constructResponse(*req);
-            response = requestResponseList[i].second->getRawResponse();
-            // clean up now?
-            std::vector<std::pair<Request*, Response*> >::iterator it = requestResponseList.begin() + i;
+            it->second->constructResponse(*req);
+            response = it->second->getRawResponse();
             delete it->first;
             delete it->second;
             requestResponseList.erase(it);
-            return (response);
+            return response;
         }
     }
-    /*
-        If we were ready to write a response, but there was no response ready in the requestResponseList,
-        response is returned as an empty string;
-    */
-    return (response);
+    return response;
 }
+
+// std::string     Connection::getRawResponse(void) {
+//     std::string response;
+//
+//     for (unsigned int i = 0; i < requestResponseList.size(); i++)
+//     {
+//         Request* req = requestResponseList[i].first;
+//         if (req->isFullyParsed())
+//         {
+//             try
+//             {
+//                 if (req->getRequestMethod() == GET)
+//                 {
+//                     requestResponseList[i].second = new GetResponse();
+//                 }
+//                 else if (req->getRequestMethod() == POST)
+//                 {
+//                     requestResponseList[i].second = new PostResponse();
+//                 }
+//                 // if (req->getRequestMethod() == DELETE)
+//                 // {
+//                 //     requestResponseList[i].second = new DeleteResponse();
+//                 // }
+//             } catch (std::exception& e) {
+//                 // TODO
+//             }
+//             requestResponseList[i].second->constructResponse(*req);
+//             response = requestResponseList[i].second->getRawResponse();
+//             // clean up now?
+//             std::vector<std::pair<Request*, Response*> >::iterator it = requestResponseList.begin() + i;
+//             delete it->first;
+//             delete it->second;
+//             requestResponseList.erase(it);
+//             return (response);
+//         }
+//     }
+//     /*
+//         If we were ready to write a response, but there was no response ready in the requestResponseList,
+//         response is returned as an empty string;
+//     */
+//     return (response);
+// }

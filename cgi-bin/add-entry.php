@@ -22,7 +22,14 @@ $price = $_POST['price'];
 $phone = $_POST['phone'];
 
 // Generate a new ID for the entry
-$id = count($entries) + 1;
+$usedIds = array_column($entries, 'id');
+sort($usedIds);
+for ($i = 1; $i <= count($entries) + 1; $i++) {
+    if (!in_array($i, $usedIds)) {
+        $id = $i;
+        break;
+    }
+}
 
 // Echo the id, so the jpeg file can be named
 echo $id;
