@@ -162,13 +162,6 @@ void    PostResponse::executePostDeleteResponse(Request& req) {
     // TODO: check return value ret and throw error if fail...
 }
 
-void    PostResponse::setRawBody() {
-    // std::ifstream   file(_resource);
-    // std::string     content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-    //
-    // _raw_body = content;
-}
-
 void    PostResponse::setLocationHeader(void) {
     _headers.insert(std::make_pair("Location", "/"));
 }
@@ -210,9 +203,8 @@ void    PostResponse::constructResponse(Request& req) {
     // set the headers
     setHeaders();
     setRawHeaders();
-
-    // include the body
-    // setRawBody();
+    
+    // set response
     setRawResponse();
     // printResponse();
 }

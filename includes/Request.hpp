@@ -34,7 +34,6 @@ class Request {
         bool                _has_body;
         unsigned long       _body_length;
         int                 _body_bytes_read;
-        int                 _count; 
 
         // HTTP
         RequestMethod                       _request_method; 
@@ -48,6 +47,7 @@ class Request {
         void                parseURI(std::string uri);
 
     public:
+        std::string         parse_status; // TODO
         // Constructors
         Request();
 		virtual ~Request();
@@ -73,6 +73,10 @@ class Request {
        	class BadRequestException : public std::exception {
         public: 
             const char * what () const throw();
+		};
+        class NotFoundException : public std::exception {
+        public:
+			const char * what () const throw();
 		};
         class HttpVersionNotSupportedException : public std::exception {
         public:
