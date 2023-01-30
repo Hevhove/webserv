@@ -8,6 +8,11 @@
     // You can access the entries in the $data['entries'] array
     $entries = $data['entries'];
 
+    // Sort the entries by id
+    usort($entries, function($a, $b) {
+        return $a['id'] - $b['id'];
+    });
+
     // Iterate over the entries and output a row for each entry
     foreach ($entries as $entry) {
         echo "<tr>";
