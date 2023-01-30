@@ -1,5 +1,5 @@
 #include "Connection.hpp"
-#include <string>
+#include "NotFoundResponse.hpp"
 
 // Constructors
 Connection::Connection() {
@@ -41,11 +41,28 @@ void    Connection::handleRequest(char buf[BUFF_SIZE]) {
             || requestResponseList[requestResponseList.size() - 1].first->isFullyParsed())
         {
             Request* req = new Request;
-            std::pair<Request*, Response*> pair = std::make_pair(req, (Response*)0);
-            requestResponseList.push_back(pair);
+            std::pair<Request*, Response*> my_pair = std::make_pair(req, (Response*)0);
+            requestResponseList.push_back(my_pair);
         }
         Request* last_req = requestResponseList[requestResponseList.size() - 1].first;
-        bytes_checked = last_req->parseRequest(buf, bytes_checked);
+        try {
+                bytes_checked = last_req->parseRequest(buf, bytes_checked);
+                last_req->parse_status = "OK";
+            }
+        catch (Request::BadRequestException& e) {
+                bytes_checked = BUFF_SIZE;
+                last_req->parse_status = "BadRequest";
+            }
+        catch (Request::NotFoundException& e) {
+                bytes_checked = BUFF_SIZE;
+                // delete the request that was being made and replace with a new request...
+                last_req->parse_status = "NotFound";
+                
+            }
+        catch (Request::HttpVersionNotSupportedException& e) {
+                bytes_checked = BUFF_SIZE;
+                last_req->parse_status = "VersionMismatch";
+            }
         // std::cout << "current bytes checked is: " << bytes_checked << std::endl;
     }
 }
@@ -54,16 +71,31 @@ std::string Connection::getRawResponse(void) {
     std::string response;
     for (std::vector<std::pair<Request*, Response*> >::iterator it = requestResponseList.begin(); it != requestResponseList.end(); ++it) {
         Request* req = it->first;
-        if (req->isFullyParsed()) {
+        if (req->parse_status == "NotFound" || req->parse_status == "BadRequest" || req->parse_status == "VersionMismatch")
+        {
+            if (req ->parse_status == "NotFound")
+                it->second = new NotFoundResponse();
+            else if (req ->parse_status == "BadRequest")
+                it->second = new BadRequestResponse();
+            else if (req ->parse_status == "VersionMismatch")
+                it->second = new HttpVersionResponse();
+            it->second->constructResponse(*req);
+            response = it->second->getRawResponse();
+            delete it->first;
+            delete it->second;
+            requestResponseList.erase(it);
+            return response;
+        }
+        else if (req->isFullyParsed()) {
             try {
                 if (req->getRequestMethod() == GET) {
                     it->second = new GetResponse();
                 } else if (req->getRequestMethod() == POST) {
                     it->second = new PostResponse();
                 }
-                // if (req->getRequestMethod() == DELETE) {
-                // it->second = new DeleteResponse();
-                // }
+                if (req->getRequestMethod() == DELETE) {
+                it->second = new DeleteResponse();
+                }
             } catch (std::exception& e) {
                 // TODO
             }

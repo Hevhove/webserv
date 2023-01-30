@@ -1,4 +1,5 @@
 #include "Request.hpp"
+#include "utils.hpp"
 #include <sstream>
 #include <string>
 
@@ -6,7 +7,6 @@
 Request::Request() {
     _unparsed_request = "";
     _raw_body = "";
-    _count = 0;
     _request_method = NOT_SET;
     _body_bytes_read = 0;
 }
@@ -157,7 +157,9 @@ void    Request::parseRequestStartLine(void) {
         throw BadRequestException(); // do we need to empty buffers etc here? 
     
     // Parse the URI 
-    parseURI(startline_split[1]); 
+    parseURI(startline_split[1]);
+    if (!ft_is_resource_available("public/www/" + _uri.getPath()) && !hasFileExtension(_uri.getPath(), ".php"))
+        throw NotFoundException();
 
     // Parse HTTP version 
     if (startline_split[2] != "HTTP/1.1")
@@ -230,6 +232,10 @@ void    Request::printRequest(void)
 // Exceptions
 const char * Request::BadRequestException::what() const throw () {
     return ("Bad request");
+}
+
+const char * Request::NotFoundException::what() const throw () {
+    return ("Not found");
 }
 
 const char * Request::HttpVersionNotSupportedException::what() const throw () {

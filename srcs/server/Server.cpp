@@ -103,7 +103,9 @@ void    Server::respondToExistingConnection(int i) {
     // std::cout << "bytes sent on " << _pfds[i].fd << " is " << bytes_sent << std::endl;
     
     // Temporary hack for redirection issue:
-    if (response.find("302 Found") != std::string::npos)
+    if (response.find("302 Found") != std::string::npos 
+        || response.find("404 Not Found") != std::string::npos
+        || response.find("204 No Content") != std::string::npos)
         dropConnection(i);
     delete[] buffer;
     
