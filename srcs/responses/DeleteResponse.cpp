@@ -69,7 +69,7 @@ void    DeleteResponse::executeDeleteResponse(Request& req) {
     resource_id = getResourceID(_resource);
 
     // write the body of the POST request to a tmp file
-    tmpFile.open(file_path.c_str());
+    tmpFile.open(file_path.c_str(), std::ios::out);
     // std::cout << "DELETE BODY" << req.getRawBody() << std::endl;
     tmpFile << "_method=DELETE&id=" + resource_id;
     tmpFile.close();
