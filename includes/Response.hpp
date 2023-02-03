@@ -80,7 +80,6 @@ class Response {
         Response();
 		virtual ~Response();
 		Response(const Response& src);
-		Response& operator=(const Response& rhs);
         
         // Public methods
         virtual void    constructResponse(Request& req) = 0;

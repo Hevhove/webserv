@@ -34,8 +34,6 @@ class DeleteResponse : public Response {
         // Constructors
         DeleteResponse();
 		virtual ~DeleteResponse();
-		DeleteResponse(const DeleteResponse& src);
-		DeleteResponse& operator=(const DeleteResponse& rhs);
 
         // Public methods
         void        constructResponse(Request& req);

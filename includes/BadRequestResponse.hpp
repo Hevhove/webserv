@@ -17,8 +17,6 @@ class BadRequestResponse : public Response {
         // Constructors
         BadRequestResponse();
 		virtual ~BadRequestResponse();
-		BadRequestResponse(const BadRequestResponse& src);
-		BadRequestResponse& operator=(const BadRequestResponse& rhs);
         
         // Public methods
         void        constructResponse(Request& req);

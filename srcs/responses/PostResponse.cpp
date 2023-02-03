@@ -12,15 +12,6 @@ PostResponse::~PostResponse() {
 
 }
 
-PostResponse::PostResponse(const PostResponse& src) : Response(src) {
-    (void)src;
-}
-
-PostResponse& PostResponse::operator=(const PostResponse& rhs) {
-    (void)rhs;
-	return (*this);
-}
-
 // Public methods
 std::string trimNonNumerical(std::string input) {
     std::string output = "";

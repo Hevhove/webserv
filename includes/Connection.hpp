@@ -26,8 +26,6 @@ class Connection : public Socket {
         // Constructors
 		Connection();
 		virtual ~Connection();
-		Connection(const Connection& src);
-		Connection& operator=(const Connection& rhs);
 
 		// Member functions
         void            handleRequest(char buf[BUFF_SIZE]);
