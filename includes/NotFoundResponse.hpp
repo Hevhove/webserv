@@ -17,8 +17,6 @@ class NotFoundResponse : public Response {
         // Constructors
         NotFoundResponse();
 		virtual ~NotFoundResponse();
-		NotFoundResponse(const NotFoundResponse& src);
-		NotFoundResponse& operator=(const NotFoundResponse& rhs);
         
         // Public methods
         void        constructResponse(Request& req);

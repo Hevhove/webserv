@@ -15,7 +15,7 @@ Example:
 
 # include "URI.hpp"
 # include "utils.hpp"
-#include <string>
+# include <string>
 
 typedef enum RequestMethod {
     GET = 0,
@@ -51,8 +51,6 @@ class Request {
         // Constructors
         Request();
 		virtual ~Request();
-		Request(const Request& src);
-		Request&            operator=(const Request& rhs);
 
         // Getters
         std::string     getUnparsedRequest(void);

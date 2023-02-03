@@ -13,15 +13,6 @@ Response::~Response() {
 
 }
 
-Response::Response(const Response& src) {
-    (void)src;
-}
-
-Response& Response::operator=(const Response& rhs) {
-    (void)rhs;
-	return (*this);
-}
-
 // Public methods
 void    Response::printResponse(void) {
     std::cout << "PRINTING RESPONSE: " << std::endl;

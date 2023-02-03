@@ -17,8 +17,6 @@ class HttpVersionResponse : public Response {
         // Constructors
         HttpVersionResponse();
 		virtual ~HttpVersionResponse();
-		HttpVersionResponse(const HttpVersionResponse& src);
-		HttpVersionResponse& operator=(const HttpVersionResponse& rhs);
 
         // Public methods
         void        constructResponse(Request& req);
