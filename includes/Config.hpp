@@ -10,6 +10,8 @@ public:
 	Config(const Config& other);
 	~Config();
 
+	Config&	operator=(const Config& other);
+
 	unsigned long	getClientMaxBodySize(void);
 };
 
