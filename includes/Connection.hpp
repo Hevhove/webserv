@@ -12,10 +12,12 @@
 # include "InternalServerResponse.hpp"
 # include "utils.hpp"
 # include "Socket.hpp"
+# include "Config.hpp"
 
 class Connection : public Socket {
 	private:
-        std::vector<std::pair<Request*, Response*> > requestResponseList;
+        std::vector<std::pair<Request*, Response*> >	requestResponseList;
+		Config											_config;
 
         // Private Member functions
         void        parse_header();
@@ -25,6 +27,7 @@ class Connection : public Socket {
 		
         // Constructors
 		Connection();
+		Connection(Config config);
 		virtual ~Connection();
 		Connection(const Connection& src);
 		Connection& operator=(const Connection& rhs);

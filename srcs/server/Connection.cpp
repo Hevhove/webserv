@@ -1,9 +1,12 @@
 #include "Connection.hpp"
-#include "NotFoundResponse.hpp"
 
 // Constructors
 Connection::Connection() {
 
+}
+
+Connection::Connection(Config config) {
+	_config = config;
 }
 
 Connection::~Connection() {
@@ -46,7 +49,7 @@ void    Connection::handleRequest(char buf[BUFF_SIZE]) {
         }
         Request* last_req = requestResponseList[requestResponseList.size() - 1].first;
         try {
-                bytes_checked = last_req->parseRequest(buf, bytes_checked);
+                bytes_checked = last_req->parseRequest(buf, bytes_checked, _config); // Add _config to function argument
                 last_req->parse_status = "OK";
         }
         catch (Request::BadRequestException& e) {
