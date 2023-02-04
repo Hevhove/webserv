@@ -9,7 +9,7 @@ int main(int argc, char **argv)
 	}
 	Server server;
 	// Use argv[1] to load config file onto server
-	// server.load_config(argv[1]);
+	server.load_config(argv[1]);
 	(void)argv;
 	try {
 		server.run();

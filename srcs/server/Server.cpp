@@ -82,6 +82,11 @@ void	Server::run(void) {
 	}
 }
 
+void	Server::load_config(const char *fpath) {
+	(void) fpath; // to be used in the future;
+	_config = Config();
+}
+
 // PRIVATE METHODS
 void    Server::respondToExistingConnection(int i) {
     std::string     response;

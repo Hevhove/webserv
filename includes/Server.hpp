@@ -18,6 +18,7 @@
 # include "Socket.hpp"
 # include "Connection.hpp"
 # include "utils.hpp"
+# include "Config.hpp"
 
 class Server {
 	private:
@@ -28,6 +29,7 @@ class Server {
 		int					        _fd_count;
 		int					        _fd_size;
 		struct pollfd   	    	*_pfds;
+		Config						_config;	
         std::map<int, Connection*>  _connections; 
 
 		// Methods : Private
@@ -47,6 +49,7 @@ class Server {
 
 		// Methods : Public
 		void	run(void);
+		void	load_config(const char *fpath);
 
 		// Exceptions
 		class PollException : public std::exception {
