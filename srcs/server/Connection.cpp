@@ -48,21 +48,24 @@ void    Connection::handleRequest(char buf[BUFF_SIZE]) {
         try {
                 bytes_checked = last_req->parseRequest(buf, bytes_checked);
                 last_req->parse_status = "OK";
-            }
+        }
         catch (Request::BadRequestException& e) {
                 bytes_checked = BUFF_SIZE;
                 last_req->parse_status = "BadRequest";
-            }
+        }
         catch (Request::NotFoundException& e) {
                 bytes_checked = BUFF_SIZE;
                 // delete the request that was being made and replace with a new request...
                 last_req->parse_status = "NotFound";
-                
-            }
+        }
         catch (Request::HttpVersionNotSupportedException& e) {
                 bytes_checked = BUFF_SIZE;
                 last_req->parse_status = "VersionMismatch";
-            }
+        }
+		// catch (Request::BodyTooBigException& e) {
+		// 	bytes_checked = BUFF_SIZE;
+		// 	last_req->parse_status = "BodyTooBig";
+		// }
         // std::cout << "current bytes checked is: " << bytes_checked << std::endl;
     }
 }

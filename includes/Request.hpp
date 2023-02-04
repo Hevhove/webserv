@@ -82,6 +82,11 @@ class Request {
         public:
 			const char * what () const throw();
 		};
+
+		class BodyTooBigException : public std::exception {
+			public:
+				const char * what () const throw();
+		};
 };
 
 #endif

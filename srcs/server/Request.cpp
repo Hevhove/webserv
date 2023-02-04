@@ -241,3 +241,7 @@ const char * Request::NotFoundException::what() const throw () {
 const char * Request::HttpVersionNotSupportedException::what() const throw () {
     return ("This server only accepts HTTP/1.1 requests");
 }
+
+const char * Request::BodyTooBigException::what() const throw () {
+	return ("Request body is too long ");
+}
