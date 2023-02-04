@@ -7,7 +7,10 @@ private:
 
 public:
 	Config();
+	Config(const Config& other);
 	~Config();
+
+	unsigned long	getClientMaxBodySize(void);
 };
 
 #endif

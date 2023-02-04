@@ -168,7 +168,7 @@ void	Server::handleNewConnection(void) {
 	socklen_t				addrlen;
 	struct sockaddr_storage	remote_addr;
 	char					remoteIP[INET_ADDRSTRLEN];
-    Connection*             new_connection = new Connection;
+    Connection*             new_connection = new Connection(_config);
 
 	addrlen = sizeof(remote_addr);
     try {
