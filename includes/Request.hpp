@@ -15,7 +15,7 @@ Example:
 
 # include "URI.hpp"
 # include "utils.hpp"
-#include <string>
+# include "Config.hpp"
 
 typedef enum RequestMethod {
     GET = 0,
@@ -42,7 +42,7 @@ class Request {
 
         // Private member functions
         void                parseRequestStartLine(void);
-        void                parseRequestHeaders(void);
+        void                parseRequestHeaders(Config config);
         void                parseRequestBody(void);
         void                parseURI(std::string uri);
 
@@ -64,7 +64,7 @@ class Request {
         std::map<std::string, std::string>  getHeaders(void);
         
         // Public member functions
-        int                 parseRequest(char buf[BUFF_SIZE], int bytes);
+        int                 parseRequest(char buf[BUFF_SIZE], int bytes, Config config);
         void                printRequest(void);
         bool                headersFullyParsed(void);   
         bool                isFullyParsed(void);

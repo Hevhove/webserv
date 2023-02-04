@@ -75,7 +75,7 @@ bool     Request::isFullyParsed() {
         return (false);
 }
 
-int     Request::parseRequest(char *buf, int bytes_read) {
+int     Request::parseRequest(char *buf, int bytes_read, Config config) {
     int         start = bytes_read;
 
     /*
@@ -94,7 +94,7 @@ int     Request::parseRequest(char *buf, int bytes_read) {
             {
                 // we should now have complete headers in _unparsed_request?
                 parseRequestStartLine();
-                parseRequestHeaders();
+                parseRequestHeaders(config);
                 printRequest();
             }
             bytes_read++;
@@ -166,7 +166,7 @@ void    Request::parseRequestStartLine(void) {
         throw HttpVersionNotSupportedException();
 }
 
-void    Request::parseRequestHeaders(void) {
+void    Request::parseRequestHeaders(Config config) {
     std::string         line;
 
     // Select only the raw headers
@@ -198,6 +198,9 @@ void    Request::parseRequestHeaders(void) {
     {
         _has_body = true;
         _body_length = std::strtoul(it->second.c_str(), NULL, 0);
+		if (_body_length > config.getClientMaxBodySize()) {
+			throw Request::BodyTooBigException();
+		}
     }
 
     // for testing purposes, we display our headers:
