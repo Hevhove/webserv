@@ -65,10 +65,10 @@ void    Connection::handleRequest(char buf[BUFF_SIZE]) {
                 bytes_checked = BUFF_SIZE;
                 last_req->parse_status = "VersionMismatch";
         }
-		// catch (Request::BodyTooBigException& e) {
-		// 	bytes_checked = BUFF_SIZE;
-		// 	last_req->parse_status = "BodyTooBig";
-		// }
+		catch (Request::BodyTooBigException& e) {
+			bytes_checked = BUFF_SIZE;
+			last_req->parse_status = "BodyTooBig";
+		}
         // std::cout << "current bytes checked is: " << bytes_checked << std::endl;
     }
 }
