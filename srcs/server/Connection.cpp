@@ -52,22 +52,17 @@ void    Connection::handleRequest(char buf[BUFF_SIZE]) {
                 bytes_checked = last_req->parseRequest(buf, bytes_checked, _config); // Add _config to function argument
                 last_req->parse_status = "OK";
         }
-        catch (Request::BadRequestException& e) {
+		catch (std::exception& e) {
                 bytes_checked = BUFF_SIZE;
-                last_req->parse_status = "BadRequest";
-        }
-        catch (Request::NotFoundException& e) {
-                bytes_checked = BUFF_SIZE;
-                // delete the request that was being made and replace with a new request...
-                last_req->parse_status = "NotFound";
-        }
-        catch (Request::HttpVersionNotSupportedException& e) {
-                bytes_checked = BUFF_SIZE;
-                last_req->parse_status = "VersionMismatch";
-        }
-		catch (Request::BodyTooBigException& e) {
-			bytes_checked = BUFF_SIZE;
-			last_req->parse_status = "BodyTooBig";
+			    std::cout << "Base of type: "; 
+			    if (Request::BadRequestException *e = dynamic_cast<Request::BadRequestException *>(e)) 
+	                last_req->parse_status = "BadRequest";
+			    if (Request::NotFoundException *e = dynamic_cast<Request::NotFoundException *>(e)) 
+	                last_req->parse_status = "NotFound";
+			    if (Request::HttpVersionNotSupportedException *e = dynamic_cast<Request::HttpVersionNotSupportedException *>(e)) 
+	                last_req->parse_status = "VersionMismatch";
+			    if (Request::BodyTooBigException *e = dynamic_cast<Request::BodyTooBigException *>(e)) 
+	                last_req->parse_status = "BodyTooBig";
 		}
         // std::cout << "current bytes checked is: " << bytes_checked << std::endl;
     }
