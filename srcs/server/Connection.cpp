@@ -38,21 +38,21 @@ void    Connection::handleRequest(char buf[BUFF_SIZE]) {
         Request* last_req = requestResponseList[requestResponseList.size() - 1].first;
         try {
                 bytes_checked = last_req->parseRequest(buf, bytes_checked);
-                last_req->parse_status = "OK";
+				last_req->status_code = OK;
             }
         catch (Request::BadRequestException& e) {
                 bytes_checked = BUFF_SIZE;
-                last_req->parse_status = "BadRequest";
+                last_req->status_code = BAD_REQUEST;
             }
         catch (Request::NotFoundException& e) {
                 bytes_checked = BUFF_SIZE;
                 // delete the request that was being made and replace with a new request...
-                last_req->parse_status = "NotFound";
+				last_req->status_code = NOT_FOUND;
                 
             }
         catch (Request::HttpVersionNotSupportedException& e) {
                 bytes_checked = BUFF_SIZE;
-                last_req->parse_status = "VersionMismatch";
+				last_req->status_code = HTTP_VERSION_NOT_SUPPORTED;
             }
         // std::cout << "current bytes checked is: " << bytes_checked << std::endl;
     }
@@ -62,14 +62,17 @@ std::string Connection::getRawResponse(void) {
     std::string response;
     for (std::vector<std::pair<Request*, Response*> >::iterator it = requestResponseList.begin(); it != requestResponseList.end(); ++it) {
         Request* req = it->first;
-        if (req->parse_status == "NotFound" || req->parse_status == "BadRequest" || req->parse_status == "VersionMismatch")
+		if (req->status_code == NOT_FOUND ||
+			req->status_code == BAD_REQUEST ||
+			req->status_code == HTTP_VERSION_NOT_SUPPORTED)
         {
-            if (req ->parse_status == "NotFound")
+            if (req ->status_code == NOT_FOUND)
                 it->second = new NotFoundResponse();
-            else if (req ->parse_status == "BadRequest")
+            else if (req ->status_code == BAD_REQUEST)
                 it->second = new BadRequestResponse();
-            else if (req ->parse_status == "VersionMismatch")
+            else if (req ->status_code == HTTP_VERSION_NOT_SUPPORTED)
                 it->second = new HttpVersionResponse();
+			// this would be the OK case
             it->second->constructResponse(*req);
             response = it->second->getRawResponse();
             delete it->first;

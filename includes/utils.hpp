@@ -53,4 +53,35 @@ bool                        ft_is_non_whitespace(int ch);
 bool                        ft_is_resource_available(std::string resource);
 bool                        hasFileExtension(const std::string& s, const std::string& ext);
 
+// enum
+typedef enum StatusCode {
+    // 2xx (successful)
+    OK = 200, // successful GET request
+    CREATED = 201, // successful POST request
+    NO_CONTENT = 204, // successful DELETE request
+
+    // 3xx (redirections)
+    FOUND = 302, // used after successful POST, reload main table
+
+    // 4xx (client error)
+    BAD_REQUEST = 400,
+    UNAUTHORIZED = 401,
+    FORBIDDEN = 403,
+    NOT_FOUND = 404,
+    LENGTH_REQUIRED = 411,
+    CONTENT_TOO_LARGE = 413,
+    UNSUPPORTED_MEDIA_TYPE = 415,
+
+    // 5xx (server error)
+    INTERNAL_SERVER_ERROR = 500,
+    HTTP_VERSION_NOT_SUPPORTED = 505
+} StatusCode;
+
+typedef enum RequestMethod {
+    GET = 0,
+    POST,
+    DELETE,
+    NOT_SET
+} RequestMethod;
+
 #endif

@@ -15,14 +15,6 @@ Example:
 
 # include "URI.hpp"
 # include "utils.hpp"
-# include <string>
-
-typedef enum RequestMethod {
-    GET = 0,
-    POST,
-    DELETE,
-    NOT_SET
-} RequestMethod;
 
 class Request {
     private:
@@ -47,7 +39,7 @@ class Request {
         void                parseURI(std::string uri);
 
     public:
-        std::string         parse_status; // TODO
+		StatusCode			status_code;
         // Constructors
         Request();
 		virtual ~Request();
