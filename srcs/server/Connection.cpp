@@ -60,6 +60,7 @@ void    Connection::handleRequest(char buf[BUFF_SIZE]) {
 
 std::string Connection::createRawResponse(void) {
     std::string response;
+
     for (std::vector<std::pair<Request*, Response*> >::iterator it = requestResponseList.begin(); it != requestResponseList.end(); ++it) {
         Request* req = it->first;
 		if (req->status_code == NOT_FOUND ||
@@ -72,13 +73,6 @@ std::string Connection::createRawResponse(void) {
                 it->second = new BadRequestResponse();
             else if (req ->status_code == HTTP_VERSION_NOT_SUPPORTED)
                 it->second = new HttpVersionResponse();
-			// this would be the OK case
-            it->second->constructResponse(*req);
-            response = it->second->getRawResponse();
-            delete it->first;
-            delete it->second;
-            requestResponseList.erase(it);
-            return response;
         }
         else if (req->isFullyParsed()) {
             try {
@@ -93,13 +87,13 @@ std::string Connection::createRawResponse(void) {
             } catch (std::exception& e) {
                 // TODO
             }
-            it->second->constructResponse(*req);
-            response = it->second->getRawResponse();
-            delete it->first;
-            delete it->second;
-            requestResponseList.erase(it);
-            return response;
         }
+        it->second->constructResponse(*req);
+        response = it->second->getRawResponse();
+        delete it->first;
+        delete it->second;
+        requestResponseList.erase(it);
+		return response;
     }
     return response;
 }
