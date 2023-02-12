@@ -63,7 +63,6 @@ std::string Connection::createRawResponse(void) {
 
     for (std::vector<std::pair<Request*, Response*> >::iterator it = requestResponseList.begin(); it != requestResponseList.end(); ++it) {
         Request* req = it->first;
-		// it->second = selectResponse(req)
 		switch(req->status_code) {
 			case NOT_FOUND:
 				it->second = new NotFoundResponse();
@@ -74,7 +73,7 @@ std::string Connection::createRawResponse(void) {
 			case HTTP_VERSION_NOT_SUPPORTED:
 				it->second = new HttpVersionResponse();
 				break;
-			default:
+			default: // this should be OK?
 				if (!req->isFullyParsed()) {
 					return response;
 				}
@@ -88,9 +87,6 @@ std::string Connection::createRawResponse(void) {
 							break;
 						case DELETE:
 							it->second = new DeleteResponse();
-							break;
-						case NOT_SET:
-							// useless enum?
 							break;
 					}	
 				} catch (std::exception& e) {

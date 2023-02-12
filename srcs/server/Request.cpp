@@ -7,7 +7,7 @@
 Request::Request() {
     _unparsed_request = "";
     _raw_body = "";
-    _request_method = NOT_SET;
+    _request_method = GET;
     _body_bytes_read = 0;
 }
 

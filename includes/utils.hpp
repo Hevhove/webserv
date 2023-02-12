@@ -81,7 +81,6 @@ typedef enum RequestMethod {
     GET = 0,
     POST,
     DELETE,
-    NOT_SET
 } RequestMethod;
 
 #endif
