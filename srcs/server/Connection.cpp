@@ -63,31 +63,41 @@ std::string Connection::createRawResponse(void) {
 
     for (std::vector<std::pair<Request*, Response*> >::iterator it = requestResponseList.begin(); it != requestResponseList.end(); ++it) {
         Request* req = it->first;
-		if (req->status_code == NOT_FOUND ||
-			req->status_code == BAD_REQUEST ||
-			req->status_code == HTTP_VERSION_NOT_SUPPORTED)
-        {
-            if (req ->status_code == NOT_FOUND)
-                it->second = new NotFoundResponse();
-            else if (req ->status_code == BAD_REQUEST)
-                it->second = new BadRequestResponse();
-            else if (req ->status_code == HTTP_VERSION_NOT_SUPPORTED)
-                it->second = new HttpVersionResponse();
-        }
-        else if (req->isFullyParsed()) {
-            try {
-                if (req->getRequestMethod() == GET) {
-                    it->second = new GetResponse();
-                } else if (req->getRequestMethod() == POST) {
-                    it->second = new PostResponse();
-                }
-                if (req->getRequestMethod() == DELETE) {
-                it->second = new DeleteResponse();
-                }
-            } catch (std::exception& e) {
-                // TODO
-            }
-        }
+		// it->second = selectResponse(req)
+		switch(req->status_code) {
+			case NOT_FOUND:
+				it->second = new NotFoundResponse();
+				break; 
+			case BAD_REQUEST:
+				it->second = new BadRequestResponse();
+				break;
+			case HTTP_VERSION_NOT_SUPPORTED:
+				it->second = new HttpVersionResponse();
+				break;
+			default:
+				if (!req->isFullyParsed()) {
+					return response;
+				}
+				try {
+					switch(req->getRequestMethod()) {
+						case GET:
+							it->second = new GetResponse();
+							break;
+						case POST:
+							it->second = new PostResponse();
+							break;
+						case DELETE:
+							it->second = new DeleteResponse();
+							break;
+						case NOT_SET:
+							// useless enum?
+							break;
+					}	
+				} catch (std::exception& e) {
+					// todo
+				}
+				break;
+		}
         it->second->constructResponse(*req);
         response = it->second->getRawResponse();
         delete it->first;
