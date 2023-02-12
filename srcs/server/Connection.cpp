@@ -58,7 +58,7 @@ void    Connection::handleRequest(char buf[BUFF_SIZE]) {
     }
 }
 
-std::string Connection::getRawResponse(void) {
+std::string Connection::createRawResponse(void) {
     std::string response;
     for (std::vector<std::pair<Request*, Response*> >::iterator it = requestResponseList.begin(); it != requestResponseList.end(); ++it) {
         Request* req = it->first;

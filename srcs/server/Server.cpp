@@ -87,7 +87,7 @@ void    Server::respondToExistingConnection(int i) {
     std::string     response;
 
     try {
-        response = _connections[_pfds[i].fd]->getRawResponse();
+        response = _connections[_pfds[i].fd]->createRawResponse();
     } catch (std::exception& e) {
         // TODO
     }

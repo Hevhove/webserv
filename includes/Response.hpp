@@ -64,7 +64,6 @@ class Response {
         virtual void    setHeaders() = 0;
 
         std::string     getRawResponse(void);
-        std::string     getRawResponse2(void);
         void            printResponse(void);
         void            setStatusCode(StatusCode sc);
 };
