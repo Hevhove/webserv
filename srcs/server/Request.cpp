@@ -15,15 +15,6 @@ Request::~Request() {
 
 }
 
-Request::Request(const Request& src) {
-    (void)src;
-}
-
-Request& Request::operator=(const Request& rhs) {
-    (void)rhs;
-	return (*this);
-}
-
 // Getters
 std::string     Request::getUnparsedRequest(void) {
     return _unparsed_request;

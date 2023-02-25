@@ -13,15 +13,6 @@ GetResponse::~GetResponse() {
 
 }
 
-GetResponse::GetResponse(const GetResponse& src) : Response(src) {
-    (void)src;
-}
-
-GetResponse& GetResponse::operator=(const GetResponse& rhs) {
-    (void)rhs;
-	return (*this);
-}
-
 std::string processPhp(std::string res) {
     std::string command;
     std::string result;

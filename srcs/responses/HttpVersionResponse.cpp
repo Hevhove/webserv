@@ -9,15 +9,6 @@ HttpVersionResponse::~HttpVersionResponse() {
 
 }
 
-HttpVersionResponse::HttpVersionResponse(const HttpVersionResponse& src)  : Response(src) {
-    (void)src;
-}
-
-HttpVersionResponse& HttpVersionResponse::operator=(const HttpVersionResponse& rhs) {
-    (void)rhs;
-	return (*this);
-}
-
 void    HttpVersionResponse::setHeaders() {
     setDateHeader();
     setContentTypeHeader();

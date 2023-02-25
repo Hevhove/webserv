@@ -14,15 +14,6 @@ Connection::~Connection() {
     // TODO: clear all of the Responses allocated on the heap
 }
 
-Connection::Connection(const Connection& src) : Socket(src) {
-    (void)src;
-}
-
-Connection& Connection::operator=(const Connection& rhs) {
-    (void)rhs;
-	return (*this);
-}
-
 // Public Member Functions
 void    Connection::handleRequest(char buf[BUFF_SIZE]) {
     /*

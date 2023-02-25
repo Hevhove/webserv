@@ -17,8 +17,6 @@ class InternalServerResponse : public Response {
         // Constructors
         InternalServerResponse();
 		virtual ~InternalServerResponse();
-		InternalServerResponse(const InternalServerResponse& src);
-		InternalServerResponse& operator=(const InternalServerResponse& rhs);
 
         // Public methods
         void        constructResponse(Request& req);

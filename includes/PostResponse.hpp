@@ -43,8 +43,6 @@ class PostResponse : public Response {
         // Constructors
         PostResponse();
 		virtual ~PostResponse();
-		PostResponse(const PostResponse& src);
-		PostResponse& operator=(const PostResponse& rhs);
 
         // Public methods
         void        constructResponse(Request& req);

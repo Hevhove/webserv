@@ -9,15 +9,6 @@ InternalServerResponse::~InternalServerResponse() {
 
 }
 
-InternalServerResponse::InternalServerResponse(const InternalServerResponse& src) : Response(src) {
-    (void)src;
-}
-
-InternalServerResponse& InternalServerResponse::operator=(const InternalServerResponse& rhs) {
-    (void)rhs;
-	return (*this);
-}
-
 void    InternalServerResponse::setHeaders() {
     setDateHeader();
     setContentTypeHeader();

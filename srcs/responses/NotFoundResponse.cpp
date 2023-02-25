@@ -9,15 +9,6 @@ NotFoundResponse::~NotFoundResponse() {
 
 }
 
-NotFoundResponse::NotFoundResponse(const NotFoundResponse& src) : Response(src) {
-    (void)src;
-}
-
-NotFoundResponse& NotFoundResponse::operator=(const NotFoundResponse& rhs) {
-    (void)rhs;
-	return (*this);
-}
-
 void    NotFoundResponse::setHeaders() {
     setDateHeader();
     setContentTypeHeader();

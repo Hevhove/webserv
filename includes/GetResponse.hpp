@@ -32,8 +32,6 @@ class GetResponse : public Response {
         // Constructors
         GetResponse();
 		virtual ~GetResponse();
-		GetResponse(const GetResponse& src);
-		GetResponse& operator=(const GetResponse& rhs);
         
         // Public methods
         void        constructResponse(Request& req);

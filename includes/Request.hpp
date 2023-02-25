@@ -51,8 +51,6 @@ class Request {
         // Constructors
         Request();
 		virtual ~Request();
-		Request(const Request& src);
-		Request&            operator=(const Request& rhs);
 
         // Getters
         std::string     getUnparsedRequest(void);

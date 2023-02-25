@@ -8,15 +8,6 @@ URI::~URI() {
     // 
 }
 
-URI::URI(const URI& src) {
-    (void)src;
-}
-
-URI& URI::operator=(const URI& rhs) {
-    (void)rhs;
-	return (*this);
-}
-
 // Member functions
 
 // Getters

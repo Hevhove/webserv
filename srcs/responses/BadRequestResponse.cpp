@@ -9,15 +9,6 @@ BadRequestResponse::~BadRequestResponse() {
 
 }
 
-BadRequestResponse::BadRequestResponse(const BadRequestResponse& src) : Response(src) {
-    (void)src;
-}
-
-BadRequestResponse& BadRequestResponse::operator=(const BadRequestResponse& rhs) {
-    (void)rhs;
-	return (*this);
-}
-
 void    BadRequestResponse::setHeaders() {
     setDateHeader();
     setContentTypeHeader();

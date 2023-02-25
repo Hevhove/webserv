@@ -27,8 +27,6 @@ class URI {
         // Constructors
         URI();
 		virtual ~URI();
-		URI(const URI& src);
-		URI&            operator=(const URI& rhs);
 
         // Getters
         // std::string&    getScheme(void);    

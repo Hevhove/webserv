@@ -10,15 +10,6 @@ DeleteResponse::~DeleteResponse() {
 
 }
 
-DeleteResponse::DeleteResponse(const DeleteResponse& src) : Response(src) {
-    (void)src;
-}
-
-DeleteResponse& DeleteResponse::operator=(const DeleteResponse& rhs) {
-    (void)rhs;
-	return (*this);
-}
-
 // Public methods
 // void    DeleteResponse::executeDeleteResponse(Request& req) {
 //     std::ofstream   tmpFile;
