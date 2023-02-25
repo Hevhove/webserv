@@ -1,4 +1,5 @@
 #include "Connection.hpp"
+#include <typeinfo>
 
 // Constructors
 Connection::Connection() {
@@ -54,17 +55,23 @@ void    Connection::handleRequest(char buf[BUFF_SIZE]) {
         }
 		catch (std::exception& e) {
                 bytes_checked = BUFF_SIZE;
-			    std::cout << "Base of type: "; 
-			    if (Request::BadRequestException *e = dynamic_cast<Request::BadRequestException *>(e)) 
+				try {
+					e = dynamic_cast<Request::BadRequestException &>(e);
 	                last_req->parse_status = "BadRequest";
-			    if (Request::NotFoundException *e = dynamic_cast<Request::NotFoundException *>(e)) 
+				} catch (std::bad_cast const&) {}
+				try {
+					e = dynamic_cast<Request::NotFoundException &>(e);
 	                last_req->parse_status = "NotFound";
-			    if (Request::HttpVersionNotSupportedException *e = dynamic_cast<Request::HttpVersionNotSupportedException *>(e)) 
+				} catch (std::bad_cast const&) {}
+				try {
+					e = dynamic_cast<Request::HttpVersionNotSupportedException &>(e);
 	                last_req->parse_status = "VersionMismatch";
-			    if (Request::BodyTooBigException *e = dynamic_cast<Request::BodyTooBigException *>(e)) 
+				} catch (std::bad_cast const&) {}
+				try {
+					e = dynamic_cast<Request::BodyTooBigException &>(e);
 	                last_req->parse_status = "BodyTooBig";
+				} catch (std::bad_cast const&) {}
 		}
-        // std::cout << "current bytes checked is: " << bytes_checked << std::endl;
     }
 }
 
