@@ -78,6 +78,8 @@ std::string Connection::getRawResponse(void) {
                 it->second = new BadRequestResponse();
             else if (req ->parse_status == "VersionMismatch")
                 it->second = new HttpVersionResponse();
+			else if (req->parse_status == "ContentTooLarge")
+				it->second = new ContentTooLargeResponse();
             it->second->constructResponse(*req);
             response = it->second->getRawResponse();
             delete it->first;
