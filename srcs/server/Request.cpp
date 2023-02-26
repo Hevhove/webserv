@@ -190,7 +190,7 @@ void    Request::parseRequestHeaders(Config config) {
         _has_body = true;
         _body_length = std::strtoul(it->second.c_str(), NULL, 0);
 		if (_body_length > config.getClientMaxBodySize()) {
-			throw Request::BodyTooBigException();
+			throw Request::ContentTooLargeException();
 		}
     }
 
@@ -236,6 +236,6 @@ const char * Request::HttpVersionNotSupportedException::what() const throw () {
     return ("This server only accepts HTTP/1.1 requests");
 }
 
-const char * Request::BodyTooBigException::what() const throw () {
+const char * Request::ContentTooLargeException::what() const throw () {
 	return ("Request body is too long ");
 }
