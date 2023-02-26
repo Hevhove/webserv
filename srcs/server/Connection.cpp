@@ -59,8 +59,8 @@ void    Connection::handleRequest(char buf[BUFF_SIZE]) {
 	                last_req->parse_status = "VersionMismatch";
 				} catch (std::bad_cast const&) {}
 				try {
-					e = dynamic_cast<Request::BodyTooBigException &>(e);
-	                last_req->parse_status = "BodyTooBig";
+					e = dynamic_cast<Request::ContentTooLargeException &>(e);
+	                last_req->parse_status = "ContentTooLarge";
 				} catch (std::bad_cast const&) {}
 		}
     }
