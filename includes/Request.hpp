@@ -36,7 +36,7 @@ class Request {
         int                 _body_bytes_read;
 
         // HTTP
-        RequestMethod                       _request_method; 
+        RequestMethod                       _request_method;
         URI                                 _uri; // the parsed path with scheme:[//authority]path[?query][#fragment]
         std::map<std::string, std::string>  _headers;
 
@@ -62,16 +62,16 @@ class Request {
         RequestMethod   getRequestMethod(void);
         URI&            getURI(void);
         std::map<std::string, std::string>  getHeaders(void);
-        
+
         // Public member functions
         int                 parseRequest(char buf[BUFF_SIZE], int bytes);
         void                printRequest(void);
-        bool                headersFullyParsed(void);   
+        bool                headersFullyParsed(void);
         bool                isFullyParsed(void);
 
         // Exceptions
        	class BadRequestException : public std::exception {
-        public: 
+        public:
             const char * what () const throw();
 		};
         class NotFoundException : public std::exception {
@@ -82,6 +82,11 @@ class Request {
         public:
 			const char * what () const throw();
 		};
+       	class ContentTooLargeException : public std::exception {
+        public:
+            const char * what () const throw();
+		};
+
 };
 
 #endif

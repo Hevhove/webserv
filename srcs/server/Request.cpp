@@ -32,7 +32,7 @@ std::string     Request::getUnparsedRequest(void) {
 std::string     Request::getRawStartline(void) {
     return (_raw_start_line);
 }
-        
+
 std::string     Request::getRawHeaders(void) {
     return (_raw_headers);
 }
@@ -88,7 +88,7 @@ int     Request::parseRequest(char *buf, int bytes_read) {
         // First check if all the headers of the current request are parsed!
         if (!headersFullyParsed())
         {
-            // std::cout << "currently reading byte i: " << start << std::endl; 
+            // std::cout << "currently reading byte i: " << start << std::endl;
             _unparsed_request += buf[start];
             if (_unparsed_request.find("\r\n\r\n") != std::string::npos) // let's say we found this at byte 200
             {
@@ -100,7 +100,7 @@ int     Request::parseRequest(char *buf, int bytes_read) {
             bytes_read++;
         }
         // If there is a body to parse, execute below code
-        else 
+        else
         {
             if (_has_body)
             {
@@ -110,6 +110,8 @@ int     Request::parseRequest(char *buf, int bytes_read) {
                 bytes_read++;
                 if (static_cast<unsigned long>(_body_bytes_read) == _body_length) // keep reading until we have the entire body
                 {
+                    if (_body_length > 20)
+                        throw ContentTooLargeException();
                     break ;
                 }
             }
@@ -125,7 +127,7 @@ void    Request::parseRequestStartLine(void) {
 
     // The first line of the request should indicate METHOD, resource and HTTP tag
     _raw_start_line = _unparsed_request.substr(0, _unparsed_request.find("\r\n"));
-    
+
     // trim possible garbage values before the startline from a previous read
     std::string keys[] = {"GET", "POST", "DELETE"};
     std::size_t         pos = _raw_start_line.length();
@@ -140,7 +142,7 @@ void    Request::parseRequestStartLine(void) {
 
     // Remove the startline from the request
     _unparsed_request = _unparsed_request.substr(_unparsed_request.find("\r\n") + 2);
-  
+
     // std::cout << "raw_startline is " << _raw_start_line << std::endl;
     startline_split = ft_split(_raw_start_line, ' ');
     if (startline_split.size() != 3)
@@ -154,14 +156,14 @@ void    Request::parseRequestStartLine(void) {
     else if (startline_split[0] == "DELETE")
         _request_method = DELETE;
     else
-        throw BadRequestException(); // do we need to empty buffers etc here? 
-    
-    // Parse the URI 
+        throw BadRequestException(); // do we need to empty buffers etc here?
+
+    // Parse the URI
     parseURI(startline_split[1]);
     if (!ft_is_resource_available("public/www/" + _uri.getPath()) && !hasFileExtension(_uri.getPath(), ".php"))
         throw NotFoundException();
 
-    // Parse HTTP version 
+    // Parse HTTP version
     if (startline_split[2] != "HTTP/1.1")
         throw HttpVersionNotSupportedException();
 }
@@ -171,8 +173,8 @@ void    Request::parseRequestHeaders(void) {
 
     // Select only the raw headers
     _raw_headers = _unparsed_request.substr(0, _unparsed_request.find("\r\n\r\n"));
-    std::stringstream   ss(_raw_headers); 
-    
+    std::stringstream   ss(_raw_headers);
+
     while (std::getline(ss, line, '\r'))
     {
         std::stringstream   ls(line);
@@ -184,11 +186,11 @@ void    Request::parseRequestHeaders(void) {
         key.erase(key.begin(), std::find_if(key.begin(), key.end(), ft_is_non_whitespace));
         key.erase(std::find_if(key.rbegin(), key.rend(), ft_is_non_whitespace).base(), key.end());
 
-        // get the value after the colon until the newline, trim leading and trailing whitespace  
+        // get the value after the colon until the newline, trim leading and trailing whitespace
         std::getline(ls, value);
         value.erase(value.begin(), std::find_if(value.begin(), value.end(), ft_is_non_whitespace));
         value.erase(std::find_if(value.rbegin(), value.rend(), ft_is_non_whitespace).base(), value.end());
-       
+
         // insert the key and value into the map
         _headers.insert(std::make_pair(key, value));
     }
@@ -240,4 +242,8 @@ const char * Request::NotFoundException::what() const throw () {
 
 const char * Request::HttpVersionNotSupportedException::what() const throw () {
     return ("This server only accepts HTTP/1.1 requests");
+}
+
+const char * Request::ContentTooLargeException::what() const throw () {
+    return ("Content is too large!");
 }
