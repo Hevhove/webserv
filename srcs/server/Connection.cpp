@@ -70,10 +70,7 @@ std::string Connection::getRawResponse(void) {
     std::string response;
     for (std::vector<std::pair<Request*, Response*> >::iterator it = requestResponseList.begin(); it != requestResponseList.end(); ++it) {
         Request* req = it->first;
-        if (req->parse_status == "NotFound" ||
-			req->parse_status == "BadRequest" ||
-			req->parse_status == "VersionMismatch" ||
-			req->parse_status == "ContentTooLarge")
+		if (req->parse_status != "OK")
         {
             if (req ->parse_status == "NotFound")
                 it->second = new NotFoundResponse();

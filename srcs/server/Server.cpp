@@ -110,7 +110,9 @@ void    Server::respondToExistingConnection(int i) {
     // Temporary hack for redirection issue:
     if (response.find("302 Found") != std::string::npos 
         || response.find("404 Not Found") != std::string::npos
-        || response.find("204 No Content") != std::string::npos)
+        || response.find("204 No Content") != std::string::npos
+        || response.find("413 Content Too Large") != std::string::npos
+		)
         dropConnection(i);
     delete[] buffer;
     
