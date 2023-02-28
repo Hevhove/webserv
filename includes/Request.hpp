@@ -42,7 +42,7 @@ class Request {
 
         // Private member functions
         void                parseRequestStartLine(void);
-        void                parseRequestHeaders(Config config);
+        void                parseRequestHeaders();
         void                parseRequestBody(void);
         void                parseURI(std::string uri);
 
