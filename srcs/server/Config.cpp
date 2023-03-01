@@ -2,6 +2,7 @@
 
 Config::Config() {
 	_client_max_body_size = 1024; // in the future is going to come from the config file
+	_listening_port = "3491";
 }
 
 Config::Config(const Config& other) {
@@ -20,4 +21,8 @@ Config&	Config::operator=(const Config& other) {
 // Getters
 unsigned long	Config::getClientMaxBodySize(void) {
 	return _client_max_body_size;
+}
+
+const char *	Config::getListeningPort(void) {
+	return _listening_port;
 }
