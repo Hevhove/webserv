@@ -43,6 +43,7 @@ class Server {
 	public:
 		// Constructors
 		Server();
+		Server(Config config);
 		virtual ~Server();
 		Server(const Server& src);
 		Server& operator=(const Server& rhs);
