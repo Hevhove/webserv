@@ -43,14 +43,14 @@ class Server {
 	public:
 		// Constructors
 		Server();
-		Server(Config config);
 		virtual ~Server();
 		Server(const Server& src);
 		Server& operator=(const Server& rhs);
 
 		// Methods : Public
 		void	run(void);
-		void	load_config(const char *fpath);
+		void	load_config(Config config);
+		void	openListeningPort(void);
 
 		// Exceptions
 		class PollException : public std::exception {
