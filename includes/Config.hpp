@@ -3,7 +3,8 @@
 
 class Config {
 private:
-	unsigned long _client_max_body_size;
+	unsigned long	_client_max_body_size;
+	const char*		_listening_port;
 
 public:
 	Config();
@@ -13,6 +14,7 @@ public:
 	Config&	operator=(const Config& other);
 
 	unsigned long	getClientMaxBodySize(void);
+	const char*		getListeningPort(void);
 };
 
 #endif

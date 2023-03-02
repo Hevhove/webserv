@@ -8,11 +8,8 @@ Server::Server() {
 	this->_fd_count = 0;
 	this->_fd_size = MAXEVENTS;
 	_pfds = new pollfd[_fd_size];
-	_listenSocket.initListenSocket(PORT);
-	_pfds[0].fd = _listenSocket.getSocketFD();
-	_pfds[0].events = POLLIN | POLLOUT;
-	_fd_count++;
 }
+
 
 Server::~Server() {
 	delete[] _pfds;
@@ -82,9 +79,15 @@ void	Server::run(void) {
 	}
 }
 
-void	Server::load_config(const char *fpath) {
-	(void) fpath; // to be used in the future;
-	_config = Config();
+void	Server::load_config(Config config) {
+	_config = config;
+}
+
+void	Server::openListeningPort(void) {
+	_listenSocket.initListenSocket(_config.getListeningPort());
+	_pfds[0].fd = _listenSocket.getSocketFD();
+	_pfds[0].events = POLLIN | POLLOUT;
+	_fd_count++;
 }
 
 // PRIVATE METHODS
