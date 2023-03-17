@@ -21,3 +21,7 @@ Config&	Config::operator=(const Config& other) {
 unsigned long	Config::getClientMaxBodySize(void) {
 	return _client_max_body_size;
 }
+
+const char *	Config::getListeningPort(void) {
+	return _listening_port;
+}
