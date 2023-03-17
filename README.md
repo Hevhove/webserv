@@ -47,7 +47,6 @@ It will launch the GET request via telnet and keep the connection open for 3 sec
 #### CURL
 ##### GET request
 Launch a GET request with the following command: `curl localhost:3490 -X GET`
-Launch a DELETE request
 
 ##### POST request
 Launch a POST request to the PHP script like so:
@@ -74,6 +73,10 @@ Sec-Fetch-User: ?1$
 
 `curl -X POST -H "Content-Type: multipart/form-data;" -F "description=Coolboard" -F "price=500" -F "phone=1256" http://localhost:3490/cgi-bin/add-entry.php`
 
+##### DELETE Requests
+Note on DELETE requests: in our front-end, we are using a form which launches a PHP request. In this manner we can only launch POST requests, where the body of the POST request will contain "Method=DELETE". In order to implement a true DELETE request, we have added some logic so entries can be removed immediately by the below format via curl.
+
+`curl -X DELETE http://localhost:3490/images/3.jpeg`
 
 #### Other notes
 

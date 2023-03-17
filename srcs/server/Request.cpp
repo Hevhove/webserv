@@ -219,7 +219,6 @@ void    Request::printRequest(void)
     std::cout << std::endl << "---REQUEST PARSED---" << std::endl;
     std::cout << _raw_start_line << std::endl << _raw_headers << std::endl;
     std::cout << "---END OF REQUEST---" << std::endl << std::endl;
-    std::cout << "Temporary for post: " << _raw_body << std::endl;
 }
 
 // Exceptions
