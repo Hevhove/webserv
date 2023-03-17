@@ -91,7 +91,8 @@ std::string Connection::getRawResponse(void) {
             try {
                 if (req->getRequestMethod() == GET) {
                     it->second = new GetResponse();
-                } else if (req->getRequestMethod() == POST) {
+                }
+                else if (req->getRequestMethod() == POST) {
                     it->second = new PostResponse();
                 }
                 if (req->getRequestMethod() == DELETE) {

@@ -72,7 +72,7 @@ void	Server::run(void) {
             // Or if a descriptor is ready for writing, and a parsed request is ready!
             else if (_pfds[i].revents & POLLOUT)
             {
-                /* 
+                /*
                     Because of keep-alive connection, this event will trigger a lot...
                     as long as client keeps the connection open!
                 */
@@ -99,23 +99,23 @@ void    Server::respondToExistingConnection(int i) {
     if (response.empty())
         return ;
     // std::cout << "response to be sent: " << response << std::endl;
-    
+
     // Cast response to a buffer
     char* buffer = new char[response.size()];
     std::memcpy(buffer, response.c_str(), response.size());
     int bytes_sent = send(_pfds[i].fd, buffer, response.size(), 0);
 
     // std::cout << "bytes sent on " << _pfds[i].fd << " is " << bytes_sent << std::endl;
-    
+
     // Temporary hack for redirection issue:
-    if (response.find("302 Found") != std::string::npos 
+    if (response.find("302 Found") != std::string::npos
         || response.find("404 Not Found") != std::string::npos
         || response.find("204 No Content") != std::string::npos
         || response.find("413 Content Too Large") != std::string::npos
 		)
         dropConnection(i);
     delete[] buffer;
-    
+
     // TODO: implement a throw exception for code below
     if (bytes_sent < 0)
         std::cout << "some error sending" << std::endl;
@@ -198,7 +198,7 @@ void	Server::dropConnection(int i) {
         _connections.erase(it);
     }
     //
-	// Remove from the pfds list by copying the file descriptor of the last one over it. 
+	// Remove from the pfds list by copying the file descriptor of the last one over it.
     // then reduce the number of file descriptors
     if (i != _fd_count - 1)
     {
