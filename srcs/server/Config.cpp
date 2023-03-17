@@ -1,8 +1,8 @@
 #include "Config.hpp"
 
 Config::Config() {
-	_client_max_body_size = 1024; // in the future is going to come from the config file
-	_listening_port = "3491";
+	_client_max_body_size = 25000; // in the future is going to come from the config file
+    _listening_port = "3490";
 }
 
 Config::Config(const Config& other) {
