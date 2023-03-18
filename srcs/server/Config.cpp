@@ -1,7 +1,7 @@
 #include "Config.hpp"
 
 Config::Config() {
-	_client_max_body_size = 1024; // in the future is going to come from the config file
+	_client_max_body_size = 25000; // in the future is going to come from the config file
 	_listening_port = "3491";
 	_default_error_pages[BAD_REQUEST] = "BAD_REQUEST\r\n";
 	_default_error_pages[UNAUTHORIZED] = "UNAUTHORIZED\r\n";
@@ -26,7 +26,7 @@ Config::~Config() {
 
 Config&	Config::operator=(const Config& other) {
 	this->_client_max_body_size = other._client_max_body_size;
-	// how to copy a map? -> for _default_error_pages 
+	// how to copy a map? -> for _default_error_pages
 	return *this;
 }
 
