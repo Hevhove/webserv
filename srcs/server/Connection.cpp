@@ -43,24 +43,27 @@ void    Connection::handleRequest(char buf[BUFF_SIZE]) {
         try {
                 bytes_checked = last_req->parseRequest(buf, bytes_checked, _config); // Add _config to function argument
                 last_req->parse_status = "OK";
+				last_req->setStatusCode(OK);
         }
 		catch (std::exception& e) {
                 bytes_checked = BUFF_SIZE;
 				try {
 					e = dynamic_cast<Request::BadRequestException &>(e);
-	                last_req->parse_status = "BadRequest";
+					last_req->setStatusCode(BAD_REQUEST);
 				} catch (std::bad_cast const&) {}
 				try {
 					e = dynamic_cast<Request::NotFoundException &>(e);
-	                last_req->parse_status = "NotFound";
+					last_req->setStatusCode(NOT_FOUND);
 				} catch (std::bad_cast const&) {}
 				try {
 					e = dynamic_cast<Request::HttpVersionNotSupportedException &>(e);
 	                last_req->parse_status = "VersionMismatch";
+					last_req->setStatusCode(HTTP_VERSION_NOT_SUPPORTED);
 				} catch (std::bad_cast const&) {}
 				try {
 					e = dynamic_cast<Request::ContentTooLargeException &>(e);
 	                last_req->parse_status = "ContentTooLarge";
+					last_req->setStatusCode(CONTENT_TOO_LARGE);
 				} catch (std::bad_cast const&) {}
 		}
     }
@@ -70,17 +73,12 @@ std::string Connection::getRawResponse(void) {
     std::string response;
     for (std::vector<std::pair<Request*, Response*> >::iterator it = requestResponseList.begin(); it != requestResponseList.end(); ++it) {
         Request* req = it->first;
-		if (req->parse_status != "OK")
+		if (req->getStatusCode() != OK)
         {
-            if (req ->parse_status == "NotFound")
-                it->second = new NotFoundResponse();
-            else if (req ->parse_status == "BadRequest")
-                it->second = new BadRequestResponse();
-            else if (req ->parse_status == "VersionMismatch")
-                it->second = new HttpVersionResponse();
-			else if (req->parse_status == "ContentTooLarge")
-				it->second = new ContentTooLargeResponse();
-            it->second->constructResponse(*req);
+            it->second = new NotOkResponse();
+            it->second->constructResponseWithBody(
+				*req, _config.getDefaultErrorPage(req->getStatusCode())
+			);
             response = it->second->getRawResponse();
             delete it->first;
             delete it->second;

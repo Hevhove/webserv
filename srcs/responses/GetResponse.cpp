@@ -76,3 +76,8 @@ void    GetResponse::constructResponse(Request& req) {
     setRawResponse();
     //printResponse();
 }
+
+void	GetResponse::constructResponseWithBody(Request &req, std::string raw_body) {
+	(void)req;
+	(void)raw_body;
+}
