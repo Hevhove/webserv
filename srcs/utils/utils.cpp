@@ -27,3 +27,8 @@ bool hasFileExtension(const std::string& s, const std::string& ext) {
   if (s.length() < ext.length()) return false;
   return s.rfind(ext) == (s.length() - ext.length());
 }
+
+StatusCode stringToStatusCode(std::string input) {
+    int statusCodeInt = atoi(input.c_str());
+    return static_cast<StatusCode>(statusCodeInt);
+}
