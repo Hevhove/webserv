@@ -60,6 +60,7 @@ class Response {
         
         // Public methods
         virtual void    constructResponse(Request& req) = 0;
+        virtual void    constructResponseWithBody(Request& req, std::string raw_body) = 0;
         virtual void    setHeaders() = 0;
 
         std::string     getRawResponse(void);

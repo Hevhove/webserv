@@ -199,3 +199,8 @@ void    PostResponse::constructResponse(Request& req) {
     setRawResponse();
     // printResponse();
 }
+
+void	PostResponse::constructResponseWithBody(Request &req, std::string raw_body) {
+	(void)req;
+	(void)raw_body;
+}

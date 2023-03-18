@@ -114,3 +114,8 @@ void    DeleteResponse::constructResponse(Request& req) {
     std::cout << _raw_status_line << _raw_headers << _raw_body << std::endl;
     //printResponse();
 }
+
+void	DeleteResponse::constructResponseWithBody(Request &req, std::string raw_body) {
+	(void)req;
+	(void)raw_body;
+}

@@ -75,15 +75,10 @@ std::string Connection::getRawResponse(void) {
         Request* req = it->first;
 		if (req->getStatusCode() != OK)
         {
-            if (req->getStatusCode() == NOT_FOUND)
-                it->second = new NotFoundResponse();
-            else if (req->getStatusCode() == BAD_REQUEST)
-                it->second = new BadRequestResponse();
-            else if (req->getStatusCode() == HTTP_VERSION_NOT_SUPPORTED)
-                it->second = new HttpVersionResponse();
-            else if (req->getStatusCode() == CONTENT_TOO_LARGE)
-				it->second = new ContentTooLargeResponse();
-            it->second->constructResponse(*req);
+            it->second = new NotOkResponse();
+            it->second->constructResponseWithBody(
+				*req, _config.getDefaultErrorPage(req->getStatusCode())
+			);
             response = it->second->getRawResponse();
             delete it->first;
             delete it->second;

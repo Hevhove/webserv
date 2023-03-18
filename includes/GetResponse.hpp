@@ -35,6 +35,7 @@ class GetResponse : public Response {
         
         // Public methods
         void        constructResponse(Request& req);
+        void        constructResponseWithBody(Request& req, std::string raw_body);
         void        printResponse(void);
         void        setStatusCode(StatusCode sc);
 };
