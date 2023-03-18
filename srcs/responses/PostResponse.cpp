@@ -34,7 +34,6 @@ void parseMultipartFormData(std::ifstream& tmpFile) {
     std::string phone;
 
     std::getline(tmpFile, separator);
-    std::cout << "separator is" << separator << std::endl;
     while (tmpFile.good())
     {
         std::getline(tmpFile, line);
@@ -83,6 +82,8 @@ void parseMultipartFormData(std::ifstream& tmpFile) {
     dataFile << "description=" << description << "&price=" << price << "&phone=" << phone;
     dataFile.close();
 
+    if (picture.empty())
+        return ;
     std::ofstream pictureFile("tmp/pic-entry.jpeg", std::ios::binary);
     pictureFile.write(picture.c_str(), picture.size());
     pictureFile.close();
@@ -99,7 +100,7 @@ void    PostResponse::executePostResponse(Request& req) {
     std::ifstream   inputFile;
     const char*     file_path = "tmp/data-entry.txt";
     std::string     command;
-    
+
     // write the body of the POST request to a tmp file
     tmpFile.open(file_path);
     tmpFile << req.getRawBody();
@@ -112,13 +113,18 @@ void    PostResponse::executePostResponse(Request& req) {
 
     // execute the php script with the contents of the file to add to the json
     const char*     filePath2 = "tmp/id_file";
-    command = "php " + _resource + " " + file_path + " > " + filePath2; 
+    command = "php " + _resource + " " + file_path + " > " + filePath2;
     std::system(command.c_str());
-    
-    // take the id number and move the pic-entry.jpeg into the correct name in the images folder
-    std::ifstream   tmpFile2(filePath2);
-    std::string     id_string((std::istreambuf_iterator<char>(tmpFile2)), std::istreambuf_iterator<char>());
-    moveAndRenameFile("tmp/pic-entry.jpeg", "public/www/images/" + id_string + ".jpeg");
+
+    // Exit if no picture curl request
+    std::ifstream picture_file("tmp/pic-entry.jpeg");
+    if (picture_file)
+    {
+        // take the id number and move the pic-entry.jpeg into the correct name in the images folder
+        std::ifstream   tmpFile2(filePath2);
+        std::string     id_string((std::istreambuf_iterator<char>(tmpFile2)), std::istreambuf_iterator<char>());
+        moveAndRenameFile("tmp/pic-entry.jpeg", "public/www/images/" + id_string + ".jpeg");
+    }
     // delete the tmp file
     remove(file_path);
     remove("tmp/post-entry.txt");
@@ -129,15 +135,15 @@ void    PostResponse::executePostDeleteResponse(Request& req) {
     std::ofstream   tmpFile;
     const char*     file_path = "tmp/delete-entry.txt";
     std::string     command;
-    
+
     // write the body of the POST request to a tmp file
     tmpFile.open(file_path);
     // std::cout << "DELETE BODY" << req.getRawBody() << std::endl;
     tmpFile << req.getRawBody();
     tmpFile.close();
-    
+
     // execute the php script with the contents of the file
-    command = "php " + _resource + " " + file_path; 
+    command = "php " + _resource + " " + file_path;
     std::system(command.c_str());
 
     // grab the id from the tmpFile
@@ -179,10 +185,10 @@ void    PostResponse::setHeaders(void) {
 }
 
 void    PostResponse::constructResponse(Request& req) {
-    std::string path = (req.getURI()).getPath();   
-    
+    std::string path = (req.getURI()).getPath();
+
     setResource(req.getURI().getPath());
-    _raw_status_line = _http_version + " 302 Found" + "\r\n"; 
+    _raw_status_line = _http_version + " 302 Found" + "\r\n";
 
     // execute the php...
     if (path.find("add-entry.php") != std::string::npos)
@@ -194,7 +200,7 @@ void    PostResponse::constructResponse(Request& req) {
     // set the headers
     setHeaders();
     setRawHeaders();
-    
+
     // set response
     setRawResponse();
     // printResponse();
