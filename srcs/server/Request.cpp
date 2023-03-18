@@ -15,6 +15,12 @@ Request::~Request() {
 
 }
 
+// Setters
+
+void	Request::setStatusCode(StatusCode status_code) {
+	_status_code = status_code;
+}
+
 // Getters
 std::string     Request::getUnparsedRequest(void) {
     return _unparsed_request;
@@ -45,6 +51,10 @@ URI&             Request::getURI(void) {
 
 std::map<std::string, std::string>  Request::getHeaders(void) {
     return (_headers);
+}
+
+StatusCode		Request::getStatusCode(void) {
+	return _status_code;
 }
 
 // Public Member Functions

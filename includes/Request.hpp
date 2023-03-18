@@ -34,6 +34,7 @@ class Request {
         bool                _has_body;
         unsigned long       _body_length;
         int                 _body_bytes_read;
+		StatusCode			_status_code;
 
         // HTTP
         RequestMethod                       _request_method; 
@@ -53,14 +54,19 @@ class Request {
 		virtual ~Request();
 
         // Getters
-        std::string     getUnparsedRequest(void);
-        std::string     getRawStartline(void);
-        std::string     getRawHeaders(void);
-        std::string     getRawBody(void);
-        RequestMethod   getRequestMethod(void);
-        URI&            getURI(void);
+        std::string     					getUnparsedRequest(void);
+        std::string     					getRawStartline(void);
+        std::string    						getRawHeaders(void);
+        std::string    						getRawBody(void);
+        RequestMethod						getRequestMethod(void);
+        URI&            					getURI(void);
         std::map<std::string, std::string>  getHeaders(void);
+		StatusCode							getStatusCode(void);
         
+		// Setters
+
+		void	setStatusCode(StatusCode status_code);
+
         // Public member functions
         int                 parseRequest(char buf[BUFF_SIZE], int bytes, Config config);
         void                printRequest(void);
