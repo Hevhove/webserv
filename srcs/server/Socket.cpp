@@ -38,19 +38,19 @@ void	Socket::createSocket(int ai_family, int ai_socktype, int ai_protocol) {
 		throw Socket::SocketFailureException();
 	if (setsockopt(_sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) < 0)
 		throw Socket::SocketSetOptException();
-	std::cout << "listenSocket set up successfully" << std::endl;
+	std::cout << "    listenSocket set up successfully" << std::endl;
 }
 
 void	Socket::bindSocket(struct sockaddr* ai_addr, socklen_t ai_addrlen) {
 	if (bind(_sockfd, ai_addr, ai_addrlen) < 0)
 		throw Socket::SocketBindException();
-	std::cout << "bindSocket worked successfully" << std::endl;
+	std::cout << "    bindSocket worked successfully" << std::endl;
 }
 
 void	Socket::listenOnSocket(void) {
 	if (listen(_sockfd, BACKLOG) < 0)
 		throw Socket::SocketListenException();
-	std::cout << "Now listening on socket #" << _sockfd << " for incoming connections" << std::endl;
+	std::cout << "    Now listening on socket #" << _sockfd << " for incoming connections" << std::endl;
 }
 
 void	Socket::acceptConnection(int listenSock) {

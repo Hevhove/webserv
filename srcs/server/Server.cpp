@@ -26,8 +26,7 @@ Server::Server(Config* conf) {
     // Initialize the listening ports from the config
     int i = 0;
     for (std::vector<ServerBlock*>::iterator it = _config->_server_blocks.begin(); it != _config->_server_blocks.end(); ++it) {
-        std::cout << *it << std::endl;
-        std::cout << "launching a server on port " << (*it)->getListeningPort();
+        std::cout << "- launching a server on port " << (*it)->getListeningPort();
         std::cout << " at pfds[" << i << "]" << std::endl;
         // Add a listening socket to the list
         // TODO: memory clean
@@ -41,8 +40,8 @@ Server::Server(Config* conf) {
 	    _pfds[i].events = POLLIN | POLLOUT;
 	    _fd_count++;
         i++;
+        std::cout << std::endl;
     }
-    std::cout << "Number of servers launched is: " << i << std::endl;
 }
 
 Server::~Server() {

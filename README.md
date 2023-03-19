@@ -130,6 +130,7 @@ http {
 Config rules:
 - TODO: No empty lines
 - No ; at end of line
+- error_pages url must be relative to webserv root
 - CHECK? must be enclosed in http block
 - TODO: after limit_except we expect GET, POST or DELETE
 
