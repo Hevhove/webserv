@@ -28,8 +28,6 @@ Server::Server(Config* conf) {
     int i = 0;
     for (std::vector<ServerBlock*>::iterator it = _config->_server_blocks.begin(); it != _config->_server_blocks.end(); ++it) {
         std::cout << *it << std::endl;
-        std::cout << "LOL" << std::endl;
-        sleep(1);
         std::cout << "launching a server on port " << (*it)->getListeningPort() << std::endl;
         std::cout << "at pfds[" << i << "]" << std::endl;
         // Add a listening socket to the list
@@ -209,7 +207,7 @@ void	Server::handleNewConnection(Socket* listenSock) {
 	socklen_t				addrlen;
 	struct sockaddr_storage	remote_addr;
 	char					remoteIP[INET_ADDRSTRLEN];
-    Connection*             new_connection = new Connection(_config);
+    Connection*             new_connection = new Connection();
 
 	addrlen = sizeof(remote_addr);
     try {
