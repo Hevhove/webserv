@@ -14,7 +14,7 @@
 class Connection : public Socket {
 	private:
         std::vector<std::pair<Request*, Response*> >	requestResponseList;
-		Config*											_config;
+		//Config*											_config;
         // Note: the serverblock pointer is in the Socket parent
 
         // Private Member functions
@@ -25,7 +25,7 @@ class Connection : public Socket {
 
         // Constructors
 		Connection();
-		Connection(Config* config);
+		//Connection(Config* config);
 		virtual ~Connection();
 
 		// Member functions

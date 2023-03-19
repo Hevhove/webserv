@@ -76,5 +76,6 @@ bool                        ft_is_non_whitespace(int ch);
 bool                        ft_is_resource_available(std::string resource);
 bool                        hasFileExtension(const std::string& s, const std::string& ext);
 StatusCode                  stringToStatusCode(std::string input);
+std::string		            getDefaultErrorPage(StatusCode status_code);
 
 #endif

@@ -6,9 +6,9 @@ Connection::Connection() {
 
 }
 
-Connection::Connection(Config* config) {
-	_config = config;
-}
+// Connection::Connection(Config* config) {
+// 	_config = config;
+// }
 
 Connection::~Connection() {
     // TODO: clear all of the Responses allocated on the heap
@@ -41,7 +41,7 @@ void    Connection::handleRequest(char buf[BUFF_SIZE]) {
         }
         Request* last_req = requestResponseList[requestResponseList.size() - 1].first;
         try {
-                bytes_checked = last_req->parseRequest(buf, bytes_checked, _config); // Add _config to function argument
+                bytes_checked = last_req->parseRequest(buf, bytes_checked, getServerBlock()); // Add _config to function argument
                 last_req->parse_status = "OK";
 				last_req->setStatusCode(OK);
         }
@@ -77,7 +77,7 @@ std::string Connection::getRawResponse(void) {
         {
             it->second = new NotOkResponse();
             it->second->constructResponseWithBody(
-				*req, _config->getDefaultErrorPage(req->getStatusCode())
+				*req, getDefaultErrorPage(req->getStatusCode())
 			);
             response = it->second->getRawResponse();
             delete it->first;

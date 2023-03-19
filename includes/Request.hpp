@@ -68,7 +68,7 @@ class Request {
 		void	setStatusCode(StatusCode status_code);
 
         // Public member functions
-        int                 parseRequest(char buf[BUFF_SIZE], int bytes, Config* config);
+        int                 parseRequest(char buf[BUFF_SIZE], int bytes, ServerBlock* sb);
         void                printRequest(void);
         bool                headersFullyParsed(void);
         bool                isFullyParsed(void);

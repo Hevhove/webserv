@@ -37,7 +37,6 @@ public:
     // Legacy
 	unsigned long	getClientMaxBodySize(void);
 	const char*		getListeningPort(void);
-	std::string		getDefaultErrorPage(StatusCode status_code);
 
     // Exceptions
     class FileDoesNotExistException : public std::exception {
