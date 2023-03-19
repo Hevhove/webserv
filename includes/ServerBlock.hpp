@@ -3,6 +3,7 @@
 
 # include "utils.hpp"
 # include "LocationBlock.hpp"
+#include <string>
 
 class ServerBlock {
 private:
@@ -11,10 +12,12 @@ private:
     std::string     _root_folder;
     std::string     _index_page;
     std::string     _server_name;
+
     bool            _GET_allowed;
     bool            _POST_allowed;
     bool            _DELETE_allowed;
-	std::map<StatusCode, std::string>	_default_error_pages;
+
+	std::map<StatusCode, std::string>	_error_pages;
     std::vector<LocationBlock*>          _locationBlocks; // TODO: memory leak check
 
 public:
@@ -25,7 +28,8 @@ public:
 	ServerBlock&	operator=(const ServerBlock& other);
 
     // Member Functions
-    void    printLocationBlocks(void);
+    void        printLocationBlocks(void);
+    std::string getErrorPath(StatusCode sc);
 
     // Getters
 	unsigned long	getClientMaxBodySize(void);

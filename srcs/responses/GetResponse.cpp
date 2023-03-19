@@ -62,11 +62,11 @@ void    GetResponse::setHeaders() {
 }
 
 void    GetResponse::constructResponse(Request& req) {
-    std::string path = (req.getURI()).getPath();   
-    
+    std::string path = (req.getURI()).getPath();
+
     setResource(req.getURI().getPath());
-    _raw_status_line = _http_version + " 200 OK" + "\r\n"; 
-       
+    _raw_status_line = _http_version + " 200 OK" + "\r\n";
+
     // set the headers
     setHeaders();
 
@@ -77,7 +77,11 @@ void    GetResponse::constructResponse(Request& req) {
     //printResponse();
 }
 
-void	GetResponse::constructResponseWithBody(Request &req, std::string raw_body) {
+void	GetResponse::constructDefaultResponseWithBody(Request &req, std::string raw_body) {
 	(void)req;
 	(void)raw_body;
+}
+void    GetResponse::constructConfigResponse(Request& req, std::string filePath) {
+    (void)req;
+    (void)filePath;
 }

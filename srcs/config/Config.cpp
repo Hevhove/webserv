@@ -267,7 +267,6 @@ std::vector<ServerBlock*>& Config::getServerBlocks(void)
 
 void    Config::printConfig(void) {
     std::cout << "** PRINTING PARSED CONFIG **" << std::endl;
-    std::cout << "test" << _server_blocks[0] << std::endl;
     for (std::vector<ServerBlock*>::iterator it = _server_blocks.begin(); it != _server_blocks.end(); ++it) {
         // Printing Server Blocks
         std::cout << "SERVER BLOCK:       " << std::endl;

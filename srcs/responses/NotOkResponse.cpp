@@ -15,12 +15,21 @@ void    NotOkResponse::setHeaders() {
     // add more headers if desired below...
     // add here...
 }
+void    NotOkResponse::setRawBody() {
+    std::ifstream   file(_resource.c_str());
+    std::string     content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+
+    std::cout << _resource << std::endl;
+    _raw_body = content;
+    setContentLengthHeader();
+    // std::cout << "raw body after processing is : " << _raw_body << std::endl;
+}
 
 void	NotOkResponse::constructResponse(Request& req) {
 	(void)req;
 }
 
-void    NotOkResponse::constructResponseWithBody(Request& req, std::string raw_body) {
+void    NotOkResponse::constructDefaultResponseWithBody(Request& req, std::string raw_body) {
     this->_status_code = HTTP_VERSION_NOT_SUPPORTED;
 	switch (req.getStatusCode()) {
 		case HTTP_VERSION_NOT_SUPPORTED:
@@ -43,4 +52,35 @@ void    NotOkResponse::constructResponseWithBody(Request& req, std::string raw_b
     setRawHeaders();
     _raw_body = raw_body;
     setRawResponse();
+}
+
+static std::string statusToString(StatusCode sc) {
+    switch (sc) {
+        case BAD_REQUEST:
+            return "400 Bad Request";
+        case UNAUTHORIZED:
+            return "401 Unauthorized";
+        case NOT_FOUND:
+            return "404 Not Found";
+        case LENGTH_REQUIRED:
+            return "411 Length Required";
+        case CONTENT_TOO_LARGE:
+            return "413 Content Too Large";
+        case INTERNAL_SERVER_ERROR:
+            return "500 Internal Server Error";
+        case HTTP_VERSION_NOT_SUPPORTED:
+            return "505 HTTP Version Not Supported";
+        default:
+            return "Unknown";
+    }
+}
+
+void        NotOkResponse::constructConfigResponse(Request& req, std::string filePath) {
+    _resource = filePath;
+    _raw_status_line = _http_version + " " + statusToString(req.getStatusCode()) + "\r\n";
+    setHeaders();
+    setRawHeaders();
+    setRawBody();
+    setRawResponse();
+    //printResponse();
 }

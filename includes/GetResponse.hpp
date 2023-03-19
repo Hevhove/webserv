@@ -1,6 +1,6 @@
 /*
 A Response message from a client to a server includes, within the first line of that message,
-the method to be applied to the resource, the identifier of the resource, and the protocol version in use. 
+the method to be applied to the resource, the identifier of the resource, and the protocol version in use.
 
 Example:
     HTTP/1.1 200 OK
@@ -23,7 +23,7 @@ Example:
 
 class GetResponse : public Response {
     private:
-    
+
         // Private methods
         void    setHeaders();
         void    setRawBody();
@@ -32,10 +32,11 @@ class GetResponse : public Response {
         // Constructors
         GetResponse();
 		virtual ~GetResponse();
-        
+
         // Public methods
         void        constructResponse(Request& req);
-        void        constructResponseWithBody(Request& req, std::string raw_body);
+        void        constructDefaultResponseWithBody(Request& req, std::string raw_body);
+        void        constructConfigResponse(Request& req, std::string filePath);
         void        printResponse(void);
         void        setStatusCode(StatusCode sc);
 };

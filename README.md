@@ -131,7 +131,6 @@ Config rules:
 - TODO: No empty lines
 - No ; at end of line
 - CHECK? must be enclosed in http block
-- TODO: 1 port per server MUST be there
 - TODO: after limit_except we expect GET, POST or DELETE
 
 

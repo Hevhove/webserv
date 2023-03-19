@@ -19,7 +19,7 @@ void    Response::printResponse(void) {
     std::cout << _raw_status_line << std::endl << _raw_headers << std::endl << _raw_body << std::endl;
 }
 
-// Private methods 
+// Private methods
 void    Response::setRawHeaders() {
     std::stringstream   ss;
 
@@ -28,11 +28,11 @@ void    Response::setRawHeaders() {
         ss << it->first << ": " << it->second << "\r\n";
     }
     ss << "\r\n";
-    _raw_headers = ss.str(); 
+    _raw_headers = ss.str();
 }
 
 void    Response::setDateHeader(void) {
-    time_t now = time(NULL); 
+    time_t now = time(NULL);
     struct tm* timeinfo = gmtime(&now);
     char buffer[128];
 
@@ -44,7 +44,7 @@ void    Response::setDateHeader(void) {
 
 void    Response::setContentLengthHeader() {
     std::stringstream ss;
-    
+
     ss << _raw_body.length();
     std::string content_length = ss.str();
     _headers.insert(std::make_pair("Content-Length", ss.str()));
@@ -75,7 +75,7 @@ void    Response::setCacheControl(const char* type) {
 
 void    Response::setRetryAfter(int sec) {
    std::stringstream ss;
-    
+
     ss << sec;
     std::string seconds = ss.str();
     _headers.insert(std::make_pair("Retry-After", seconds));

@@ -162,7 +162,9 @@ void    Request::parseRequestStartLine(void) {
     // Parse the URI
     parseURI(startline_split[1]);
     if (!ft_is_resource_available("public/www/" + _uri.getPath()) && !hasFileExtension(_uri.getPath(), ".php"))
+    {
         throw NotFoundException();
+    }
 
     // Parse HTTP version
     if (startline_split[2] != "HTTP/1.1")
@@ -246,4 +248,8 @@ const char * Request::HttpVersionNotSupportedException::what() const throw () {
 
 const char * Request::ContentTooLargeException::what() const throw () {
 	return ("Request body is too long ");
+}
+
+const char * Request::UnauthorizedException::what() const throw () {
+	return ("Unauthorized");
 }

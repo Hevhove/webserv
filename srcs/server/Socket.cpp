@@ -70,7 +70,6 @@ void	Socket::initListenSocket(const char* port) {
 	struct addrinfo	*ai;
 	struct addrinfo *p;
 
-    std::cout << "test " <<  port << std::endl;
 	// Get a socket for us and bind it
 	memset(&hints, 0, sizeof(hints)); // change to ft_memset later?
 	hints.ai_family = AF_INET;

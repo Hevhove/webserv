@@ -37,7 +37,8 @@ class DeleteResponse : public Response {
 
         // Public methods
         void        constructResponse(Request& req);
-        void  	  	constructResponseWithBody(Request& req, std::string raw_body);
+        void  	  	constructDefaultResponseWithBody(Request& req, std::string raw_body);
+        void        constructConfigResponse(Request& req, std::string filePath);
         void        executeDeleteResponse(Request& req);
         void        printResponse(void);
         void        setStatusCode(StatusCode sc);

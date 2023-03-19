@@ -1,7 +1,7 @@
 /*
 
 To make a POST-request with curl:
-curl -X POST https://reqbin.com/echo/post/form -H "Content-Type: application/x-www-form-urlencoded" -d "key1=value1&key2=value2" 
+curl -X POST https://reqbin.com/echo/post/form -H "Content-Type: application/x-www-form-urlencoded" -d "key1=value1&key2=value2"
 
 A Response message from a server to client on a POST request can be :
     - 201: Created
@@ -46,7 +46,8 @@ class PostResponse : public Response {
 
         // Public methods
         void        constructResponse(Request& req);
-        void        constructResponseWithBody(Request& req, std::string raw_body);
+        void        constructDefaultResponseWithBody(Request& req, std::string raw_body);
+        void        constructConfigResponse(Request& req, std::string filePath);
         void        executePostResponse(Request& req);
         void        printResponse(void);
         void        setStatusCode(StatusCode sc);
