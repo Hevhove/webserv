@@ -18,7 +18,6 @@ int main(int argc, char **argv)
         exit(-1);
     }
     config.printConfig();
-    std::cout << config._server_blocks[0] << std::endl;
 
     // Server loading
 	Server server(&config);
