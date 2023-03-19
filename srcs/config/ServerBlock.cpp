@@ -74,14 +74,14 @@ void    		    ServerBlock::setDefaultErrorPage(std::string statusCodeString, std
     StatusCode sc;
 
     sc = stringToStatusCode(statusCodeString);
-    _default_error_pages.insert(std::make_pair(sc, filePath));
+    _error_pages.insert(std::make_pair(sc, filePath));
 }
 
 void    ServerBlock::setNewLocationBlock(LocationBlock* lb) {
     _locationBlocks.push_back(lb);
 }
 
-// Printing
+// Member Functions
 void    ServerBlock::printLocationBlocks(void) {
     for (std::vector<LocationBlock*>::iterator it = _locationBlocks.begin(); it != _locationBlocks.end(); ++it) {
         // Printing Server Blocks
@@ -94,4 +94,15 @@ void    ServerBlock::printLocationBlocks(void) {
         std::cout << "    LimitExcept POST:   " << std::boolalpha << (*it)->getLimitExceptPOST() << std::endl;
         std::cout << "    LimitExcept DELETE: " << std::boolalpha << (*it)->getLimitExceptDELETE() << std::endl;
     }
+}
+
+std::string ServerBlock::getErrorPath(StatusCode sc) {
+    std::string filePath;
+    std::map<StatusCode, std::string>::iterator it = _error_pages.find(sc);
+
+    // returns the string of the file location OR empty if not found
+    if (it != _error_pages.end())
+        return (it->second);
+    else
+        return std::string();
 }

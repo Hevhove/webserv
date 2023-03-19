@@ -1,4 +1,5 @@
 #include "Connection.hpp"
+#include "utils.hpp"
 #include <typeinfo>
 
 // Constructors
@@ -65,6 +66,11 @@ void    Connection::handleRequest(char buf[BUFF_SIZE]) {
 	                last_req->parse_status = "ContentTooLarge";
 					last_req->setStatusCode(CONTENT_TOO_LARGE);
 				} catch (std::bad_cast const&) {}
+                try {
+					e = dynamic_cast<Request::UnauthorizedException &>(e);
+	                last_req->parse_status = "Unauthorized";
+					last_req->setStatusCode(UNAUTHORIZED);
+				} catch (std::bad_cast const&) {}
 		}
     }
 }
@@ -76,9 +82,19 @@ std::string Connection::getRawResponse(void) {
 		if (req->getStatusCode() != OK)
         {
             it->second = new NotOkResponse();
-            it->second->constructResponseWithBody(
-				*req, getDefaultErrorPage(req->getStatusCode())
-			);
+            // Implement Config Error codes here!
+            // Check if req->getStatusCode is in _error_pages of ServerBlock
+            // if it is, send back the html file at the location of the filePath associated with the statuscode
+            // Otherwise, construct the default response
+            std::string errorPath = getServerBlock()->getErrorPath(req->getStatusCode());
+            if (!errorPath.empty())
+            {
+                it->second->constructConfigResponse(*req, errorPath);
+            }
+            else
+            {
+                it->second->constructDefaultResponseWithBody(*req, getDefaultErrorPage(req->getStatusCode()));
+            }
             response = it->second->getRawResponse();
             delete it->first;
             delete it->second;

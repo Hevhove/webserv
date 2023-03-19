@@ -10,11 +10,13 @@ class NotOkResponse : public Response {
         // Constructors
         NotOkResponse();
 		virtual ~NotOkResponse();
-        
+
         // Public methods
         void        constructResponse(Request& req);
-        void        constructResponseWithBody(Request& req, std::string raw_body);
+        void        constructDefaultResponseWithBody(Request& req, std::string raw_body);
+        void        constructConfigResponse(Request& req, std::string filePath);
         void        setHeaders();
+        void        setRawBody();
         void        printResponse(void);
 };
 

@@ -16,17 +16,17 @@ DeleteResponse::~DeleteResponse() {
 //     const char*     file_path = "tmp/delete.txt";
 //     std::string     command;
 //     // int             ret;
-//     
+//
 //     // debugging check
 //     std::cout << "raw DELETE body is " << req.getRawBody() << std::endl;
-//     
+//
 //     // write the body of the POST request to a tmp file
 //     tmpFile.open(file_path);
 //     tmpFile << req.getRawBody();
 //     tmpFile.close();
-//     
+//
 //     // execute the php script with the contents of the file
-//     command = "php " + _resource + " " + file_path; 
+//     command = "php " + _resource + " " + file_path;
 //     std::cout << "full command to be exec is: " << command << std::endl;
 //     std::system(command.c_str());
 //
@@ -37,7 +37,7 @@ DeleteResponse::~DeleteResponse() {
 
 std::string getResourceID(std::string resource) {
     std::string numberStr;
-    
+
     std::string::size_type pos = resource.rfind('/');
     if (pos != std::string::npos) {
         ++pos;
@@ -53,7 +53,7 @@ void    DeleteResponse::executeDeleteResponse(Request& req) {
     std::ofstream   tmpFile;
     std::string     file_path = "tmp/delete-entry.txt";
     std::string     command;
-    std::string     resource_id; 
+    std::string     resource_id;
 
     // get resource id
     (void)req;
@@ -64,9 +64,9 @@ void    DeleteResponse::executeDeleteResponse(Request& req) {
     // std::cout << "DELETE BODY" << req.getRawBody() << std::endl;
     tmpFile << "_method=DELETE&id=" + resource_id;
     tmpFile.close();
-    
+
     // execute the php script with the contents of the file
-    command = "php cgi-bin/delete-entry.php " + file_path; 
+    command = "php cgi-bin/delete-entry.php " + file_path;
     std::system(command.c_str());
 
     // grab the id from the tmpFile
@@ -96,10 +96,10 @@ void    DeleteResponse::setHeaders(void) {
 }
 
 void    DeleteResponse::constructResponse(Request& req) {
-    std::string path = (req.getURI()).getPath();   
-    
+    std::string path = (req.getURI()).getPath();
+
     setResource(req.getURI().getPath());
-    _raw_status_line = _http_version + " 204 No Content" + "\r\n"; 
+    _raw_status_line = _http_version + " 204 No Content" + "\r\n";
 
     // execute the php
     executeDeleteResponse(req);
@@ -115,7 +115,12 @@ void    DeleteResponse::constructResponse(Request& req) {
     //printResponse();
 }
 
-void	DeleteResponse::constructResponseWithBody(Request &req, std::string raw_body) {
+void	DeleteResponse::constructDefaultResponseWithBody(Request &req, std::string raw_body) {
 	(void)req;
 	(void)raw_body;
+}
+
+void    DeleteResponse::constructConfigResponse(Request& req, std::string filePath) {
+    (void)req;
+    (void)filePath;
 }

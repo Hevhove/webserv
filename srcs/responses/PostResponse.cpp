@@ -206,7 +206,12 @@ void    PostResponse::constructResponse(Request& req) {
     // printResponse();
 }
 
-void	PostResponse::constructResponseWithBody(Request &req, std::string raw_body) {
+void	PostResponse::constructDefaultResponseWithBody(Request &req, std::string raw_body) {
 	(void)req;
 	(void)raw_body;
+}
+
+void    PostResponse::constructConfigResponse(Request& req, std::string filePath) {
+    (void)req;
+    (void)filePath;
 }

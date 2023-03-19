@@ -24,12 +24,11 @@ Server::Server(Config* conf) {
 
     _config = conf;
     // Initialize the listening ports from the config
-    std::cout << _config->_server_blocks[0] << std::endl;
     int i = 0;
     for (std::vector<ServerBlock*>::iterator it = _config->_server_blocks.begin(); it != _config->_server_blocks.end(); ++it) {
         std::cout << *it << std::endl;
-        std::cout << "launching a server on port " << (*it)->getListeningPort() << std::endl;
-        std::cout << "at pfds[" << i << "]" << std::endl;
+        std::cout << "launching a server on port " << (*it)->getListeningPort();
+        std::cout << " at pfds[" << i << "]" << std::endl;
         // Add a listening socket to the list
         // TODO: memory clean
         Socket* listenSock = new Socket;
@@ -162,7 +161,6 @@ void	Server::readFromExistingConnection(int i) {
 	char    buf[BUFF_SIZE];
 
 	memset(buf, 0, BUFF_SIZE);
-    std::cout << "reading from pfds[" << i << "]" << &_pfds[i] << std::endl;
     nbytes = recv(_pfds[i].fd, buf, sizeof(buf), 0);
 	if (nbytes <= 0)
 	{
