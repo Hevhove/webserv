@@ -26,9 +26,9 @@ typedef enum StatusCode {
 
 // Macros
 # define PORT "3490" // to be changed later with config file
-# define BACKLOG 10
+# define BACKLOG 25
 # define BUFF_SIZE 2000
-# define MAXEVENTS 10
+# define MAXEVENTS 25
 
 // Libraries
 // Networking

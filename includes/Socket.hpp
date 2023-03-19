@@ -2,14 +2,16 @@
 # define CLASS_SOCKET_HPP
 
 # include "utils.hpp"
+# include "ServerBlock.hpp"
 
 class Socket {
 	private:
 		int						_sockfd;
 		socklen_t				_sin_size;
 		struct sockaddr_storage	_addr;
-        int                     _port;
-        
+        std::string             _port;
+        ServerBlock*            _server_block;
+
 	public:
 		// Constructors
 		Socket();
@@ -27,11 +29,14 @@ class Socket {
         void    closeSocket(void);
 
 		// Getters
-		int		getSocketFD(void);
-        int     getPort(void);
+		int		        getSocketFD(void);
+        int             getPort(void);
+        ServerBlock*    getServerBlock(void);
 
         // Setters
         void    setSocketFD(int fd);
+        void    setPortFD(std::string port);
+        void    setServerBlock(ServerBlock* sb);
 
 		// Exceptions
 		class SocketInitException : public std::exception {

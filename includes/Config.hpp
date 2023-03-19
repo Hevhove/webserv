@@ -6,7 +6,6 @@
 
 class Config {
 private:
-    std::vector<ServerBlock*>    _server_blocks;
 
     // Legacy below, leave for now.
 	unsigned long   _client_max_body_size;
@@ -17,6 +16,8 @@ private:
 	std::map<StatusCode, std::string>	_default_error_pages;
 
 public:
+    std::vector<ServerBlock*>    _server_blocks;
+
 	Config();
 	Config(const Config& other);
 	~Config();
@@ -29,6 +30,9 @@ public:
     void    parseLocationBlock(std::ifstream& file, std::vector<std::string> tokens, ServerBlock* sb);
     void    printConfig(void);
     //void    parseConfig(void);
+
+    // Getters
+    std::vector<ServerBlock*>& getServerBlocks(void);
 
     // Legacy
 	unsigned long	getClientMaxBodySize(void);

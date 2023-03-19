@@ -18,11 +18,10 @@ int main(int argc, char **argv)
         exit(-1);
     }
     config.printConfig();
+    std::cout << config._server_blocks[0] << std::endl;
 
     // Server loading
-	Server server;
-	server.load_config(config);
-	server.openListeningPort();
+	Server server(&config);
 	try {
 		server.run();
 	} catch (std::exception& e) {

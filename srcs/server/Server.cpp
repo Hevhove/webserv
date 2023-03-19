@@ -4,12 +4,49 @@
 #include <sys/poll.h>
 
 // CONSTRUCTORS
-Server::Server() {
+// Server::Server() {
+//     // Below is currently not being called.
+// 	this->_fd_count = 0;
+// 	this->_fd_size = MAXEVENTS;
+// 	_pfds = new pollfd[_fd_size];
+
+//     // Initialize the listening ports from the config
+// 	_listenSocket.initListenSocket(_config.getListeningPort());
+// 	_pfds[0].fd = _listenSocket.getSocketFD();
+// 	_pfds[0].events = POLLIN | POLLOUT;
+// 	_fd_count++;
+// }
+
+Server::Server(Config* conf) {
 	this->_fd_count = 0;
 	this->_fd_size = MAXEVENTS;
 	_pfds = new pollfd[_fd_size];
-}
 
+    _config = conf;
+    // Initialize the listening ports from the config
+    std::cout << _config->_server_blocks[0] << std::endl;
+    int i = 0;
+    for (std::vector<ServerBlock*>::iterator it = _config->_server_blocks.begin(); it != _config->_server_blocks.end(); ++it) {
+        std::cout << *it << std::endl;
+        std::cout << "LOL" << std::endl;
+        sleep(1);
+        std::cout << "launching a server on port " << (*it)->getListeningPort() << std::endl;
+        std::cout << "at pfds[" << i << "]" << std::endl;
+        // Add a listening socket to the list
+        // TODO: memory clean
+        Socket* listenSock = new Socket;
+        listenSock->setPortFD((*it)->getListeningPort());
+        // Add relevant serverblock to listening socket!
+        listenSock->setServerBlock(*it);
+        _listenSockets.push_back(listenSock);
+      	_listenSockets.back()->initListenSocket((*it)->getListeningPort().c_str());
+    	_pfds[i].fd = _listenSockets.back()->getSocketFD();
+	    _pfds[i].events = POLLIN | POLLOUT;
+	    _fd_count++;
+        i++;
+    }
+    std::cout << "Number of servers launched is: " << i << std::endl;
+}
 
 Server::~Server() {
 	delete[] _pfds;
@@ -21,17 +58,25 @@ Server::~Server() {
     std::cout << "server: Shutting down" << std::endl;
 }
 
-Server::Server(const Server& src) {
-	this->_listenSocket = src._listenSocket;
-	this->_hints = src._hints;
-	this->_servinfo = src._servinfo;
-}
+// Server::Server(const Server& src) {
+// 	this->_listenSocket = src._listenSocket;
+// 	this->_hints = src._hints;
+// 	this->_servinfo = src._servinfo;
+// }
 
 Server&	Server::operator=(const Server& rhs) {
 	this->_listenSocket = rhs._listenSocket;
 	this->_hints = rhs._hints;
 	this->_servinfo = rhs._servinfo;
 	return (*this);
+}
+
+Socket*    Server::retrieveListeningSocket(int fd) {
+    for (std::vector<Socket*>::iterator it = _listenSockets.begin(); it != _listenSockets.end(); it++){
+        if (fd == (*it)->getSocketFD())
+            return (*it) ;
+    }
+    return (NULL);
 }
 
 // PUBLIC METHODS
@@ -56,9 +101,10 @@ void	Server::run(void) {
             // Check if descriptor has data available for reading
             else if (_pfds[i].revents & POLLIN)
 			{
-				if (_pfds[i].fd == _listenSocket.getSocketFD())
+                Socket* listenSock = retrieveListeningSocket(_pfds[i].fd);
+                if (listenSock != NULL)
                 {
-					handleNewConnection();
+					handleNewConnection(listenSock);
                     break ;
                 }
 				else
@@ -77,17 +123,6 @@ void	Server::run(void) {
             }
 		}
 	}
-}
-
-void	Server::load_config(Config config) {
-	_config = config;
-}
-
-void	Server::openListeningPort(void) {
-	_listenSocket.initListenSocket(_config.getListeningPort());
-	_pfds[0].fd = _listenSocket.getSocketFD();
-	_pfds[0].events = POLLIN | POLLOUT;
-	_fd_count++;
 }
 
 // PRIVATE METHODS
@@ -129,6 +164,7 @@ void	Server::readFromExistingConnection(int i) {
 	char    buf[BUFF_SIZE];
 
 	memset(buf, 0, BUFF_SIZE);
+    std::cout << "reading from pfds[" << i << "]" << &_pfds[i] << std::endl;
     nbytes = recv(_pfds[i].fd, buf, sizeof(buf), 0);
 	if (nbytes <= 0)
 	{
@@ -169,7 +205,7 @@ void	Server::addConnection(int newfd, Connection* new_conn) {
     _connections.insert(std::make_pair(newfd, new_conn));
 }
 
-void	Server::handleNewConnection(void) {
+void	Server::handleNewConnection(Socket* listenSock) {
 	socklen_t				addrlen;
 	struct sockaddr_storage	remote_addr;
 	char					remoteIP[INET_ADDRSTRLEN];
@@ -177,7 +213,10 @@ void	Server::handleNewConnection(void) {
 
 	addrlen = sizeof(remote_addr);
     try {
-	    new_connection->setSocketFD(accept(_listenSocket.getSocketFD(), (struct sockaddr *)&remote_addr, &addrlen));
+        // Set the socket for the connection
+	    new_connection->setSocketFD(accept(listenSock->getSocketFD(), (struct sockaddr *)&remote_addr, &addrlen));
+        // Add server block config to this connection
+        new_connection->setServerBlock(listenSock->getServerBlock());
     } catch (std::exception& e) {
         std::cerr << e.what() << std::endl;
     }
@@ -185,7 +224,8 @@ void	Server::handleNewConnection(void) {
 	// add connection to list of existing connections in pfds
     addConnection(new_connection->getSocketFD(), new_connection);
 	std::cout << "---NEW CONNECTION: " << inet_ntop(remote_addr.ss_family, get_in_addr((struct sockaddr*)&remote_addr), remoteIP, INET_ADDRSTRLEN);
-	std::cout << " on socket " << new_connection->getSocketFD() << "---" << std::endl;
+	std::cout << " on socket " << new_connection->getSocketFD();
+    std::cout << " over port " << new_connection->getServerBlock()->getListeningPort() << "---" << std::endl;
 }
 
 void	Server::dropConnection(int i) {

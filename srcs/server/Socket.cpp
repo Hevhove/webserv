@@ -116,11 +116,23 @@ int		Socket::getSocketFD(void) {
 	return (this->_sockfd);
 }
 
+ServerBlock*    Socket::getServerBlock(void) {
+    return (_server_block);
+}
+
 // Setters
 void    Socket::setSocketFD(int fd) {
     if (fd < 0)
         throw SocketAcceptException();
     this->_sockfd = fd;
+}
+
+void    Socket::setPortFD(std::string port) {
+    this->_port = port;
+}
+
+void    Socket::setServerBlock(ServerBlock* sb) {
+    this->_server_block = sb;
 }
 
 // Exceptions

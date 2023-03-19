@@ -76,7 +76,7 @@ bool     Request::isFullyParsed() {
         return (false);
 }
 
-int     Request::parseRequest(char *buf, int bytes_read, Config config) {
+int     Request::parseRequest(char *buf, int bytes_read, Config* config) {
     int         start = bytes_read;
 
     /*
@@ -111,7 +111,7 @@ int     Request::parseRequest(char *buf, int bytes_read, Config config) {
                 bytes_read++;
                 if (static_cast<unsigned long>(_body_bytes_read) == _body_length) // keep reading until we have the entire body
                 {
-					if (_body_length > config.getClientMaxBodySize())
+					if (_body_length > config->getClientMaxBodySize())
 						throw Request::ContentTooLargeException();
                     break ;
                 }
