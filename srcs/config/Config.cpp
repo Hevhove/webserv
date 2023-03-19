@@ -10,7 +10,7 @@
 // Constructors
 Config::Config() {
 	_client_max_body_size = 25000; // in the future is going to come from the config file
-	_listening_port = "3491";
+	_listening_port = "3490";
 	_default_error_pages[BAD_REQUEST] = "BAD_REQUEST\r\n";
 	_default_error_pages[UNAUTHORIZED] = "UNAUTHORIZED\r\n";
     _default_error_pages[BAD_REQUEST] = "BAD_REQUEST\r\n";
@@ -42,6 +42,7 @@ Config&	Config::operator=(const Config& other) {
 bool checkBlocks(std::string fileName) {
     std::ifstream file(fileName.c_str());
     if (!file.is_open()) {
+        std::cout << "failed to open config" << std::endl;
         return false;
     }
 
@@ -273,10 +274,16 @@ std::string		Config::getDefaultErrorPage(StatusCode status_code)
 	return _default_error_pages[status_code];
 }
 
+std::vector<ServerBlock*>& Config::getServerBlocks(void)
+{
+    return _server_blocks;
+}
+
 // TODO: duplicate ports and server_names checks
 
 void    Config::printConfig(void) {
     std::cout << "** PRINTING PARSED CONFIG **" << std::endl;
+    std::cout << "test" << _server_blocks[0] << std::endl;
     for (std::vector<ServerBlock*>::iterator it = _server_blocks.begin(); it != _server_blocks.end(); ++it) {
         // Printing Server Blocks
         std::cout << "SERVER BLOCK:       " << std::endl;

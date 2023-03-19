@@ -6,7 +6,7 @@ Connection::Connection() {
 
 }
 
-Connection::Connection(Config config) {
+Connection::Connection(Config* config) {
 	_config = config;
 }
 
@@ -77,7 +77,7 @@ std::string Connection::getRawResponse(void) {
         {
             it->second = new NotOkResponse();
             it->second->constructResponseWithBody(
-				*req, _config.getDefaultErrorPage(req->getStatusCode())
+				*req, _config->getDefaultErrorPage(req->getStatusCode())
 			);
             response = it->second->getRawResponse();
             delete it->first;

@@ -37,7 +37,7 @@ class Request {
 		StatusCode			_status_code;
 
         // HTTP
-        RequestMethod                       _request_method; 
+        RequestMethod                       _request_method;
         URI                                 _uri; // the parsed path with scheme:[//authority]path[?query][#fragment]
         std::map<std::string, std::string>  _headers;
 
@@ -62,20 +62,20 @@ class Request {
         URI&            					getURI(void);
         std::map<std::string, std::string>  getHeaders(void);
 		StatusCode							getStatusCode(void);
-        
+
 		// Setters
 
 		void	setStatusCode(StatusCode status_code);
 
         // Public member functions
-        int                 parseRequest(char buf[BUFF_SIZE], int bytes, Config config);
+        int                 parseRequest(char buf[BUFF_SIZE], int bytes, Config* config);
         void                printRequest(void);
-        bool                headersFullyParsed(void);   
+        bool                headersFullyParsed(void);
         bool                isFullyParsed(void);
 
         // Exceptions
        	class BadRequestException : public std::exception {
-        public: 
+        public:
             const char * what () const throw();
 		};
         class NotFoundException : public std::exception {
