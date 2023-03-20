@@ -17,6 +17,7 @@ class NotOkResponse : public Response {
         void        constructConfigResponse(Request& req, std::string filePath);
         void        setHeaders();
         void        setRawBody();
+        void        setLocationHeader();
         void        printResponse(void);
 };
 

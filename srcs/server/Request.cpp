@@ -203,6 +203,8 @@ void    Request::parseRequestStartLine(ServerBlock* sb) {
     if (is_subdirectory(sb->getRootFolder(), trim_slashes(_uri.getPath())))
     {
         // Location Block check
+        if (trim_slashes(_uri.getPath()) == "images")
+            throw RedirectException();
         if (!locationExistsInBlock(sb->getLocationBlocks(), trim_slashes(_uri.getPath())))
             throw UnauthorizedException();
         else
@@ -312,4 +314,8 @@ const char * Request::ContentTooLargeException::what() const throw () {
 
 const char * Request::UnauthorizedException::what() const throw () {
 	return ("Unauthorized");
+}
+
+const char * Request::RedirectException::what() const throw () {
+    return ("Redirect");
 }

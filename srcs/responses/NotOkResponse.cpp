@@ -1,4 +1,5 @@
 #include "NotOkResponse.hpp"
+#include "utils.hpp"
 
 // Constructors
 NotOkResponse::NotOkResponse() {
@@ -9,9 +10,18 @@ NotOkResponse::~NotOkResponse() {
 
 }
 
+void    NotOkResponse::setLocationHeader() {
+    std::stringstream ss;
+
+    std::string location = "/";
+    _headers.insert(std::make_pair("Location", location));
+}
+
 void    NotOkResponse::setHeaders() {
     setDateHeader();
     setContentTypeHeader();
+    if (_raw_status_line.find("Found") != std::string::npos)
+        setLocationHeader();
     // add more headers if desired below...
     // add here...
 }
@@ -47,6 +57,10 @@ void    NotOkResponse::constructDefaultResponseWithBody(Request& req, std::strin
         case UNAUTHORIZED:
 			_raw_status_line = "HTTP/1.1 401 Unauthorized\r\n";
 			break;
+        case FOUND:
+            _raw_status_line = "HTTP/1.1 302 Found\r\n";
+            setLocationHeader();
+            break;
 		default:
 			// ?
 			break;
