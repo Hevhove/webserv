@@ -157,7 +157,10 @@ void    Server::respondToExistingConnection(int i) {
 
     // TODO: implement a throw exception for code below
     if (bytes_sent < 0)
-        std::cout << "some error sending" << std::endl;
+    {
+        std::cerr << "Dropped connection due to failing send()" << std::endl;
+        dropConnection(i);
+    }
 }
 
 void	Server::readFromExistingConnection(int i) {
@@ -171,7 +174,7 @@ void	Server::readFromExistingConnection(int i) {
 		if (nbytes == 0)
 			std::cout << "---SOCKET " << _connections[_pfds[i].fd]->getSocketFD() << " HUNG UP---" << std::endl;
 		else if (nbytes < 0)
-			std::cout << "server: recv error" << std::endl;
+            dropConnection(i);
 		dropConnection(i);
 	}
 	else
