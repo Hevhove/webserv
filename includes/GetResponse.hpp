@@ -23,6 +23,7 @@ Example:
 
 class GetResponse : public Response {
     private:
+		std::string	_host;
 
         // Private methods
         void    setHeaders();
@@ -31,6 +32,7 @@ class GetResponse : public Response {
     public:
         // Constructors
         GetResponse();
+        GetResponse(ServerBlock* sb);
 		virtual ~GetResponse();
 
         // Public methods

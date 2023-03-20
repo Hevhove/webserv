@@ -35,6 +35,7 @@ Content-Length: 12345
 class PostResponse : public Response {
     private:
         std::string    _root_folder;
+		std::string	_host;
 
         // Private methods
         void    setHeaders();

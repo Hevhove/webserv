@@ -47,6 +47,7 @@ class Response {
         void    setContentTypeHeader();
         void    setCacheControl(const char* type);
         void    setRetryAfter(int sec);
+		void	setHost(const char* server_name);
 
         void    setRawResponse(void);
         void    setResource(Request& req);

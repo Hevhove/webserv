@@ -9,6 +9,10 @@ GetResponse::GetResponse() {
 
 }
 
+GetResponse::GetResponse(ServerBlock* sb) {
+	_host = sb->getServerName();
+}
+
 GetResponse::~GetResponse() {
 
 }
@@ -57,6 +61,7 @@ void    GetResponse::setHeaders() {
     setConnectionHeader("keep-alive");
     setContentTypeHeader();
     setRetryAfter(2);
+	setHost(_host.c_str());
     // add more headers if desired below...
     // add here...
 }

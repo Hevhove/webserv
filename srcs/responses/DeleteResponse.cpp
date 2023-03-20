@@ -8,6 +8,7 @@ DeleteResponse::DeleteResponse() {
 
 DeleteResponse::DeleteResponse(ServerBlock* sb) {
     _root_folder = sb->getRootFolder();
+	_host = sb->getServerName();
 }
 
 DeleteResponse::~DeleteResponse() {
@@ -95,6 +96,7 @@ void    DeleteResponse::setHeaders(void) {
     // setContentTypeHeader();
     setLocationHeader();
     setCacheControl("no-cache");
+	setHost(_host.c_str());
     // add more headers if desired below...
     // add here...
 }
