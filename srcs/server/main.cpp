@@ -7,16 +7,25 @@ int main(int argc, char **argv)
 		std::cerr << "Usage: ./webserv [configuration file]" << std::endl;
 		return (1);
 	}
-	(void)argv;
-	// Parse config file and store all server configs in an array of Config
-	// For each Config, start a server with its own specific config
+    // Config check and parsing
 	Config config;
+    try {
+        std::string fileName(argv[1]);
+        config.checkConfig(fileName);
+        // config.parseConfig();
+    } catch (std::exception& e){
+        std::cerr << "Failure to load config file: " << e.what() << std::endl;
+        exit(-1);
+    }
+    config.printConfig();
+
+    // Server loading
 	Server server;
 	server.load_config(config);
 	server.openListeningPort();
 	try {
 		server.run();
-	} catch (std::exception & e) {
+	} catch (std::exception& e) {
 		std::cerr << "Stopping webserver: " << e.what() << std::endl;
 	}
 	return (0);

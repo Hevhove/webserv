@@ -73,10 +73,61 @@ Sec-Fetch-User: ?1$
 
 `curl -X POST -H "Content-Type: multipart/form-data;" -F "description=Coolboard" -F "price=500" -F "phone=1256" http://localhost:3490/cgi-bin/add-entry.php`
 
+Launch a POST request via curl with an attached file like this:
+```
+curl -X POST -H "Content-Type: multipart/form-data;" -F "description=Coolboard" -F "price=500" -F "phone=1256" -F "picture=@/Users/Hendrik/Downloads/surfboard7.jpeg" http://localhost:3491/cgi-bin/add-entry.php
+```
+
 ##### DELETE Requests
 Note on DELETE requests: in our front-end, we are using a form which launches a PHP request. In this manner we can only launch POST requests, where the body of the POST request will contain "Method=DELETE". In order to implement a true DELETE request, we have added some logic so entries can be removed immediately by the below format via curl.
 
 `curl -X DELETE http://localhost:3490/images/3.jpeg`
+
+#### Config
+We style our config after the nginx configuration files, but limit the scope of them significantly.
+
+- Server blocks
+    - Listening Port
+    - Root folder
+    - Index page
+    - Server name (call with `curl -H "Host: 42surf.com" http://localhost/public/www/42surf.html`)
+    - Error pages
+    - Client Max Body Size
+    - Location (Routes)
+        - Index
+        - Limit_except
+        - Client Max Body Size
+
+Example Config:
+```
+http {
+    server {
+        listen 80;
+
+        server_name first;
+        index multi_form_upload.html
+        root /var/www/;
+        location /about/ {
+            root /public/www/
+            index about.html
+            limit_except GET POST;
+            client_max_body_size 10;
+        }
+    }
+
+    server {
+        listen 81;
+
+        server_name second;
+        error_pages 404 /www/error_pages/404.html;
+        error_pages 401 /www/error_pages/401.html;
+        error_pages 500 /www/error_pages/500.html;
+        root /var/www/;
+    }
+}
+```
+
+
 
 #### Other notes
 

@@ -3,7 +3,7 @@
 
     The server maintains a map of connections, which themselves have a list of pairs of Requests and Responses.
     When calling the poll(2) function, it monitors a set of file descriptors on a bunch of possible events.
-    
+
     The bitmask events are the following:
     POLLIN (bit 0, value 1): This bit is set if there is data available to be read on the file descriptor.
     POLLPRI (bit 1, value 2): This bit is set if there is "out-of-band" data available to be read on the file descriptor. This data is typically used for urgent data that should be handled with higher priority than regular data.
@@ -14,7 +14,7 @@
 */
 #ifndef CLASS_SERVER_HPP
 # define CLASS_SERVER_HPP
- 
+
 # include "Socket.hpp"
 # include "Connection.hpp"
 # include "utils.hpp"
@@ -29,8 +29,8 @@ class Server {
 		int					        _fd_count;
 		int					        _fd_size;
 		struct pollfd   	    	*_pfds;
-		Config						_config;	
-        std::map<int, Connection*>  _connections; 
+		Config						_config;
+        std::map<int, Connection*>  _connections;
 
 		// Methods : Private
 		void				addConnection(int newfd, Connection* new_conn);
