@@ -3,7 +3,7 @@
 
 # include "utils.hpp"
 # include "LocationBlock.hpp"
-#include <string>
+# include <string>
 
 class ServerBlock {
 private:
@@ -37,6 +37,7 @@ public:
 	std::string		getRootFolder(void);
 	std::string		getIndexPage(void);
 	std::string		getServerName(void);
+    std::vector<LocationBlock*>& getLocationBlocks(void);
 
     // Setters
 	void	            setClientMaxBodySize(unsigned long maxBodySize);

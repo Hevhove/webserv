@@ -7,7 +7,7 @@ ServerBlock::ServerBlock() {
     _POST_allowed = false;
     _DELETE_allowed = false;
     _client_max_body_size = 100000;
-    _root_folder = "/";
+    _root_folder = "public/www";
     _index_page = "index.html";
 }
 
@@ -105,4 +105,7 @@ std::string ServerBlock::getErrorPath(StatusCode sc) {
         return (it->second);
     else
         return std::string();
+}
+std::vector<LocationBlock*>& ServerBlock::getLocationBlocks(void) {
+    return (_locationBlocks);
 }

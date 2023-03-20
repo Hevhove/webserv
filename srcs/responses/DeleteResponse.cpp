@@ -98,7 +98,7 @@ void    DeleteResponse::setHeaders(void) {
 void    DeleteResponse::constructResponse(Request& req) {
     std::string path = (req.getURI()).getPath();
 
-    setResource(req.getURI().getPath());
+    setResource(req);
     _raw_status_line = _http_version + " 204 No Content" + "\r\n";
 
     // execute the php

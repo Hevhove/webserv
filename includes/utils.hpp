@@ -56,6 +56,7 @@ typedef enum StatusCode {
 # include <stdio.h>
 # include <fstream>
 # include <fcntl.h>
+# include <dirent.h>
 
 // Strings
 # include <string>
@@ -77,5 +78,6 @@ bool                        ft_is_resource_available(std::string resource);
 bool                        hasFileExtension(const std::string& s, const std::string& ext);
 StatusCode                  stringToStatusCode(std::string input);
 std::string		            getDefaultErrorPage(StatusCode status_code);
+bool                        is_subdirectory(std::string root_folder, std::string folder_name);
 
 #endif

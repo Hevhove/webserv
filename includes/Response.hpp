@@ -37,7 +37,6 @@ class Response {
         StatusCode                          _status_code;
         std::string                         _status_string;
         std::map<std::string, std::string>  _headers;
-
         std::string                         _resource;
 
         // functions to set headers
@@ -50,7 +49,7 @@ class Response {
         void    setRetryAfter(int sec);
 
         void    setRawResponse(void);
-        void    setResource(std::string path);
+        void    setResource(Request& req);
 
     public:
         // Constructors

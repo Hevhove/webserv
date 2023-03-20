@@ -81,23 +81,25 @@ void    Response::setRetryAfter(int sec) {
     _headers.insert(std::make_pair("Retry-After", seconds));
 }
 
-void    Response::setResource(std::string path) {
+void    Response::setResource(Request& req) {
+    _resource = req.getResource();
+    return ;
     // TODO: fix pathing in this function!
-    if (path[path.size() - 1] == '/')
-        _resource = "public/www" + path + "index.html";
-    else if (hasFileExtension(path, ".php"))
-    {
-        _resource = path.substr(1, std::string::npos);
-    }
-    else
-        _resource = "public/www" + path;
-    // std::cout << "resource is " << _resource << std::endl;
-    if (!ft_is_resource_available(_resource))
-    {
-        // TODO send a response with resource not available! --> SET UP ERROR PAGES!
-        std::cout << "resource not available!" << _resource << std::endl;
-        exit(-1);
-    }
+    // if (path[path.size() - 1] == '/')
+    //     _resource = "public/www" + path + "index.html";
+    // else if (hasFileExtension(path, ".php"))
+    // {
+    //     _resource = path.substr(1, std::string::npos);
+    // }
+    // else
+    //     _resource = "public/www" + path;
+    // // std::cout << "resource is " << _resource << std::endl;
+    // if (!ft_is_resource_available(_resource))
+    // {
+    //     // TODO send a response with resource not available! --> SET UP ERROR PAGES!
+    //     std::cout << "resource not available!" << _resource << std::endl;
+    //     exit(-1);
+    // }
 }
 
 void    Response::setRawResponse(void) {
