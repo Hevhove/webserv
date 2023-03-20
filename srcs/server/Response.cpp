@@ -81,6 +81,10 @@ void    Response::setRetryAfter(int sec) {
     _headers.insert(std::make_pair("Retry-After", seconds));
 }
 
+void 	Response::setHost(const char* server_name) {
+    _headers.insert(std::make_pair("Host", server_name));
+}
+
 void    Response::setResource(Request& req) {
     _resource = req.getResource();
     return ;

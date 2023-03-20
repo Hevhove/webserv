@@ -28,6 +28,7 @@ class DeleteResponse : public Response {
     private:
         // private vars
         std::string     _root_folder;
+		std::string	_host;
 
         // Private methods
         void    setHeaders();

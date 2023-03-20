@@ -10,6 +10,7 @@ PostResponse::PostResponse() {
 
 PostResponse::PostResponse(ServerBlock* sb) {
     _root_folder = sb->getRootFolder();
+	_host = sb->getServerName();
 }
 
 PostResponse::~PostResponse() {
@@ -186,6 +187,7 @@ void    PostResponse::setHeaders(void) {
     setConnectionHeader("close");
     // setContentTypeHeader();
     setLocationHeader();
+	setHost(_host.c_str());
     // setCacheControl("no-cache");
     // setRefreshHeader(0.3);
     // add more headers if desired below...
