@@ -8,6 +8,10 @@ PostResponse::PostResponse() {
 
 }
 
+PostResponse::PostResponse(ServerBlock* sb) {
+    _root_folder = sb->getRootFolder();
+}
+
 PostResponse::~PostResponse() {
 
 }
@@ -113,9 +117,11 @@ void    PostResponse::executePostResponse(Request& req) {
 
     // execute the php script with the contents of the file to add to the json
     const char*     filePath2 = "tmp/id_file";
-    command = "php " + _resource + " " + file_path + " > " + filePath2;
-    std::system(command.c_str());
-
+    command = "php cgi-bin/add-entry.php " + std::string(file_path) + " > " + filePath2;
+    //command = "php " + _resource + " " + file_path + " > " + filePath2;
+    std::cout << "command is " << command << std::endl;
+    int exit_status = std::system(command.c_str());
+    std::cout << "exit status: " << exit_status << std::endl;
     // Exit if no picture curl request
     std::ifstream picture_file("tmp/pic-entry.jpeg");
     if (picture_file)
@@ -123,7 +129,9 @@ void    PostResponse::executePostResponse(Request& req) {
         // take the id number and move the pic-entry.jpeg into the correct name in the images folder
         std::ifstream   tmpFile2(filePath2);
         std::string     id_string((std::istreambuf_iterator<char>(tmpFile2)), std::istreambuf_iterator<char>());
-        moveAndRenameFile("tmp/pic-entry.jpeg", "public/www/images/" + id_string + ".jpeg");
+        std::cout << "name: public/www/images/" + id_string + ".jpeg" << std::endl;
+        std::cout << "root folder is " << _root_folder << std::endl;
+        moveAndRenameFile("tmp/pic-entry.jpeg", _root_folder + "/images/" + id_string + ".jpeg");
     }
     // delete the tmp file
     remove(file_path);
@@ -143,14 +151,14 @@ void    PostResponse::executePostDeleteResponse(Request& req) {
     tmpFile.close();
 
     // execute the php script with the contents of the file
-    command = "php " + _resource + " " + file_path;
+    command = "php cgi-bin/delete-entry.php " + std::string(file_path);
     std::system(command.c_str());
 
     // grab the id from the tmpFile
     std::string id = req.getRawBody().substr(req.getRawBody().find("&") + 4);
     std::cout << "ID FOR DELETE: " << id << std::endl;
     // delete the relevant entry from the folder public/www/images
-    std::string remove_path = "public/www/images/" + id + ".jpeg";
+    std::string remove_path = _root_folder + "/images/" + id + ".jpeg";
     remove(remove_path.c_str());
     // TODO: check return of above path! does file not exist, what then?
 

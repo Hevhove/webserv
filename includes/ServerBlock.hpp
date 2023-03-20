@@ -13,9 +13,6 @@ private:
     std::string     _index_page;
     std::string     _server_name;
 
-    bool            _GET_allowed;
-    bool            _POST_allowed;
-    bool            _DELETE_allowed;
 
 	std::map<StatusCode, std::string>	_error_pages;
     std::vector<LocationBlock*>          _locationBlocks; // TODO: memory leak check
@@ -26,6 +23,12 @@ public:
 	~ServerBlock();
 
 	ServerBlock&	operator=(const ServerBlock& other);
+
+    // Allowed methods
+    bool            _GET_allowed;
+    bool            _POST_allowed;
+    bool            _DELETE_allowed;
+
 
     // Member Functions
     void        printLocationBlocks(void);
