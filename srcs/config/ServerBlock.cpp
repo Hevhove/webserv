@@ -67,19 +67,16 @@ void    		    ServerBlock::setLimitExceptFlag(std::vector<std::string> tokens) {
     for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); ++it) {
         if (*it == "GET")
         {
-            std::cout << "GET shit allowed" << std::endl;
             _GET_allowed = true;
             get_check = 1;
         }
         if (*it == "POST")
         {
-            std::cout << "POST shit allowed" << std::endl;
             _POST_allowed = true;
             post_check = 1;
         }
         if (*it == "DELETE")
         {
-            std::cout << "DELETE shit allowed" << std::endl;
             _DELETE_allowed = true;
             delete_check = 1;
         }

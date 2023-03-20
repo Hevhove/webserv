@@ -156,7 +156,7 @@ void    Server::respondToExistingConnection(int i) {
     delete[] buffer;
 
     // TODO: implement a throw exception for code below
-    if (bytes_sent < 0)
+    if (bytes_sent <= 0)
     {
         std::cerr << "Dropped connection due to failing send()" << std::endl;
         dropConnection(i);
