@@ -245,7 +245,7 @@ bool Config::checkConfig(std::string fileName) {
     // Check directive names;
     if (!checkDirectives(fileName))
         throw DirectiveDoesNotExistException();
-
+    checkDuplicates();
     return true;
 }
 
@@ -264,6 +264,22 @@ std::vector<ServerBlock*>& Config::getServerBlocks(void)
 }
 
 // TODO: duplicate ports and server_names checks
+void    Config::checkDuplicates(void){
+    std::set<std::string> uniquePorts;
+    std::set<std::string> uniqueServerNames;
+
+    for (std::vector<ServerBlock*>::iterator it = _server_blocks.begin(); it != _server_blocks.end(); ++it) {
+        // check Ports
+        if (uniquePorts.find((*it)->getListeningPort()) != uniquePorts.end())
+            throw DuplicatesException();
+        uniquePorts.insert((*it)->getListeningPort());
+        // check Server Names
+        if (uniqueServerNames.find((*it)->getServerName()) != uniqueServerNames.end())
+            throw DuplicatesException();
+        uniqueServerNames.insert((*it)->getServerName());
+    }
+}
+
 
 void    Config::printConfig(void) {
     std::cout << "** PRINTING PARSED CONFIG **" << std::endl;
@@ -298,4 +314,9 @@ const char * Config::DirectiveDoesNotExistException::what() const throw ()
 const char * Config::MissingBracketsException::what() const throw ()
 {
     return ("Brackets are missing");
+}
+
+const char * Config::DuplicatesException::what() const throw ()
+{
+    return ("Duplicate port or server name");
 }

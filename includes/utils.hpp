@@ -45,7 +45,6 @@ typedef enum StatusCode {
 # include <map>
 
 // Error management
-# include <errno.h>
 # include <exception>
 # include <cstddef>
 

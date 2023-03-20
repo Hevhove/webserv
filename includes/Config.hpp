@@ -3,6 +3,7 @@
 
 # include "utils.hpp"
 # include "ServerBlock.hpp"
+# include <set>
 
 class Config {
 private:
@@ -28,6 +29,7 @@ public:
     bool    checkConfig(std::string confFile);
     bool    checkDirectives(std::string fileName);
     void    parseLocationBlock(std::ifstream& file, std::vector<std::string> tokens, ServerBlock* sb);
+    void    checkDuplicates(void);
     void    printConfig(void);
     //void    parseConfig(void);
 
@@ -48,6 +50,10 @@ public:
     class MissingBracketsException : public std::exception {
         const char * what () const throw();
     };
+    class DuplicatesException : public std::exception {
+        const char * what () const throw();
+    };
+
 };
 
 #endif
