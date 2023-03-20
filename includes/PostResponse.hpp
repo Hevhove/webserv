@@ -30,9 +30,12 @@ Content-Length: 12345
 # define CLASS_POST_RESPONSE_HPP
 
 # include "Response.hpp"
+#include <string>
 
 class PostResponse : public Response {
     private:
+        std::string    _root_folder;
+
         // Private methods
         void    setHeaders();
         void    setRawBody();
@@ -42,6 +45,7 @@ class PostResponse : public Response {
     public:
         // Constructors
         PostResponse();
+        PostResponse(ServerBlock* sb);
 		virtual ~PostResponse();
 
         // Public methods

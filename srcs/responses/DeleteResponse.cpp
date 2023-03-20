@@ -6,6 +6,10 @@ DeleteResponse::DeleteResponse() {
 
 }
 
+DeleteResponse::DeleteResponse(ServerBlock* sb) {
+    _root_folder = sb->getRootFolder();
+}
+
 DeleteResponse::~DeleteResponse() {
 
 }
@@ -71,7 +75,7 @@ void    DeleteResponse::executeDeleteResponse(Request& req) {
 
     // grab the id from the tmpFile
     // delete the relevant entry from the folder public/www/images
-    std::string remove_path = "public/www/images/" + resource_id + ".jpeg";
+    std::string remove_path = _root_folder + "/images/" + resource_id + ".jpeg";
     remove(remove_path.c_str());
     // TODO: check return of above path! does file not exist, what then?
 

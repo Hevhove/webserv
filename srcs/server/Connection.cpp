@@ -88,13 +88,9 @@ std::string Connection::getRawResponse(void) {
             // Otherwise, construct the default response
             std::string errorPath = getServerBlock()->getErrorPath(req->getStatusCode());
             if (!errorPath.empty())
-            {
                 it->second->constructConfigResponse(*req, errorPath);
-            }
             else
-            {
                 it->second->constructDefaultResponseWithBody(*req, getDefaultErrorPage(req->getStatusCode()));
-            }
             response = it->second->getRawResponse();
             delete it->first;
             delete it->second;
@@ -107,10 +103,10 @@ std::string Connection::getRawResponse(void) {
                     it->second = new GetResponse();
                 }
                 else if (req->getRequestMethod() == POST) {
-                    it->second = new PostResponse();
+                    it->second = new PostResponse(getServerBlock());
                 }
                 if (req->getRequestMethod() == DELETE) {
-                it->second = new DeleteResponse();
+                it->second = new DeleteResponse(getServerBlock());
                 }
             } catch (std::exception& e) {
                 // TODO

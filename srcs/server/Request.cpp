@@ -185,7 +185,15 @@ void    Request::parseRequestStartLine(ServerBlock* sb) {
         throw BadRequestException(); // do we need to empty buffers etc here?
 
     // Check if limit_except is specified and if RequestMethod is in there
-    
+    // if (_request_method == GET && !(sb->_GET_allowed))
+    // {
+    //     std::cout << "lOl" << std::endl;
+    //     throw UnauthorizedException();
+    // }
+    // else if (_request_method == POST && !(sb->_POST_allowed))
+    //     throw UnauthorizedException();
+    // else if (_request_method == DELETE && !(sb->_DELETE_allowed))
+    //     throw UnauthorizedException();
 
     // Parse the URI
     parseURI(startline_split[1]);
@@ -209,12 +217,15 @@ void    Request::parseRequestStartLine(ServerBlock* sb) {
     }
     else if (startline_split[1] == "/") // Enable / Disable directory listing
         _resource = sb->getRootFolder() + _uri.getPath() + sb->getIndexPage();
+    else if (hasFileExtension(_uri.getPath(), ".php"))
+        _resource = _uri.getPath();
     else
         _resource = sb->getRootFolder() + _uri.getPath();
     if (!ft_is_resource_available(_resource) && !hasFileExtension(_uri.getPath(), ".php"))
     {
         throw NotFoundException();
     }
+
     std::cout << "Requested Resource: " << _resource << " is available" << std::endl;
     // Parse HTTP version
     if (startline_split[2] != "HTTP/1.1")

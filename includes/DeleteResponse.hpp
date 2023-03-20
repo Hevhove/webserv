@@ -22,9 +22,13 @@ Content-Length: 0\r\n
 # define CLASS_DELETE_RESPONSE_HPP
 
 # include "Response.hpp"
+#include <string>
 
 class DeleteResponse : public Response {
     private:
+        // private vars
+        std::string     _root_folder;
+
         // Private methods
         void    setHeaders();
         void    setRawBody();
@@ -33,6 +37,7 @@ class DeleteResponse : public Response {
     public:
         // Constructors
         DeleteResponse();
+        DeleteResponse(ServerBlock* sb);
 		virtual ~DeleteResponse();
 
         // Public methods
