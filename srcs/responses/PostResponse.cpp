@@ -187,7 +187,7 @@ void    PostResponse::setHeaders(void) {
 void    PostResponse::constructResponse(Request& req) {
     std::string path = (req.getURI()).getPath();
 
-    setResource(req.getURI().getPath());
+    setResource(req);
     _raw_status_line = _http_version + " 302 Found" + "\r\n";
 
     // execute the php...

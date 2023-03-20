@@ -133,7 +133,8 @@ Config rules:
 - error_pages url must be relative to webserv root
 - CHECK? must be enclosed in http block
 - TODO: after limit_except we expect GET, POST or DELETE
-
+- ROOT must be in format public/www (only one slash in middle)
+- index must be in format index.html (no slashes)
 
 #### Other notes
 

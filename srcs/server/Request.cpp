@@ -1,5 +1,6 @@
 #include "Request.hpp"
 #include "utils.hpp"
+#include <mutex>
 #include <sstream>
 #include <string>
 
@@ -9,6 +10,7 @@ Request::Request() {
     _raw_body = "";
     _request_method = NOT_SET;
     _body_bytes_read = 0;
+    _resource = "";
 }
 
 Request::~Request() {
@@ -57,6 +59,10 @@ StatusCode		Request::getStatusCode(void) {
 	return _status_code;
 }
 
+std::string     Request::getResource(void) {
+    return _resource;
+}
+
 // Public Member Functions
 bool     Request::headersFullyParsed() {
     if (_unparsed_request.find("\r\n\r\n") != std::string::npos)
@@ -94,7 +100,7 @@ int     Request::parseRequest(char *buf, int bytes_read, ServerBlock* sb) {
             if (_unparsed_request.find("\r\n\r\n") != std::string::npos) // let's say we found this at byte 200
             {
                 // we should now have complete headers in _unparsed_request?
-                parseRequestStartLine();
+                parseRequestStartLine(sb);
                 parseRequestHeaders();
                 printRequest();
             }
@@ -123,7 +129,26 @@ int     Request::parseRequest(char *buf, int bytes_read, ServerBlock* sb) {
 }
 
 // Private Member functions
-void    Request::parseRequestStartLine(void) {
+std::string trim_slashes(std::string str) {
+    size_t first = str.find_first_not_of('/');
+    if (first == std::string::npos) {
+        return ""; // string contains only slashes
+    }
+    size_t last = str.find_last_not_of('/');
+    return str.substr(first, last - first + 1);
+}
+
+LocationBlock* locationExistsInBlock(std::vector<LocationBlock*>& lbs, std::string url) {
+    for (std::vector<LocationBlock*>::iterator it = lbs.begin(); it != lbs.end(); it++)
+    {
+       if ((*it)->getURL() == url)
+        return (*it);
+    }
+    // return NULL if it doesnt exist
+    return (NULL);
+}
+
+void    Request::parseRequestStartLine(ServerBlock* sb) {
     std::vector<std::string> startline_split;
 
     // The first line of the request should indicate METHOD, resource and HTTP tag
@@ -159,13 +184,38 @@ void    Request::parseRequestStartLine(void) {
     else
         throw BadRequestException(); // do we need to empty buffers etc here?
 
+    // Check if limit_except is specified and if RequestMethod is in there
+    
+
     // Parse the URI
     parseURI(startline_split[1]);
-    if (!ft_is_resource_available("public/www/" + _uri.getPath()) && !hasFileExtension(_uri.getPath(), ".php"))
+
+    // Add logic here to check if startline_split[1] is a subfolder of root (location)
+    // If yes, we need to check inside of the serverblock's location blocks if URLs
+    // are allowed and set the correct resource below.
+    if (is_subdirectory(sb->getRootFolder(), trim_slashes(_uri.getPath())))
+    {
+        // Location Block check
+        if (!locationExistsInBlock(sb->getLocationBlocks(), trim_slashes(_uri.getPath())))
+            throw UnauthorizedException();
+        else
+        {
+            // authorized
+            std::string rootFolder = locationExistsInBlock(sb->getLocationBlocks(), trim_slashes(_uri.getPath()))->getRootFolder();
+            std::string path = trim_slashes(_uri.getPath());
+            std::string index =locationExistsInBlock(sb->getLocationBlocks(), trim_slashes(_uri.getPath()))->getIndexPage();
+            _resource = rootFolder + "/" + path + "/" + index;
+        }
+    }
+    else if (startline_split[1] == "/") // Enable / Disable directory listing
+        _resource = sb->getRootFolder() + _uri.getPath() + sb->getIndexPage();
+    else
+        _resource = sb->getRootFolder() + _uri.getPath();
+    if (!ft_is_resource_available(_resource) && !hasFileExtension(_uri.getPath(), ".php"))
     {
         throw NotFoundException();
     }
-
+    std::cout << "Requested Resource: " << _resource << " is available" << std::endl;
     // Parse HTTP version
     if (startline_split[2] != "HTTP/1.1")
         throw HttpVersionNotSupportedException();

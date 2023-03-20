@@ -64,7 +64,7 @@ void    GetResponse::setHeaders() {
 void    GetResponse::constructResponse(Request& req) {
     std::string path = (req.getURI()).getPath();
 
-    setResource(req.getURI().getPath());
+    setResource(req);
     _raw_status_line = _http_version + " 200 OK" + "\r\n";
 
     // set the headers

@@ -1,0 +1,52 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="style.css" />
+        <link rel="icon" href="/favicon.ico" />
+        <title>42surf</title>
+    </head>
+    <body>
+        <h1>43surf</h1>
+        <h2>don't only surf the web! go surf some waves</h2>
+        <table>
+            <tr>
+                <th>id</th>
+                <th>description</th>
+                <th>asking price</th>
+                <th>phone number</th>
+                <th>picture</th>
+            </tr>
+            <?php include dirname(dirname(dirname(__file__))) . "/cgi-bin/load-table.php"; ?>
+        </table>
+        <br></br>
+        <div class="form-container">
+            <div class="form-left">
+                <h3>Add your board!</h3>
+                <form action="/cgi-bin/add-entry.php" method="post" enctype="multipart/form-data">
+                    <label for="description">description:</label>
+                    <input type="text" name="description" id="description" required>
+
+                    <label for="price">asking price:</label>
+                    <input type="text" name="price" id="price" required>
+
+                    <label for="phone">phone number:</label>
+                    <input type="text" name="phone" id="phone" required>
+
+                    <label for="picture">picture:</label>
+                    <input type="file" name="picture" id="picture" accept=".jpeg" max="300KB" required>
+
+                    <input type="submit" value="add entry" />
+                </form>
+            </div>
+            <div class="form-right">
+                <h3>Remove a submission</h3>
+                <form action="/cgi-bin/delete-entry.php" method="post">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <label for="id">id:</label>
+                    <input type="text" name="id" id="id" required>
+
+                    <input type="submit" value="delete entry" />
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

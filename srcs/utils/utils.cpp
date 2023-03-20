@@ -49,3 +49,32 @@ std::string		getDefaultErrorPage(StatusCode status_code)
 
 	return DefaultErrorPages[status_code];
 }
+
+bool is_subdirectory(std::string root_folder, std::string folder_name) {
+    DIR* root = opendir(root_folder.c_str()); // open the root folder
+    if (root == NULL) {
+        return false; // root folder does not exist
+    }
+
+    bool is_subdir = false;
+    struct dirent* entry;
+    while ((entry = readdir(root)) != NULL) {
+        if (entry->d_type == DT_DIR) {
+            std::string sub_folder_name = std::string(entry->d_name);
+            if (sub_folder_name == "." || sub_folder_name == "..") {
+                continue; // skip the current and parent directory entries
+            }
+            std::string sub_folder_path = root_folder + "/" + sub_folder_name;
+            if (sub_folder_name == folder_name) {
+                is_subdir = true; // folder name matches the subdirectory name
+                break;
+            } else if (is_subdirectory(sub_folder_path, folder_name)) {
+                is_subdir = true; // folder name is a subdirectory of the sub folder
+                break;
+            }
+        }
+    }
+
+    closedir(root); // close the root folder
+    return is_subdir;
+}
