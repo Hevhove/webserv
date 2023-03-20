@@ -1,6 +1,5 @@
 #include "Request.hpp"
 #include "utils.hpp"
-#include <mutex>
 #include <sstream>
 #include <string>
 
