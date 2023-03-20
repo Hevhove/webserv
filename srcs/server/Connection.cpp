@@ -71,6 +71,11 @@ void    Connection::handleRequest(char buf[BUFF_SIZE]) {
 	                last_req->parse_status = "Unauthorized";
 					last_req->setStatusCode(UNAUTHORIZED);
 				} catch (std::bad_cast const&) {}
+                try {
+					e = dynamic_cast<Request::RedirectException &>(e);
+	                last_req->parse_status = "Redirect";
+					last_req->setStatusCode(FOUND);
+				} catch (std::bad_cast const&) {}
 		}
     }
 }
