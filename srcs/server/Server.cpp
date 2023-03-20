@@ -142,12 +142,17 @@ void    Server::respondToExistingConnection(int i) {
     // std::cout << "bytes sent on " << _pfds[i].fd << " is " << bytes_sent << std::endl;
 
     // Temporary hack for redirection issue:
+    // std::cout << "ALOLOLOO " << response << std::endl;
     if (response.find("302 Found") != std::string::npos
         || response.find("404 Not Found") != std::string::npos
         || response.find("204 No Content") != std::string::npos
         || response.find("413 Content Too Large") != std::string::npos
+        || response.find("401 Unauthorized") != std::string::npos
 		)
+    {
+        std::cout << "Dropping Connection" << std::endl;
         dropConnection(i);
+    }
     delete[] buffer;
 
     // TODO: implement a throw exception for code below

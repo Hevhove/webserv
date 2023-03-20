@@ -37,15 +37,15 @@ std::string		getDefaultErrorPage(StatusCode status_code)
 {
     std::map<StatusCode, std::string> DefaultErrorPages;
 
-	DefaultErrorPages[BAD_REQUEST] = "BAD_REQUEST\r\n";
-	DefaultErrorPages[UNAUTHORIZED] = "UNAUTHORIZED\r\n";
-    DefaultErrorPages[FORBIDDEN] = "FORBIDDEN\r\n";
-    DefaultErrorPages[NOT_FOUND] = "NOT_FOUND\r\n\r\n";
-    DefaultErrorPages[LENGTH_REQUIRED] = "LENGTH_REQUIRED\r\n";
+	DefaultErrorPages[BAD_REQUEST] = "<html><body>BAD_REQUEST</body></html>\r\n";
+	DefaultErrorPages[UNAUTHORIZED] = "<html><body>UNAUTHORIZED</body></html>\r\n";
+    DefaultErrorPages[FORBIDDEN] = "<html><body>FORBIDDEN</body></html>\r\n";
+    DefaultErrorPages[NOT_FOUND] = "<html><body>NOT_FOUND\r\n</body></html>\r\n";
+    DefaultErrorPages[LENGTH_REQUIRED] = "<html><body>LENGTH_REQUIRED</body></html>\r\n";
     DefaultErrorPages[CONTENT_TOO_LARGE] = "<html><body>Error 413: Content Too Large</body></html>\r\n";
-    DefaultErrorPages[UNSUPPORTED_MEDIA_TYPE] = "UNSUPPORTED_MEDIA_TYPE\r\n";
-    DefaultErrorPages[INTERNAL_SERVER_ERROR] = "INTERNAL_SERVER_ERROR\r\n";
-    DefaultErrorPages[HTTP_VERSION_NOT_SUPPORTED] = "HTTP_VERSION_NOT_SUPPORTED\r\n";
+    DefaultErrorPages[UNSUPPORTED_MEDIA_TYPE] = "<html><body>UNSUPPORTED_MEDIA_TYPE</body></html>\r\n";
+    DefaultErrorPages[INTERNAL_SERVER_ERROR] = "<html><body>INTERNAL_SERVER_ERROR</body></html>\r\n";
+    DefaultErrorPages[HTTP_VERSION_NOT_SUPPORTED] = "<html><body>HTTP_VERSION_NOT_SUPPORTED</body></html>\r\n";
 
 	return DefaultErrorPages[status_code];
 }

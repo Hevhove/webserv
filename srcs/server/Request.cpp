@@ -185,15 +185,15 @@ void    Request::parseRequestStartLine(ServerBlock* sb) {
         throw BadRequestException(); // do we need to empty buffers etc here?
 
     // Check if limit_except is specified and if RequestMethod is in there
-    // if (_request_method == GET && !(sb->_GET_allowed))
-    // {
-    //     std::cout << "lOl" << std::endl;
-    //     throw UnauthorizedException();
-    // }
-    // else if (_request_method == POST && !(sb->_POST_allowed))
-    //     throw UnauthorizedException();
-    // else if (_request_method == DELETE && !(sb->_DELETE_allowed))
-    //     throw UnauthorizedException();
+    if (_request_method == GET && !(sb->_GET_allowed))
+    {
+        std::cout << "lOl" << std::endl;
+        throw UnauthorizedException();
+    }
+    else if (_request_method == POST && !(sb->_POST_allowed))
+        throw UnauthorizedException();
+    else if (_request_method == DELETE && !(sb->_DELETE_allowed))
+        throw UnauthorizedException();
 
     // Parse the URI
     parseURI(startline_split[1]);
