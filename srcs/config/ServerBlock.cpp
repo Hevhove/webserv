@@ -3,9 +3,9 @@
 #include <ios>
 
 ServerBlock::ServerBlock() {
-    _GET_allowed = false;
-    _POST_allowed = false;
-    _DELETE_allowed = false;
+    _GET_allowed = true;
+    _POST_allowed = true;
+    _DELETE_allowed = true;
     _client_max_body_size = 100000;
     _root_folder = "public/www";
     _index_page = "index.html";
@@ -60,23 +60,36 @@ void    		    ServerBlock::setRootFolder(std::string rootFolder) {
 }
 
 void    		    ServerBlock::setLimitExceptFlag(std::vector<std::string> tokens) {
+    int get_check = 0;
+    int post_check = 0;
+    int delete_check = 0;
+
     for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); ++it) {
         if (*it == "GET")
         {
             std::cout << "GET shit allowed" << std::endl;
             _GET_allowed = true;
+            get_check = 1;
         }
         if (*it == "POST")
         {
             std::cout << "POST shit allowed" << std::endl;
             _POST_allowed = true;
+            post_check = 1;
         }
         if (*it == "DELETE")
         {
             std::cout << "DELETE shit allowed" << std::endl;
             _DELETE_allowed = true;
+            delete_check = 1;
         }
     }
+    if (get_check == 0)
+        _GET_allowed = false;
+    if (post_check == 0)
+        _POST_allowed = false;
+    if (delete_check == 0)
+        _DELETE_allowed = false;
 }
 
 void    		    ServerBlock::setDefaultErrorPage(std::string statusCodeString, std::string filePath) {

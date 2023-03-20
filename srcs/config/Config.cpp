@@ -275,6 +275,9 @@ void    Config::printConfig(void) {
         std::cout << "  Root folder:      " << (*it)->getRootFolder() << std::endl;
         std::cout << "  Index page:       " << (*it)->getIndexPage() << std::endl;
         std::cout << "  Client max body:  " << (*it)->getClientMaxBodySize() << std::endl;
+        std::cout << "  GET ALLOWED:      " << std::boolalpha << (*it)->_GET_allowed << std::endl;
+        std::cout << "  POST ALLOWED:     " << std::boolalpha << (*it)->_POST_allowed << std::endl;
+        std::cout << "  DELETE ALLOWED:   " << std::boolalpha << (*it)->_DELETE_allowed << std::endl;
         // Printing Nested Location Blocks
         (*it)->printLocationBlocks();
         std::cout << std::endl;

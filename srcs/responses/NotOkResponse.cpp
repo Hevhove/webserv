@@ -44,6 +44,9 @@ void    NotOkResponse::constructDefaultResponseWithBody(Request& req, std::strin
 		case INTERNAL_SERVER_ERROR:
 			_raw_status_line = "HTTP/1.1 500 HTTP Version Not Supported\r\n";
 			break;
+        case UNAUTHORIZED:
+			_raw_status_line = "HTTP/1.1 401 Unauthorized\r\n";
+			break;
 		default:
 			// ?
 			break;
@@ -52,6 +55,7 @@ void    NotOkResponse::constructDefaultResponseWithBody(Request& req, std::strin
     setRawHeaders();
     _raw_body = raw_body;
     setRawResponse();
+    std::cout << "raw resp is: " << _raw_response << std::endl;
 }
 
 static std::string statusToString(StatusCode sc) {
@@ -78,9 +82,11 @@ static std::string statusToString(StatusCode sc) {
 void        NotOkResponse::constructConfigResponse(Request& req, std::string filePath) {
     _resource = filePath;
     _raw_status_line = _http_version + " " + statusToString(req.getStatusCode()) + "\r\n";
+    // std::cout << "STATUS LINE IS: " << _raw_status_line << std::endl;
     setHeaders();
     setRawHeaders();
     setRawBody();
     setRawResponse();
+    std::cout << "raw resp is: " << _raw_response << std::endl;
     //printResponse();
 }
