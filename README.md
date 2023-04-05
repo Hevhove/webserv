@@ -1,6 +1,66 @@
-# webserv
+# Webserv
 
-## Resource Dump
+![Score](extras/score.png)
+![Demo](extras/webserv.gif)
+
+For this project we are writing a webserver from scratch using the C functions select/poll/epoll (choice is up to us - we chose poll!). The rest of the server will be written in object-oriented style in C++. I found this one a very interesting project with immediately some cool use cases for features we have learnt in the past in C++ such as polymorphism, virtual functions, etc!
+
+The requirements are quite numerous for this one, and it was the biggest project at the school so far:Your program has to take a configuration file as argument, or use a default path.
+
+## Requirements
+- You can’t execve another web server.
+- Your server must never block and the client can be bounced properly if necessary.
+- It must be non-blocking and use only 1 poll() (or equivalent) for all the I/O operations between the client and the server (listen included).
+- poll() (or equivalent) must check read and write at the same time.
+- You must never do a read or a write operation without going through poll() (or equivalent).
+- Checking the value of errno is strictly forbidden after a read or a write operation.
+- You don’t need to use poll() (or equivalent) before reading your configuration file. Because you have to use non-blocking file descriptors, it is possible to use read/recv or write/send functions with no poll() (or equivalent), and your server wouldn’t be blocking. But it would consume more system resources. Thus, if you try to read/recv or write/send in any file descriptor without using poll() (or equivalent), your grade will be 0.
+- You can use every macro and define like FD_SET, FD_CLR, FD_ISSET, FD_ZERO (un- derstanding what and how they do it is very useful).
+- A request to your server should never hang forever.
+- Your server must be compatible with the web browser of your choice.
+- We will consider that NGINX is HTTP 1.1 compliant and may be used to compare headers and answer behaviors.
+- Your HTTP response status codes must be accurate.
+- You server must have default error pages if none are provided.
+- You can’t use fork for something else than CGI (like PHP, or Python, and so forth).
+- You must be able to serve a fully static website.
+- Clients must be able to upload files.
+- You need at least GET, POST, and DELETE methods.
+- Stress tests your server. It must stay available at all cost.
+- Your server must be able to listen to multiple ports (see Configuration file).
+
+## Config Requirements
+Choose the port and host of each ’server’.
+- Setup the server_names or not.
+- The first server for a host:port will be the default for this host:port (that means
+it will answer to all the requests that don’t belong to an other server).
+- Setup default error pages.
+- Limit client body size.
+- Setup routes with one or multiple of the following rules/configuration (routes wont be using regexp):
+    - Define a list of accepted HTTP methods for the route.
+    - Define a HTTP redirection.
+    - Define a directory or a file from where the file should be searched (for example, if url /kapouet is rooted to /tmp/www, url /kapouet/pouic/toto/pouet is /tmp/www/pouic/toto/pouet).
+    - Turn on or off directory listing.
+Set a default file to answer if the request is a directory.
+    - Execute CGI based on certain file extension (for example .php).
+    - Make it work with POST and GET methods.
+    - Make the route able to accept uploaded files and configure where they should
+be saved.
+    - Your server should work with one CGI (php-CGI, Python, and so forth).
+
+## Our approach
+Our approach is calling the run method of our single server object, onto which we load a parsed config which is provided by the user. Some example configs are provided in the conf/ folder.
+
+Initially we set up the server's listening socket or multiple listening sockets if we are running the server for multiple ports. Once the server is set-up, we run the main Server::run loop which will use poll(2) to either:
+- check the current list of listening sockets in pollfd[] for a POLLIN event (data available to be read on the fd)
+- check an already open connection for either POLLIN or POLLOUT
+    - Incoming data: we need to parse the HTTP request from the client (StartLine, Headers, Body)
+    - Outgoing data: Once an entire valid HTTP request is received on a particular connection, process the particular request asked (GET/POST/DELETE), which are implemented as subclasses of the Response Class.
+
+We keep the TCP connection open for the client to send more information through after we complete their initial request. When reading from a particular file descriptor, we keep adding requests on this connection to a RequestResponse std::vector which is filled with std::pairs of Request and Response pointers. Once the request has been processed and handled by the server, we delete the pair from the vector and clean up memory.
+
+When the client requests a GET of the root page (/), we send back the index page. We preprocess this index page by calling the CGI (PHP) to load the table of entries to the 42SURF page. Anytime we send out any HTML containing a php script from our cgi-bin folder, we do this. Similarly, POST and DELETE requests will call their respective PHP scripts. Because it's not possible to send a direct DELETE request via an HTML button (this sends a post request with a body indicating a resource should be deleted), we have implemented a separate DELETE class which works with cURL. The front-end however will call the table-deletion as a POST request.
+
+We've kept the front-end and database aspect of this server extremely simple as the main focus was on getting the server fast and response with a good uptime when running a benchmarking service such as `siege`. The database is simply a folder public/www/images and the metadata of the pictures is saved in a json format under the data/ folder. The front-end is a simple table in HTML embellished with some CSS.
 
 ## Web/HTTP server overview
 
