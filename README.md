@@ -3,6 +3,30 @@
 ![Score](extras/score.png)
 ![Demo](extras/webserv.gif)
 
+#### Performance Test
+Below is the benchmarking test of our server for 200 concurrent users for 15 seconds. Please feel free to run your own test and submit any differing results to us. Project goal is to hit at least 99% uptime, which we succeed at with 100%.
+
+```
+hvan-hov@inception:~$ siege -c 200 -t 15S http://localhost:3488
+** SIEGE 4.0.4
+** Preparing 200 concurrent users for battle.
+The server is now under siege...
+Lifting the server siege...
+Transactions:		         193 hits
+Availability:		      100.00 %
+Elapsed time:		       14.36 secs
+Data transferred:	        7.76 MB
+Response time:		        5.37 secs
+Transaction rate:	       13.44 trans/sec
+Throughput:		        0.54 MB/sec
+Concurrency:		       72.12
+Successful transactions:         193
+Failed transactions:	           0
+Longest transaction:	       11.28
+Shortest transaction:	        0.00
+```
+
+## Description
 For this project we are writing a webserver from scratch using the C functions select/poll/epoll (choice is up to us - we chose poll!). The rest of the server will be written in object-oriented style in C++. I found this one a very interesting project with immediately some cool use cases for features we have learnt in the past in C++ such as polymorphism, virtual functions, etc!
 
 The requirements are quite numerous for this one, and it was the biggest project at the school so far:Your program has to take a configuration file as argument, or use a default path.
